@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const loginRepository = require('../repositories/loginRepository');
-const { comparePassword } = require('../utils/hashPassword');
+const comparePassword = require('../utils/hashPassword');
 
 const loginController = {
   login: async (req, res) => {
@@ -25,7 +25,7 @@ const loginController = {
         {
           id: user.id,
           email: user.email,
-          nome: user.name,
+          nome: user.nome,
           telefone: user.telefone,
           funcao: user.funcao,
           userType: user.userType,

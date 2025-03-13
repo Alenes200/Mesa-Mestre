@@ -12,12 +12,11 @@ const app = express();
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(router);
 
 app.use('/api/auth', loginRoutes);
 
 const server = createServer(app);
 
 server.listen(port, () => {
-  console.log(`Servidor está rodando em http://localhost:${port}`);
+    console.log(`Servidor está rodando em http://localhost:${port}`);
 });
