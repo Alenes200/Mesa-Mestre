@@ -1,0 +1,25 @@
+{
+  "name": "projeto-mesa-mestre",
+  "version": "1.0.0",
+  "description": "Projeto de Final de Ciclo, feito com intuito de simular um projeto real para um cliente.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node backend/app.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "Grupo 02 - Iteron",
+  "lisence": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "prettier": "^3.5.3"
+  }
+}

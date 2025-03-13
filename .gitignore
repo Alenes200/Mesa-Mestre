@@ -1,0 +1,24 @@
+# Dependências
+/node_modules
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.development
+.env.test
+
+# Banco de dados local
+/db_data
+
+# Logs e arquivos temporários
+/logs
+*.log
+.DS_Store
+
+# IDEs e editores
+.idea
+# .vscode
+
+# Build
+/dist
+/build
