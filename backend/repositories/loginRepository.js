@@ -1,17 +1,21 @@
-const dbClientPromise = require('../db/postgresql'); // Importa a Promise que resolve com o dbClient
+const client = require('../db/postgresql');
+const createTestUsers = require('../utils/createTestUsers');
 
 const loginRepository = {
-  getUserByEmail: async (email) => {
-    try {
-      const client = await dbClientPromise; // Aguarda a conexão ser estabelecida
-      const query = 'SELECT * FROM users WHERE email = $1';
-      const result = await client.query(query, [email]);
-      return result.rows[0];
-    } catch (err) {
-      console.error('Erro ao buscar usuário por email:', err);
-      throw err;
-    }
-  },
+    getUserByEmail: async (email) => {
+      try {
+        const query = 'SELECT * FROM users WHERE email = $1';
+        const result = await client.query(query, [email]);
+        return result.rows[0];
+      } catch (err) {
+        console.error('Erro ao buscar usuário por email:', err);
+        throw err;
+      }
+    },
+    // Função para inicializar usuários de teste
+    initializeTestUsers: async () => {
+      await createTestUsers(client);
+    },
 };
 
 module.exports = loginRepository;
