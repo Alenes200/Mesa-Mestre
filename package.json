@@ -18,7 +18,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.14.0"
+    "pg": "^8.14.0",
+    "ssh2": "^1.16.0"
   },
   "devDependencies": {
     "eslint": "^9.22.0",
