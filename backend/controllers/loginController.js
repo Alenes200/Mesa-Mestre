@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const loginRepository = require('../repositories/loginRepository');
-const comparePassword = require('../utils/hashPassword');
+const comparePassword = require('../utils/comparePassword');
 
 const loginController = {
   login: async (req, res) => {
@@ -14,7 +14,7 @@ const loginController = {
         });
       }
 
-      const match = await comparePassword(password, user.password);
+      const match = await comparePassword(password, user.senha);
       if (!match) {
         return res.status(400).json({
           error: 'E-mail ou senha incorretos.',
