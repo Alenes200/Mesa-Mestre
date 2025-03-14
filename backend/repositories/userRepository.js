@@ -30,7 +30,7 @@ const addUser = async (name, email, password) => {
     }
     try {
         const result = await client.query(
-            'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *',
+            'INSERT INTO users (nome, email, senha, telefone, funcao, user_type, status) VALUES ($1, $2, $3) RETURNING *',
             [name, email, password]
         );
         return result.rows[0];
