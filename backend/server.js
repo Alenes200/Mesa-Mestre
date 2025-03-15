@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const loginRepository = require('./repositories/loginRepository');
 const loginRoutes = require('./routes/loginRoutes');
+const produtosRoutes = require('./routes/produtoRoutes');
 const path = require('path');
 
 dotenv.config({ path: './.env' });
@@ -45,7 +46,6 @@ const swaggerOptions = {
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-console.log('Swagger Docs:', swaggerDocs);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 // Middlewares
@@ -53,8 +53,11 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Rotas
 app.use('/api/auth', loginRoutes);
+app.use('/api/produtos', produtosRoutes);
 
 const server = createServer(app);
 
