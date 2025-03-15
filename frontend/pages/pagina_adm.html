@@ -97,17 +97,22 @@
               <p>mesa 02</p>
             </div>
           </div>
-          <div class="modal-mesa">
+          <div class="modal-mesa" style="display: none">
             <div class="overlay"></div>
             <div class="conteudo-modal">
               <div class="topo">
                 <h1>MESA 01</h1>
-                <img src="../images/icon-fechar.svg" alt="" />
+                <img
+                  src="../images/icon-fechar.svg"
+                  alt=""
+                  id="fechar-modal-mesas"
+                />
               </div>
               <div class="text">
                 <h2>Descrição</h2>
                 <textarea name="descricao" id=""></textarea>
               </div>
+
               <div class="opcoes">
                 <div class="top">
                   <div class="quantidade">
@@ -132,7 +137,161 @@
             </div>
           </div>
         </div>
+        <div class="conteudo-cardapio">
+          <div class="esquerda-cardapio">
+            <div class="pesquisa">
+              <input type="text" placeholder="Pesquisar" />
+              <img src="../images/icon-pesquisa.svg" alt="ícone de pesquisa" />
+            </div>
+            <div class="menu-table-container">
+              <table class="menu-table">
+                <thead>
+                  <tr>
+                    <th class="nome-column">Nome</th>
+                    <th class="local-column">Local</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="nome-column">Bife à Parmegiana</td>
+                    <td class="local-column">
+                      <span class="location-tag">Cozinha principal</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="nome-column">Picanha Grelhada</td>
+                    <td class="local-column">
+                      <span class="location-tag">Chapa/Grill</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="nome-column">Iscas de Peixe</td>
+                    <td class="local-column">
+                      <span class="location-tag">Fritadeira</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="nome-column">Lasanha de 4 Queijos</td>
+                    <td class="local-column">
+                      <span class="location-tag">Forno/Pizzaria</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="nome-column">Temaki</td>
+                    <td class="local-column">
+                      <span class="location-tag">Sushi Bar</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="nome-column">Salada de Atum</td>
+                    <td class="local-column">
+                      <span class="location-tag">Saladeira</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="nome-column">Café Expresso</td>
+                    <td class="local-column">
+                      <span class="location-tag">Bar/Bebidas</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="nome-column">Petit Gateau</td>
+                    <td class="local-column">
+                      <span class="location-tag">Confeitaria/Sobremesas</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="direita-cardapio">
+            <button class="add-button">Adicionar produto ao Cardápio</button>
+            <div class="product-form-container">
+              <h2 class="form-title">Descrição do produto do cardápio</h2>
+
+              <div class="form-content">
+                <div class="form-group">
+                  <label for="nome">Nome:</label>
+                  <input type="text" id="nome" value="Bife à Parmegiana" />
+                </div>
+
+                <div class="form-group">
+                  <label for="descricao">Descrição:</label>
+                  <textarea id="descricao"></textarea>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-column">
+                    <label for="local">Local:</label>
+                    <select id="local">
+                      <option>Cozinha Principal</option>
+                      <option>Chapa/Grill</option>
+                      <option>Fritadeira</option>
+                      <option>Forno/Pizzaria</option>
+                      <option>Sushi Bar</option>
+                      <option>Saladeira</option>
+                      <option>Bar/Bebidas</option>
+                      <option>Confeitaria/Sobremesas</option>
+                    </select>
+                  </div>
+
+                  <div class="form-column">
+                    <label for="preco">Preço:</label>
+                    <input type="text" id="preco" value="R$ 125,99" />
+                  </div>
+                </div>
+
+                <div class="form-row-image">
+                  <div class="image-column">
+                    <label>Imagem:</label>
+                    <button class="upload-button">Carregar imagem</button>
+
+                    <div class="image-placeholder">
+                      <span class="placeholder-text">Foto do Produto</span>
+                    </div>
+                  </div>
+
+                  <div class="details-column">
+                    <label>Detalhes Importantes:</label>
+
+                    <div class="allergen-group">
+                      <span class="allergen-label">Lactose:</span>
+                      <select class="allergen-select">
+                        <option>Sim</option>
+                        <option>Não</option>
+                      </select>
+                    </div>
+
+                    <div class="allergen-group">
+                      <span class="allergen-label">Gluten:</span>
+                      <select class="allergen-select">
+                        <option>Sim</option>
+                        <option>Não</option>
+                      </select>
+                    </div>
+
+                    <div class="allergen-group">
+                      <span class="allergen-label"
+                        >Potencialmente alérgico:</span
+                      >
+                      <select class="allergen-select">
+                        <option>Não</option>
+                        <option>Sim</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button class="btn-save">Salvar</button>
+                  <button class="btn-delete">Deletar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </body>
+  <script src="../js/index.js"></script>
 </html>

@@ -106,11 +106,15 @@
 
   .direita {
     width: calc(100% - 256px);
-    padding: 55px 34px;
+    // padding: 55px 34px;
+    padding: 0 34px;
     display: flex;
     justify-content: center;
 
     .conteudo-mesas {
+      &.hiden {
+        display: none;
+      }
       background: #d9d9d9;
       border-radius: 20px;
       width: 1519px;
@@ -143,16 +147,7 @@
           color: black;
         }
       }
-      .pesquisa {
-        margin-top: 34px;
-        display: flex;
-        justify-content: flex-end;
 
-        input {
-          border-radius: 5px 0px 0px 5px;
-          width: 286px;
-        }
-      }
       .mesas {
         margin-top: 55px;
         display: flex;
@@ -182,6 +177,275 @@
         }
       }
     }
+
+    .conteudo-cardapio {
+      background: #d9d9d9;
+      border-radius: 20px;
+      width: 1519px;
+
+      padding: 55px 34px;
+      display: flex;
+      justify-content: space-between;
+
+      .esquerda-cardapio {
+        width: 100%;
+        height: 100%;
+        max-width: 600px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .pesquisa {
+          width: 100%;
+          margin-top: 0px;
+
+          input {
+            width: 100%;
+          }
+        }
+
+        .menu-table-container {
+          width: 100%;
+          background-color: #f8f8f8;
+          border-radius: 12px;
+          padding: 8px;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+          max-width: 600px;
+          margin: 20px auto;
+          height: 100%;
+        }
+
+        .menu-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-family: Arial, sans-serif;
+        }
+
+        .menu-table th {
+          text-align: left;
+          padding: 12px 15px;
+          background-color: #f2f2f2;
+          color: #333;
+          font-weight: 600;
+          font-size: 14px;
+          border-bottom: 1px solid #ddd;
+        }
+
+        .menu-table td {
+          padding: 10px 15px;
+          border-bottom: 1px solid #eee;
+          font-size: 14px;
+        }
+
+        .menu-table tr:last-child td {
+          border-bottom: none;
+        }
+
+        .menu-table tr:hover {
+          background-color: #f5f5f5;
+        }
+
+        .nome-column {
+          font-weight: 500;
+          color: #333;
+        }
+
+        .local-column {
+          color: #ff6b6b;
+        }
+
+        .location-tag {
+          color: #ff6b6b;
+        }
+        @media (max-width: 480px) {
+          .menu-table th,
+          .menu-table td {
+            padding: 8px 10px;
+            font-size: 13px;
+          }
+        }
+      }
+
+      .direita-cardapio {
+        display: flex;
+        flex-direction: column;
+        gap: 21px;
+        .add-button {
+          background-color: #ff6347;
+          color: white;
+          border: none;
+          padding: 10px 16px;
+          border-radius: 6px;
+          font-size: 16px;
+          cursor: pointer;
+          box-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+        }
+        .product-form-container {
+          max-width: 500px;
+          margin: 0 auto;
+          background-color: #fff;
+          border-radius: 10px;
+          overflow: hidden;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+          /* Form title */
+          .form-title {
+            margin: 0;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #eee;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+          }
+
+          /* Form content */
+          .form-content {
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            margin-bottom: 15px;
+
+            /* Form groups */
+            .form-group {
+              margin-bottom: 15px;
+
+              label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+                font-size: 14px;
+              }
+
+              input[type='text'],
+              textarea,
+              select {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+                box-sizing: border-box;
+              }
+
+              textarea {
+                min-height: 120px;
+                resize: vertical;
+              }
+            }
+
+            /* Price and location row */
+            .form-row {
+              display: flex;
+              gap: 15px;
+              margin-bottom: 15px;
+
+              .form-column {
+                flex: 1;
+              }
+            }
+
+            /* Product image section */
+            .form-row-image {
+              display: flex;
+              gap: 20px;
+
+              .image-column {
+                flex: 1;
+
+                .upload-button {
+                  background-color: #f1f1f1;
+                  color: #555;
+                  border: 1px solid #ddd;
+                  padding: 6px 12px;
+                  border-radius: 4px;
+                  font-size: 14px;
+                  cursor: pointer;
+                }
+
+                .image-placeholder {
+                  width: 100%;
+                  aspect-ratio: 1;
+                  background-color: #e0e0e0;
+                  border: 1px solid #ccc;
+                  border-radius: 5px;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  margin-bottom: 10px;
+
+                  .placeholder-text {
+                    font-size: 14px;
+                    color: #555;
+                    margin-top: 10px;
+                  }
+                }
+              }
+
+              .details-column {
+                flex: 1.5;
+
+                .allergen-group {
+                  margin-bottom: 10px;
+
+                  .allergen-label {
+                    display: inline-block;
+                    width: 120px;
+                    font-weight: normal;
+                  }
+
+                  .allergen-select {
+                    width: 100px;
+                    padding: 8px;
+                  }
+                }
+              }
+            }
+
+            /* Action buttons */
+            .form-actions {
+              display: flex;
+              gap: 10px;
+              justify-content: flex-end;
+              margin-top: 20px;
+
+              .btn-save {
+                background-color: #4caf50;
+                color: white;
+                border: none;
+                padding: 8px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+              }
+
+              .btn-delete {
+                background-color: #ff6b6b;
+                color: white;
+                border: none;
+                padding: 8px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.pesquisa {
+  margin-top: 34px;
+  display: flex;
+  justify-content: flex-end;
+
+  input {
+    padding: 0px 21px;
+    border-radius: 5px 0px 0px 5px;
+    width: 286px;
   }
 }
 
