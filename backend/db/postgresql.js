@@ -1,25 +1,16 @@
 const { Client } = require('pg');
+require('dotenv').config({ path: './.env' });
 
-async function connectToDatabase() {
-    const client = new Client({
-        user: process.env.DB_USER,
-        host: process.env.DB_HOST,
-        database: process.env.DB_NAME,
-        password: process.env.DB_PASSWORD,
-        port: process.env.DB_PORT,
-    });
+const client = new Client({
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
+});
 
-    try {
-        await client.connect();
-        console.log('Conexão bem sucedida!');
-        return client;
-    } catch (error) {
-        console.error('Erro de conexão:', error.message);
-        console.error('Verifique as credenciais no arquivo .env');
-        throw error;
-    }
-}
+client.connect()
+    .then(() => console.log('Conexão bem sucedida!'))
+    .catch(err => console.error('Erro de conexão:', err.stack));
 
-module.exports = {
-    connectToDatabase,
-};
+module.exports = client;
