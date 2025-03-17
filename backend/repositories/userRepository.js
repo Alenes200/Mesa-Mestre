@@ -1,6 +1,7 @@
 const { client } = require('../db/postgresql.js');
 
-// Buscar todos os usuários
+console.log('Client:', client);
+
 const getAllUsers = async () => {
     try {
         const result = await client.query('SELECT * FROM users');
@@ -10,7 +11,6 @@ const getAllUsers = async () => {
     }
 };
 
-// Buscar usuário por ID
 const getUserById = async (id) => {
     if (!Number.isInteger(id)) {
         throw new Error('ID inválido');
@@ -23,30 +23,29 @@ const getUserById = async (id) => {
     }
 };
 
-// Criar um novo usuário
 const addUser = async (name, email, password) => {
     if (typeof name !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
         throw new Error('Dados inválidos');
     }
     try {
         const result = await client.query(
-            'INSERT INTO users (nome, email, senha, telefone, funcao, user_type, status) VALUES ($1, $2, $3) RETURNING *',
+            'INSERT INTO users (nome, email, senha) VALUES ($1, $2, $3) RETURNING *',
             [name, email, password]
         );
         return result.rows[0];
     } catch (error) {
+        console.error('Erro ao adicionar usuário:', error); // Adicione este log para depuração
         throw new Error('Erro ao adicionar usuário');
     }
 };
 
-// Atualizar um usuário
 const updateUser = async (id, name, email, password) => {
     if (!Number.isInteger(id) || typeof name !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
         throw new Error('Dados inválidos');
     }
     try {
         const result = await client.query(
-            'UPDATE users SET name = $1, email = $2, password = $3 WHERE id = $4 RETURNING *',
+            'UPDATE users SET nome = $1, email = $2, senha = $3 WHERE id = $4 RETURNING *',
             [name, email, password, id]
         );
         return result.rows[0];
@@ -55,7 +54,6 @@ const updateUser = async (id, name, email, password) => {
     }
 };
 
-// Deletar um usuário
 const deleteUser = async (id) => {
     if (!Number.isInteger(id)) {
         throw new Error('ID inválido');
