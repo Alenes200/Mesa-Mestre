@@ -74,7 +74,7 @@ VALUES
 INSERT INTO TBL_PEDIDO (COM_ID, PED_DESCRICAO, PED_STATUS, FPA_ID)
 VALUES
     (1, 'Pedido de pizza e refrigerante', 1, 2),
-    (2, 'Pedido de espaguete e água', 1, 4),
+    (2, 'Pedido de refrigerante', 1, 4),
     (3, 'Pedido de lasanha e vinho', 1, 3),
     (1, 'Pedido de risoto e cerveja', 1, 1),
     (2, 'Pedido de feijoada e suco', 1, 4),
@@ -101,8 +101,8 @@ VALUES
     (1, (SELECT PRO_ID FROM TBL_PRODUTO WHERE PRO_NOME = 'Pizza de Calabresa'), 1),
     (1, (SELECT PRO_ID FROM TBL_PRODUTO WHERE PRO_NOME = 'Refrigerante Lata'), 1),
 
-    -- Pedido 2: Espaguete e Água (Espaguete não está na lista, então removi)
-    (2, (SELECT PRO_ID FROM TBL_PRODUTO WHERE PRO_NOME = 'Água Mineral'), 1),
+    -- Pedido 2: Refrigerante
+    (2, (SELECT PRO_ID FROM TBL_PRODUTO WHERE PRO_NOME = 'Refrigerante Lata'), 1),
 
     -- Pedido 3: Lasanha e Vinho
     (3, (SELECT PRO_ID FROM TBL_PRODUTO WHERE PRO_NOME = 'Lasanha Bolonhesa'), 1),
