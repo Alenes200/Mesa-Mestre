@@ -4,30 +4,22 @@
   "description": "Projeto de Final de Ciclo, feito com intuito de simular um projeto real para um cliente.",
   "main": "app.js",
   "scripts": {
-    "start": "node backend/server.js",
+    "start": "node backend/app.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "sass": "sass --watch frontend/Styles/scss:frontend/Styles"
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "Grupo 02 - Iteron",
   "lisence": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cookie-parser": "^1.4.7",
-    "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "jsonwebtoken": "^9.0.2",
-    "pg": "^8.14.0",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.3",
-    "prettier": "^3.5.3",
-    "sass": "^1.x.x"
+    "prettier": "^3.5.3"
   }
 }
