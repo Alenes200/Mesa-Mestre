@@ -123,6 +123,26 @@ document.getElementById('imagem').addEventListener('change', (event) => {
   }
 });
 
+document.getElementById('upload-button').addEventListener('click', () => {
+  // Dispara o clique no input de arquivo
+  document.getElementById('imagem').click();
+});
+
+document.getElementById('imagem').addEventListener('change', (event) => {
+  const fileInput = event.target;
+  const file = fileInput.files[0]; // Obtém o arquivo selecionado
+  const placeholder = document.querySelector('.image-placeholder');
+
+  // Verifica se um arquivo foi selecionado
+  if (file) {
+    // Atualiza o placeholder com o nome do arquivo ou uma pré-visualização
+    placeholder.innerHTML = `<img src="${URL.createObjectURL(file)}" alt="Pré-visualização da imagem" class="preview-image" />`;
+  } else {
+    // Restaura o texto padrão se nenhum arquivo for selecionado
+    placeholder.innerHTML = `<span class="placeholder-text">Foto do Produto</span>`;
+  }
+});
+
 // Função para preencher o formulário com os dados do produto selecionado
 function preencherFormulario(produto) {
   document.getElementById('nome').value = produto.pro_nome;
@@ -210,3 +230,101 @@ async function listarProdutos() {
 
 // Chama a função para listar os produtos ao carregar a página
 document.addEventListener('DOMContentLoaded', listarProdutos);
+
+//  Função para atualizar um produto no backend
+document.querySelector('.btn-save').addEventListener('click', async () => {
+  const produtoId = document
+    .getElementById('btn-adicionar-produto')
+    .getAttribute('data-id'); // Obtém o ID do produto
+
+  if (!produtoId) {
+    alert('Nenhum produto selecionado para atualizar.');
+    return;
+  }
+
+  // Captura os valores dos campos do formulário
+  const nome = document.getElementById('nome').value.trim();
+  const descricao = document.getElementById('descricao').value.trim();
+  const local = document.getElementById('local').value.trim();
+  const precoInput = document.getElementById('preco').value.trim();
+  const preco = parseFloat(precoInput.replace(',', '.')); // Converte para float
+  const imagemInput = document.getElementById('imagem'); // Campo de upload de imagem
+  const tipo = document.querySelector('.allergen-select').value.trim();
+
+  if (!nome || !descricao || !local || !preco || !tipo) {
+    alert('Por favor, preencha todos os campos obrigatórios.');
+    return;
+  }
+
+  // Cria um objeto FormData para enviar os dados, incluindo o arquivo de imagem
+  const formData = new FormData();
+  formData.append('nome', nome);
+  formData.append('descricao', descricao);
+  formData.append('local', local);
+  formData.append('preco', preco);
+  formData.append('tipo', tipo);
+
+  if (imagemInput.files.length > 0) {
+    formData.append('imagem', imagemInput.files[0]); // Adiciona o arquivo de imagem, se houver
+  }
+
+  try {
+    // Faz a requisição PUT para o backend
+    const response = await fetch(`/api/produtos/${produtoId}`, {
+      method: 'PUT',
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Produto atualizado com sucesso:', data);
+      alert('Produto atualizado com sucesso!');
+      listarProdutos(); // Atualiza a lista de produtos
+    } else {
+      const errorData = await response.json();
+      console.error('Erro ao atualizar produto:', errorData);
+      alert('Erro ao atualizar produto: ' + errorData.error);
+    }
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    alert('Erro ao atualizar produto. Tente novamente mais tarde.');
+  }
+});
+
+// Função para excluir um produto no backend
+document.querySelector('.btn-delete').addEventListener('click', async () => {
+  const produtoId = document
+    .getElementById('btn-adicionar-produto')
+    .getAttribute('data-id'); // Obtém o ID do produto
+
+  if (!produtoId) {
+    alert('Nenhum produto selecionado para deletar.');
+    return;
+  }
+
+  const confirmacao = confirm(
+    'Tem certeza de que deseja deletar este produto?'
+  );
+  if (!confirmacao) return;
+
+  try {
+    // Faz a requisição DELETE para o backend
+    const response = await fetch(`/api/produtos/${produtoId}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Produto deletado com sucesso:', data);
+      alert('Produto deletado com sucesso!');
+      listarProdutos(); // Atualiza a lista de produtos
+    } else {
+      const errorData = await response.json();
+      console.error('Erro ao deletar produto:', errorData);
+      alert('Erro ao deletar produto: ' + errorData.error);
+    }
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    alert('Erro ao deletar produto. Tente novamente mais tarde.');
+  }
+});

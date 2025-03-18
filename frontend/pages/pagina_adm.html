@@ -138,7 +138,7 @@
           </div>
         </div>
 
-        <div class="conteudo-cardapio">
+        <div class="conteudo-cardapio" style="display: none">
           <div class="esquerda-cardapio">
             <div class="pesquisa">
               <input type="text" placeholder="Pesquisar" />
@@ -199,7 +199,6 @@
                       <option>Sushi Bar</option>
                       <option>Saladeira</option>
                       <option>Bar/Bebidas</option>
-                      <option>Confeitaria/Sobremesas</option>
                     </select>
                   </div>
 
@@ -211,16 +210,21 @@
 
                 <div class="form-row-image">
                   <div class="image-column">
-                    <label for="imagem">Imagem:</label>
-                    <input type="file" id="imagem" accept="image/*" />
+                    <p>Imagem:</p>
+                    <input
+                      type="file"
+                      id="imagem"
+                      accept="image/*"
+                      style="display: none"
+                    />
+                    <button type="button" id="upload-button">
+                      Carregar Imagem
+                    </button>
                     <div class="image-placeholder">
                       <span class="placeholder-text">Foto do Produto</span>
                     </div>
                   </div>
-
                   <div class="details-column">
-                    <label>Detalhes Importantes:</label>
-
                     <div class="allergen-group">
                       <span class="allergen-label">Tipo:</span>
                       <select class="allergen-select">
