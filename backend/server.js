@@ -12,6 +12,8 @@ const path = require('path');
 dotenv.config({ path: './.env' });
 
 const port = process.env.PORT || 3000;
+console.log(process.env.PORT);
+
 const app = express();
 
 // Configuração do Swagger
@@ -42,7 +44,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: [path.join(__dirname, './routes/*.js')]
+  apis: [path.join(__dirname, './routes/*.js')],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -67,7 +69,9 @@ async function startServer() {
 
     server.listen(port, () => {
       console.log(`Servidor está rodando em http://localhost:${port}`);
-      console.log(`Documentação Swagger disponível em http://localhost:${port}/api-docs`);
+      console.log(
+        `Documentação Swagger disponível em http://localhost:${port}/api-docs`
+      );
     });
   } catch (error) {
     console.error('Erro ao iniciar o servidor:', error);
