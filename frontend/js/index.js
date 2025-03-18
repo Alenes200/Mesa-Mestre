@@ -49,9 +49,8 @@ document
     const precoInput = document.getElementById('preco').value.trim();
     const preco = parseFloat(precoInput.replace(',', '.')); // Substitui vírgula por ponto e converte para float
     const imagemInput = document.getElementById('imagem'); // Campo de upload de imagem
-    const tipo = document
-      .querySelector('.allergen-group:nth-child(3) .allergen-select')
-      .value.trim();
+    const tipo = document.querySelector('.allergen-select').value.trim();
+    console.log(tipo);
 
     // Verifica se uma imagem foi selecionada
     if (
@@ -88,6 +87,7 @@ document
         const data = await response.json();
         console.log('Produto adicionado com sucesso:', data);
         alert('Produto adicionado com sucesso!');
+        listarProdutos(); // Atualiza a lista de produtos após a adição
       } else {
         const errorData = await response.json();
         console.error('Erro ao adicionar produto:', errorData);
@@ -122,3 +122,91 @@ document.getElementById('imagem').addEventListener('change', (event) => {
     alert('Por favor, selecione um arquivo de imagem válido.');
   }
 });
+
+// Função para preencher o formulário com os dados do produto selecionado
+function preencherFormulario(produto) {
+  document.getElementById('nome').value = produto.pro_nome;
+  document.getElementById('descricao').value = produto.pro_descricao;
+  document.getElementById('local').value = produto.pro_local;
+  document.getElementById('preco').value = produto.pro_preco
+    .toString()
+    .replace('.', ','); // Converte para formato com vírgula
+  document.querySelector('.allergen-select').value = produto.pro_tipo;
+
+  // Atualiza a pré-visualização da imagem
+  const placeholder = document.querySelector('.image-placeholder');
+  placeholder.innerHTML = `<img src="/uploads/${produto.pro_imagem}" alt="Pré-visualização da imagem" class="preview-image" />`;
+
+  // Armazena o ID do produto em um atributo do botão "Salvar" para uso posterior
+  document
+    .getElementById('btn-adicionar-produto')
+    .setAttribute('data-id', produto.pro_id);
+}
+
+// Adiciona eventos de clique às linhas da tabela
+function adicionarEventosTabela() {
+  const linhas = document.querySelectorAll('.menu-table tbody tr');
+  linhas.forEach((linha) => {
+    linha.addEventListener('click', () => {
+      const produtoId = linha.getAttribute('data-id'); // Obtém o ID do produto da linha
+      buscarProdutoPorId(produtoId); // Busca os dados do produto no backend
+    });
+  });
+}
+
+// Função para buscar os dados de um produto pelo ID
+async function buscarProdutoPorId(id) {
+  try {
+    const response = await fetch(`/api/produtos/${id}`);
+    if (response.ok) {
+      const produto = await response.json();
+      preencherFormulario(produto); // Preenche o formulário com os dados do produto
+    } else {
+      console.error('Erro ao buscar produto:', response.statusText);
+      alert('Erro ao buscar produto.');
+    }
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    alert('Erro ao buscar produto. Tente novamente mais tarde.');
+  }
+}
+
+// Função para listar produtos e exibir na tabela
+async function listarProdutos() {
+  try {
+    // Faz a requisição GET para o backend
+    const response = await fetch('/api/produtos');
+    if (response.ok) {
+      const produtos = await response.json(); // Converte a resposta para JSON
+      console.log('Produtos:', produtos);
+
+      // Seleciona o corpo da tabela onde os produtos serão exibidos
+      const tabelaProdutos = document.querySelector('.menu-table tbody');
+      tabelaProdutos.innerHTML = ''; // Limpa a tabela antes de renderizar
+
+      // Itera sobre os produtos e cria as linhas da tabela
+      produtos.forEach((produto) => {
+        const linha = document.createElement('tr');
+        linha.setAttribute('data-id', produto.pro_id); // Armazena o ID do produto na linha
+        linha.innerHTML = `
+          <td class="nome-column">${produto.pro_nome}</td>
+          <td class="local-column">
+            <span class="location-tag">${produto.pro_local}</span>
+          </td>
+        `;
+        tabelaProdutos.appendChild(linha);
+      });
+
+      adicionarEventosTabela(); // Adiciona os eventos de clique às novas linhas
+    } else {
+      console.error('Erro ao buscar produtos:', response.statusText);
+      alert('Erro ao buscar produtos.');
+    }
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    alert('Erro ao buscar produtos. Tente novamente mais tarde.');
+  }
+}
+
+// Chama a função para listar os produtos ao carregar a página
+document.addEventListener('DOMContentLoaded', listarProdutos);
