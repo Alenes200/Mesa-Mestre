@@ -56,6 +56,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Servir arquivos estáticos da pasta "frontend"
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Rotas
 app.use('/api/auth', loginRoutes);

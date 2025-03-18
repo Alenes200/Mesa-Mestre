@@ -205,14 +205,16 @@
             </div>
           </div>
           <div class="direita-cardapio">
-            <button class="add-button">Adicionar produto ao Cardápio</button>
+            <button class="add-button" id="btn-adicionar-produto">
+              Adicionar produto ao Cardápio
+            </button>
             <div class="product-form-container">
               <h2 class="form-title">Descrição do produto do cardápio</h2>
 
               <div class="form-content">
                 <div class="form-group">
                   <label for="nome">Nome:</label>
-                  <input type="text" id="nome" value="Bife à Parmegiana" />
+                  <input type="text" id="nome" />
                 </div>
 
                 <div class="form-group">
@@ -237,15 +239,14 @@
 
                   <div class="form-column">
                     <label for="preco">Preço:</label>
-                    <input type="text" id="preco" value="R$ 125,99" />
+                    <input type="text" id="preco" placeholder="R$ 0,00" />
                   </div>
                 </div>
 
                 <div class="form-row-image">
                   <div class="image-column">
-                    <label>Imagem:</label>
-                    <button class="upload-button">Carregar imagem</button>
-
+                    <label for="imagem">Imagem:</label>
+                    <input type="file" id="imagem" accept="image/*" />
                     <div class="image-placeholder">
                       <span class="placeholder-text">Foto do Produto</span>
                     </div>
@@ -271,12 +272,12 @@
                     </div>
 
                     <div class="allergen-group">
-                      <span class="allergen-label"
-                        >Potencialmente alérgico:</span
-                      >
+                      <span class="allergen-label">Tipo:</span>
                       <select class="allergen-select">
-                        <option>Não</option>
-                        <option>Sim</option>
+                        <option>Entradas</option>
+                        <option>Combos</option>
+                        <option>Bebidas</option>
+                        <option>Sobremesas</option>
                       </select>
                     </div>
                   </div>

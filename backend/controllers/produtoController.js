@@ -29,6 +29,8 @@ const produtosController = {
   create: async (req, res) => {
     try {
       const { nome, descricao, local, tipo, preco } = req.body;
+      console.log(nome, descricao, local, tipo, preco);
+
       const imagem = path.relative(
         path.join(__dirname, '..', 'uploads'),
         req.file.path
