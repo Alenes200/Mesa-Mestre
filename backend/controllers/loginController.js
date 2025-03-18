@@ -13,8 +13,11 @@ const loginController = {
           error: 'E-mail ou senha incorretos.',
         });
       }
+      console.log(password);
+      console.log(user.usr_senha);
 
-      const match = await comparePassword(password, user.senha);
+      const match = await comparePassword(password, user.usr_senha);
+
       if (!match) {
         return res.status(400).json({
           error: 'E-mail ou senha incorretos.',
@@ -23,13 +26,13 @@ const loginController = {
 
       const token = jwt.sign(
         {
-          id: user.id,
-          email: user.email,
-          nome: user.nome,
-          telefone: user.telefone,
-          funcao: user.funcao,
-          userType: user.userType,
-          status: user.status,
+          id: user.usr_id,
+          email: user.usr_email,
+          nome: user.usr_nome,
+          telefone: user.usr_telefone,
+          funcao: user.usr_funcao,
+          userType: user.usr_tipo,
+          status: user.usr_status,
         },
         process.env.SECRET_KEY,
         { expiresIn: '1h' }

@@ -3,7 +3,7 @@ const hashPassword = require('../utils/hashPassword');
 
 // Função para verificar se o usuário já existe
 async function userExists(client, email) {
-    const query = 'SELECT * FROM users WHERE email = $1';
+    const query = 'SELECT * FROM TBL_USERS WHERE USR_EMAIL = $1';
     const result = await client.query(query, [email]);
     return result.rows.length > 0;
   }
@@ -20,7 +20,7 @@ async function userExists(client, email) {
     const hashedPassword = await hashPassword(password);
   
     const query = `
-      INSERT INTO users (nome, email, senha, user_type)
+      INSERT INTO TBL_USERS (USR_NOME, USR_EMAIL, USR_SENHA, USR_TIPO)
       VALUES ($1, $2, $3, $4)
       RETURNING *;
     `;

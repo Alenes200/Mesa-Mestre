@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const loginRepository = require('./repositories/loginRepository');
 const loginRoutes = require('./routes/loginRoutes');
 const produtosRoutes = require('./routes/produtoRoutes');
+const mesasRoutes = require('./routes/mesaRoutes');
 const path = require('path');
 
 dotenv.config({ path: './.env' });
@@ -42,7 +43,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: [path.join(__dirname, './routes/*.js')]
+  apis: [path.join(__dirname, './routes/*.js')],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -58,6 +59,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Rotas
 app.use('/api/auth', loginRoutes);
 app.use('/api/produtos', produtosRoutes);
+app.use('/api/mesas', mesasRoutes);
 
 const server = createServer(app);
 
@@ -67,7 +69,9 @@ async function startServer() {
 
     server.listen(port, () => {
       console.log(`Servidor está rodando em http://localhost:${port}`);
-      console.log(`Documentação Swagger disponível em http://localhost:${port}/api-docs`);
+      console.log(
+        `Documentação Swagger disponível em http://localhost:${port}/api-docs`
+      );
     });
   } catch (error) {
     console.error('Erro ao iniciar o servidor:', error);

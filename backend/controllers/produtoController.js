@@ -64,7 +64,7 @@ const produtosController = {
                 return res.status(400).json({ error: 'Produto desativado. Para reativar, defina um status válido (>= 1).' });
             }
 
-            let imagem = produtoExistente.imagem;
+            let imagem = produtoExistente.pro_imagem;
 
             if (req.file) {
                 const novaImagem = path.relative(path.join(__dirname, '..', 'uploads'), req.file.path);
@@ -81,13 +81,13 @@ const produtosController = {
                 }
             }
             const produtoAtualizado = await produtosRepository.update(id, {
-                nome: nome || produtoExistente.nome,
-                descricao: descricao || produtoExistente.descricao,
-                local: local || produtoExistente.local,
-                tipo: tipo || produtoExistente.tipo,
-                preco: preco || produtoExistente.preco,
+                nome: nome || produtoExistente.pro_nome,
+                descricao: descricao || produtoExistente.pro_descricao,
+                local: local || produtoExistente.pro_local,
+                tipo: tipo || produtoExistente.pro_tipo,
+                preco: preco || produtoExistente.pro_preco,
                 imagem,
-                status: status || produtoExistente.status
+                status: status || produtoExistente.pro_status
             });
 
             res.status(200).json(produtoAtualizado);

@@ -172,12 +172,3 @@ VALUES
     -- Pedido 20: Peixe e Purê
     (20, (SELECT PRO_ID FROM TBL_PRODUTO WHERE PRO_NOME = 'Salmão Grelhado'), 1),
     (20, (SELECT PRO_ID FROM TBL_PRODUTO WHERE PRO_NOME = 'Purê de Batatas'), 1);
-
-INSERT INTO TBL_USERS (USR_NOME, USR_EMAIL, USR_TELEFONE, USR_FUNCAO, USR_TIPO, USR_STATUS)
-VALUES
-    ('Administrador', 'admin@email.com', '11999999999', 'Gerente do sistema', 1, 1),
-    ('Samuel Mori', 'samuel@email.com', '11988888888', 'Garçom', 2, 1),
-    ('Matheus', 'matheus@email.com', '11977777777', 'Cozinheira', 2, 1),
-    ('Alexsander', 'alexsander@email.com', '11966666666', 'Cliente regular', 3, 1),
-    ('Luiz Ricardo Maciel de Almeida Rios', 'luizRicardo@email.com', '11955555555', 'Cliente eventual', 3, 1),
-    ('Nicolas', 'nicolas@email.com', '11944444444', 'Gerente do bar', 2, 1);

@@ -3,7 +3,7 @@ const client = require('../db/postgresql');
 const produtosRepository = {
     getAll: async () => {
         try {
-            const query = 'SELECT * FROM produtos WHERE status >= 1';
+            const query = 'SELECT * FROM TBL_PRODUTO WHERE PRO_STATUS >= 1';
             const result = await client.query(query);
             return result.rows;
         } catch (error) {
@@ -14,7 +14,7 @@ const produtosRepository = {
 
     getById: async (id) => {
         try {
-            const query = 'SELECT * FROM produtos WHERE id = $1 AND status >= 1';
+            const query = 'SELECT * FROM TBL_PRODUTO WHERE PRO_ID = $1 AND PRO_STATUS >= 1';
             const result = await client.query(query, [id]);
             return result.rows[0];
         } catch (error) {
@@ -28,7 +28,7 @@ const produtosRepository = {
 
         try {
             const query = `
-                INSERT INTO produtos (nome, descricao, local, tipo, preco, imagem)
+                INSERT INTO TBL_PRODUTO (PRO_NOME, PRO_DESCRICAO, PRO_LOCAL, PRO_TIPO, PRO_PRECO, PRO_IMAGEM)
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING *;
             `;
@@ -48,15 +48,15 @@ const produtosRepository = {
 
         try {
             const query = `
-                UPDATE produtos
-                SET nome = COALESCE($1, nome),
-                    descricao = COALESCE($2, descricao),
-                    local = COALESCE($3, local),
-                    tipo = COALESCE($4, tipo),
-                    preco = COALESCE($5, preco),
-                    imagem = COALESCE($6, imagem),
-                    status = COALESCE($7, status)
-                WHERE id = $8
+                UPDATE TBL_PRODUTO
+                SET PRO_NOME = COALESCE($1, PRO_NOME),
+                    PRO_DESCRICAO = COALESCE($2, PRO_DESCRICAO),
+                    PRO_LOCAL = COALESCE($3, PRO_LOCAL),
+                    PRO_TIPO = COALESCE($4, PRO_TIPO),
+                    PRO_PRECO = COALESCE($5, PRO_PRECO),
+                    PRO_IMAGEM = COALESCE($6, PRO_IMAGEM),
+                    PRO_STATUS = COALESCE($7, PRO_STATUS)
+                WHERE PRO_ID = $8
                 RETURNING *;
             `;
 
@@ -73,9 +73,9 @@ const produtosRepository = {
     delete: async (id) => {
         try {
             const query = `
-                UPDATE produtos
-                SET status = -1
-                WHERE id = $1
+                UPDATE TBL_PRODUTO
+                SET PRO_STATUS = -1
+                WHERE PRO_ID = $1
                 RETURNING *;
             `;
             const result = await client.query(query, [id]);
@@ -88,7 +88,7 @@ const produtosRepository = {
 
     getByIdIgnoreStatus: async (id) => {
         try {
-            const query = 'SELECT * FROM produtos WHERE id = $1';
+            const query = 'SELECT * FROM TBL_PRODUTO WHERE PRO_ID = $1';
             const result = await client.query(query, [id]);
             return result.rows[0];
         } catch (error) {
@@ -99,7 +99,7 @@ const produtosRepository = {
 
     getByTipo: async (tipo) => {
         try {
-            const query = 'SELECT * FROM produtos WHERE tipo = $1 AND status >= 1';
+            const query = 'SELECT * FROM TBL_PRODUTO WHERE PRO_TIPO = $1 AND PRO_STATUS >= 1';
             const result = await client.query(query, [tipo]);
             return result.rows;
         } catch (error) {
