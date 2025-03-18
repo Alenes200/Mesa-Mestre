@@ -11,8 +11,9 @@ $font-size-large: 24px;
 $container-width: 100%;
 $primary-color: #0D0D0D; // Botão preto
 
-// Estilos gerais
-body {
+
+.s-login {
+    width: 100%;
     background-color: $background-color;
     margin: 0;
     padding: 0;
@@ -21,12 +22,12 @@ body {
     align-items: center;
     height: 100vh;
     font-family: Arial, sans-serif;
-}
 
-.s-login {
-    text-align: center;
-    width: 100%;
-    max-width: 400px; // Largura do container conforme imagem
+    main {
+        text-align: center;
+        width: 100%;
+        max-width: 400px; // Largura do container conforme imagem
+    }
 }
 
 // Logo e Título

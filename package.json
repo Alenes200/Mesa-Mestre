@@ -5,10 +5,10 @@
   "main": "app.js",
   "scripts": {
     "start": "node backend/server.js",
+    "start dev": "node --watch backend/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "sass": "sass --watch frontend/Styles/scss:frontend/Styles"
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "Grupo 02 - Iteron",
@@ -20,7 +20,7 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
-    "pg": "^8.14.0",
+    "pg": "^8.14.1",
     "projeto-mesa-mestre": "file:",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"

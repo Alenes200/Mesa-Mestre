@@ -25,6 +25,7 @@
       .logo {
         display: flex;
         align-items: center;
+
         h1 {
           margin-left: 15px;
           font-family: 'Poppins';
@@ -37,6 +38,7 @@
           color: #33303e;
         }
       }
+
       .minimizar {
         cursor: pointer;
       }
@@ -54,6 +56,7 @@
         flex-direction: column;
         gap: 34px;
       }
+
       .opcao {
         cursor: pointer;
         display: flex;
@@ -115,11 +118,13 @@
       &.hiden {
         display: none;
       }
+
       background: #d9d9d9;
       border-radius: 20px;
       width: 1519px;
 
       padding: 55px 34px;
+
       .locais-mesas {
         display: flex;
         align-items: center;
@@ -211,7 +216,7 @@
           padding: 8px;
           box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
           max-width: 600px;
-          margin: 20px auto;
+          margin-top: 21px;
           height: 100%;
         }
 
@@ -257,7 +262,9 @@
         .location-tag {
           color: #ff6b6b;
         }
+
         @media (max-width: 480px) {
+
           .menu-table th,
           .menu-table td {
             padding: 8px 10px;
@@ -267,9 +274,12 @@
       }
 
       .direita-cardapio {
+        width: 100%;
+        max-width: 500px;
         display: flex;
         flex-direction: column;
         gap: 21px;
+
         .add-button {
           background-color: #ff6347;
           color: white;
@@ -279,8 +289,14 @@
           font-size: 16px;
           cursor: pointer;
           box-shadow: 0 2px 4px rgba(255, 107, 107, 0.3);
+
+          &:hover {
+            background-color: rgb(245, 99, 71);
+          }
         }
+
         .product-form-container {
+          width: 100%;
           max-width: 500px;
           margin: 0 auto;
           background-color: #fff;
@@ -291,7 +307,7 @@
           /* Form title */
           .form-title {
             margin: 0;
-            padding: 15px;
+            padding: 13px 21px;
             background-color: #f8f8f8;
             border-bottom: 1px solid #eee;
             font-size: 16px;
@@ -301,10 +317,9 @@
 
           /* Form content */
           .form-content {
-            padding: 15px;
+            padding: 13px 21px;
             background-color: #f8f8f8;
             border-radius: 8px;
-            margin-bottom: 15px;
 
             /* Form groups */
             .form-group {
@@ -337,21 +352,36 @@
             /* Price and location row */
             .form-row {
               display: flex;
+              justify-content: space-between;
               gap: 15px;
               margin-bottom: 15px;
 
               .form-column {
-                flex: 1;
+                input {
+
+                  padding: 3px;
+                  width: 80px;
+                  border-radius: 5px;
+                  margin-left: 13px;
+                }
+
+                select {
+                  padding: 3px;
+                  border-radius: 5px;
+                  margin-left: 13px;
+                }
               }
+
             }
 
             /* Product image section */
             .form-row-image {
               display: flex;
+              justify-content: space-between;
+
               gap: 20px;
 
               .image-column {
-                flex: 1;
 
                 .upload-button {
                   background-color: #f1f1f1;
@@ -364,7 +394,8 @@
                 }
 
                 .image-placeholder {
-                  width: 100%;
+                  margin-top: 13px;
+                  width: 250px;
                   aspect-ratio: 1;
                   background-color: #e0e0e0;
                   border: 1px solid #ccc;
@@ -373,7 +404,6 @@
                   flex-direction: column;
                   align-items: center;
                   justify-content: center;
-                  margin-bottom: 10px;
 
                   .placeholder-text {
                     font-size: 14px;
@@ -384,20 +414,20 @@
               }
 
               .details-column {
-                flex: 1.5;
 
                 .allergen-group {
                   margin-bottom: 10px;
 
                   .allergen-label {
                     display: inline-block;
-                    width: 120px;
                     font-weight: normal;
                   }
 
                   .allergen-select {
                     width: 100px;
-                    padding: 8px;
+                    padding: 3px;
+                    border-radius: 5px;
+                    margin-left: 13px;
                   }
                 }
               }
@@ -468,6 +498,7 @@
     height: 100vh;
     background: rgba(0, 0, 0, 0.5);
   }
+
   .conteudo-modal {
     width: 100%;
     max-width: 617px;
@@ -503,6 +534,7 @@
 
         color: #ffffff;
       }
+
       img {
         cursor: pointer;
       }
@@ -524,6 +556,7 @@
         /* Grey/600 */
         color: #33303e;
       }
+
       textarea {
         margin-top: 8px;
         width: 100%;
@@ -543,6 +576,7 @@
         color: #000000;
       }
     }
+
     .opcoes {
       margin-top: 34px;
       width: 100%;
@@ -568,10 +602,12 @@
             text-align: center;
           }
         }
+
         .setor {
           display: flex;
           align-items: center;
           gap: 13px;
+
           select {
             width: 181px;
             height: 33px;
@@ -584,6 +620,7 @@
 
       .bot {
         margin-top: 21px;
+
         .codigo {
           display: flex;
           align-items: center;
@@ -601,4 +638,26 @@
       }
     }
   }
+}
+
+#upload-button {
+  margin-top: 8px;
+  background-color: rgb(255, 99, 71);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#upload-button:hover {
+  background-color: rgb(245, 99, 71);
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 150px;
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
