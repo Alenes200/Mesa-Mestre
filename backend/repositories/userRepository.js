@@ -1,10 +1,13 @@
-const { client } = require('../db/postgresql.js');
+const client = require('../db/postgresql.js');
 const hashPassword = require('../utils/hashPassword');
+
+// console.log('Conectado ao banco de dados:', client);
 
 const usersRepository = {
   getAll: async () => {
     try {
-      const query = 'SELECT id, nome, email FROM users WHERE status >= 1';
+      const query =
+        'SELECT usr_id AS id, usr_nome AS nome, usr_email AS email FROM TBL_USERS WHERE usr_status >= 1';
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
@@ -18,7 +21,7 @@ const usersRepository = {
     }
     try {
       const query =
-        'SELECT id, nome, email FROM users WHERE id = $1 AND status >= 1';
+        'SELECT usr_id AS id, usr_nome AS nome, usr_email AS email FROM TBL_USERS WHERE usr_id = $1 AND usr_status >= 1';
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
@@ -27,12 +30,14 @@ const usersRepository = {
   },
 
   userExists: async (email) => {
-    const query = 'SELECT id FROM users WHERE email = $1';
+    const query = 'SELECT usr_id FROM TBL_USERS WHERE usr_email = $1';
     const result = await client.query(query, [email]);
     return result.rows.length > 0;
   },
 
   create: async (name, email, password, userType = 3) => {
+    console.log('Dados recebidos:', { name, email, password, userType });
+
     if (
       typeof name !== 'string' ||
       typeof email !== 'string' ||
@@ -42,22 +47,26 @@ const usersRepository = {
     }
 
     const userAlreadyExists = await usersRepository.userExists(email);
+    console.log('Usuário já existe?', userAlreadyExists);
+
     if (userAlreadyExists) {
       console.log(`Usuário com e-mail ${email} já existe.`);
       return;
     }
 
     const hashedPassword = await hashPassword(password);
+    console.log('Senha criptografada:', hashedPassword);
 
     try {
       const query =
-        'INSERT INTO users (nome, email, senha, status, user_type) VALUES ($1, $2, $3, 1, $4) RETURNING id, nome, email, user_type';
+        'INSERT INTO TBL_USERS (usr_nome, usr_email, usr_senha, usr_status, usr_tipo) VALUES ($1, $2, $3, 1, $4) RETURNING usr_id AS id, usr_nome AS nome, usr_email AS email, usr_tipo AS user_type';
       const result = await client.query(query, [
         name,
         email,
         hashedPassword,
         userType,
       ]);
+      console.log('Usuário criado com sucesso:', result.rows[0]);
       return result.rows[0];
     } catch (error) {
       console.error('Erro ao adicionar usuário:', error);
@@ -79,7 +88,7 @@ const usersRepository = {
 
     try {
       const query =
-        'UPDATE users SET nome = $1, email = $2, senha = $3 WHERE id = $4 RETURNING id, nome, email';
+        'UPDATE TBL_USERS SET usr_nome = $1, usr_email = $2, usr_senha = $3 WHERE usr_id = $4 RETURNING usr_id AS id, usr_nome AS nome, usr_email AS email';
       const result = await client.query(query, [
         name,
         email,
@@ -98,7 +107,7 @@ const usersRepository = {
     }
     try {
       const query =
-        'UPDATE users SET status = -1 WHERE id = $1 RETURNING id, nome, email, status';
+        'UPDATE TBL_USERS SET usr_status = -1 WHERE usr_id = $1 RETURNING usr_id AS id, usr_nome AS nome, usr_email AS email, usr_status AS status';
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
