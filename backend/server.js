@@ -8,6 +8,8 @@ const loginRepository = require('./repositories/loginRepository');
 const loginRoutes = require('./routes/loginRoutes');
 const produtosRoutes = require('./routes/produtoRoutes');
 const mesasRoutes = require('./routes/mesaRoutes');
+const userRoutes = require('./routes/userRoutes');
+
 const path = require('path');
 
 dotenv.config({ path: './.env' });
@@ -18,7 +20,7 @@ const app = express();
 // Configuração do Swagger
 const swaggerOptions = {
   swaggerDefinition: {
-    openapi: '3.0.0', // Especifica a versão do OpenAPI
+    openapi: '3.0.0',
     info: {
       title: 'API do Projeto Mesa Mestre',
       version: '1.0.0',
@@ -26,7 +28,7 @@ const swaggerOptions = {
       contact: {
         name: 'Sua Equipe',
       },
-      servers: ['http://localhost:3000'], // URL base da sua API
+      servers: ['http://localhost:3000'],
     },
     components: {
       securitySchemes: {
@@ -63,13 +65,18 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 app.use('/api/auth', loginRoutes);
 app.use('/api/produtos', produtosRoutes);
 app.use('/api/mesas', mesasRoutes);
+app.use('/api/users', userRoutes);
+
+// Middleware para capturar erros não tratados
+app.use((err, req, res, next) => {
+  console.error('Erro interno:', err);
+  res.status(500).json({ message: 'Erro interno do servidor' });
+});
 
 const server = createServer(app);
 
 async function startServer() {
   try {
-    await loginRepository.initializeTestUsers();
-
     server.listen(port, () => {
       console.log(`Servidor está rodando em http://localhost:${port}`);
       console.log(
