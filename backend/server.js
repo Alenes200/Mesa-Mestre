@@ -77,11 +77,11 @@ const server = createServer(app);
 
 async function startServer() {
   try {
+    await loginRepository.initializeTestUsers();
+
     server.listen(port, () => {
       console.log(`Servidor está rodando em http://localhost:${port}`);
-      console.log(
-        `Documentação Swagger disponível em http://localhost:${port}/api-docs`
-      );
+      console.log(`Documentação Swagger disponível em http://localhost:${port}/api-docs`);
     });
   } catch (error) {
     console.error('Erro ao iniciar o servidor:', error);
