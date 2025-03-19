@@ -1,4 +1,5 @@
 const client = require('../db/postgresql.js');
+const hashPassword = require('../utils/hashPassword');
 
 const getAllUsers = async () => {
   try {
@@ -7,19 +8,6 @@ const getAllUsers = async () => {
     return result.rows;
   } catch (error) {
     throw new Error('Erro ao buscar usuários');
-  }
-};
-
-const getUserById = async (id) => {
-  if (!Number.isInteger(id)) {
-    throw new Error('ID inválido');
-  }
-  try {
-    const query = 'SELECT * FROM TBL_USERS WHERE USR_ID = $1 AND USR_STATUS >= 1';
-    const result = await client.query(query, [id]);
-    return result.rows[0];
-  } catch (error) {
-    throw new Error('Erro ao buscar usuário');
   }
 };
 
@@ -94,7 +82,7 @@ const updateUser = async (id, dadosAtualizados) => {
     console.error('Erro ao atualizar usuário:', error);
     throw new Error('Erro ao atualizar usuário');
   }
-};
+}
 
 const deleteUser = async (id) => {
   if (!Number.isInteger(id)) {
