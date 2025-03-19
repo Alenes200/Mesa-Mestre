@@ -42,7 +42,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: [path.join(__dirname, './routes/*.js')]
+  apis: [path.join(__dirname, './routes/*.js')],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -53,7 +53,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Rotas
 app.use('/api/auth', loginRoutes);
@@ -67,7 +67,9 @@ async function startServer() {
 
     server.listen(port, () => {
       console.log(`Servidor está rodando em http://localhost:${port}`);
-      console.log(`Documentação Swagger disponível em http://localhost:${port}/api-docs`);
+      console.log(
+        `Documentação Swagger disponível em http://localhost:${port}/api-docs`
+      );
     });
   } catch (error) {
     console.error('Erro ao iniciar o servidor:', error);
