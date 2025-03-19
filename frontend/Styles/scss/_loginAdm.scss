@@ -1,0 +1,134 @@
+// _variables.scss
+$background-color: #CFD8D7; // Mantendo a cor de fundo original que parece similar à imagem
+$box-color: #FFFAFA;
+$input-background: #E5E5E5; // Cor do input ajustada conforme imagem
+$button-color: #0D0D0D; // Cor do botão preto
+$text-color: #000000; // Cor do texto preto
+$error-color: #FF6347;
+$logo-size: 60px; // Aumentado para corresponder ao Figma
+$font-size-base: 14px;
+$font-size-large: 24px;
+$container-width: 100%;
+$primary-color: #0D0D0D; // Botão preto
+
+
+.s-login {
+    width: 100%;
+    background-color: $background-color;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+
+    main {
+        text-align: center;
+        width: 100%;
+        max-width: 400px; // Largura do container conforme imagem
+    }
+}
+
+// Logo e Título
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 40px; // Aumentado espaçamento entre logo e form
+
+    .logo {
+        width: $logo-size;
+        height: auto;
+        margin-right: 10px;
+    }
+
+    .logo-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: $text-color;
+        margin: 0;
+        text-transform: uppercase; // Deixando o texto em maiúsculas como no Figma
+    }
+}
+
+// Container do Login
+.login-container {
+    background-color: #fff;
+    padding: 40px 30px; // Aumentado padding conforme imagem
+    border-radius: 20px; // Arredondado conforme imagem
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: $container-width;
+
+    .login-box {
+        width: 100%;
+    }
+
+    .login-header h1 {
+        font-size: 28px;
+        margin-bottom: 30px;
+        font-weight: bold;
+        text-align: left; // Alinhado à esquerda como no Figma
+    }
+
+    .login-form {
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+
+            label {
+                display: block;
+                margin-bottom: 8px;
+                font-size: $font-size-base;
+                font-weight: normal;
+                color: $text-color;
+            }
+
+            input {
+                width: 100%;
+                padding: 15px; // Altura do input aumentada
+                border: none; // Sem borda
+                border-radius: 30px; // Bordas bem arredondadas
+                font-size: $font-size-base;
+                background-color: $input-background;
+                box-sizing: border-box;
+
+                &::placeholder {
+                    color: #999;
+                }
+            }
+        }
+
+        .login-footer {
+            margin-top: 15px;
+            font-size: $font-size-base;
+            text-align: right; // Alinhado à direita conforme Figma
+            margin-bottom: 20px; // Espaço antes do botão
+
+            a {
+                color: #666;
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 15px; // Botão mais alto
+            background-color: $button-color;
+            color: #fff;
+            border: none;
+            border-radius: 30px; // Bordas arredondadas como os inputs
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+
+            &:hover {
+                background-color: darken($button-color, 10%);
+            }
+        }
+    }
+}
