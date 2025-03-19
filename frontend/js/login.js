@@ -29,7 +29,7 @@ function getLoginData() {
 
 // Função para fazer login e obter o token
 async function login(email, senha) {
-  const response = await fetch('http://localhost:3000/api/auth/login', {
+  const response = await fetch(`/api/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ async function login(email, senha) {
 
 // Função para obter os dados do usuário logado
 async function getCurrentUser(token) {
-  const userResponse = await fetch('http://localhost:3000/api/auth', {
+  const userResponse = await fetch('/api/auth', {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
