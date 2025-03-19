@@ -4,7 +4,7 @@ const comparePassword = require('../utils/comparePassword');
 
 const loginController = {
   login: async (req, res) => {
-    const { email, password } = req.body;
+    const { email, senha } = req.body;
 
     try {
       const user = await loginRepository.getUserByEmail(email);
@@ -13,7 +13,9 @@ const loginController = {
           error: 'E-mail ou senha incorretos.',
         });
       }
+
       const match = await comparePassword(password, user.usr_senha);
+
       if (!match) {
         return res.status(400).json({
           error: 'E-mail ou senha incorretos.',
