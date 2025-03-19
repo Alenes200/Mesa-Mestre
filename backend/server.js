@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const loginRepository = require('./repositories/loginRepository');
 const loginRoutes = require('./routes/loginRoutes');
 const produtosRoutes = require('./routes/produtoRoutes');
+const mesasRoutes = require('./routes/mesaRoutes');
 const path = require('path');
 
 dotenv.config({ path: './.env' });
@@ -62,6 +63,7 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 // Rotas
 app.use('/api/auth', loginRoutes);
 app.use('/api/produtos', produtosRoutes);
+app.use('/api/mesas', mesasRoutes);
 
 const server = createServer(app);
 

@@ -14,7 +14,7 @@ const loginController = {
         });
       }
 
-      const match = await comparePassword(password, user.usr_senha);
+      const match = await comparePassword(senha, user.usr_senha);
 
       if (!match) {
         return res.status(400).json({
