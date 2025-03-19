@@ -1,80 +1,136 @@
-const client = require('../db/postgresql.js');
+const { client } = require('../db/postgresql.js');
+const hashPassword = require('../utils/hashPassword');
 
-// console.log('Client:', client);
+const usersRepository = {
+  getAll: async () => {
+    try {
+      const query = 'SELECT id, nome, email FROM users WHERE status >= 1';
+      const result = await client.query(query);
+      return result.rows;
+    } catch (error) {
+      throw new Error('Erro ao buscar usuários');
+    }
+  },
 
-const getAllUsers = async () => {
-  try {
-    const result = await client.query('SELECT * FROM users');
-    return result.rows;
-  } catch (error) {
-    throw new Error('Erro ao buscar usuários');
-  }
+  getById: async (id) => {
+    if (!Number.isInteger(id)) {
+      throw new Error('ID inválido');
+    }
+    try {
+      const query =
+        'SELECT id, nome, email FROM users WHERE id = $1 AND status >= 1';
+      const result = await client.query(query, [id]);
+      return result.rows[0];
+    } catch (error) {
+      throw new Error('Erro ao buscar usuário');
+    }
+  },
+
+  userExists: async (email) => {
+    const query = 'SELECT id FROM users WHERE email = $1';
+    const result = await client.query(query, [email]);
+    return result.rows.length > 0;
+  },
+
+  create: async (name, email, password, userType = 3) => {
+    if (
+      typeof name !== 'string' ||
+      typeof email !== 'string' ||
+      typeof password !== 'string'
+    ) {
+      throw new Error('Dados inválidos');
+    }
+
+    const userAlreadyExists = await usersRepository.userExists(email);
+    if (userAlreadyExists) {
+      console.log(`Usuário com e-mail ${email} já existe.`);
+      return;
+    }
+
+    const hashedPassword = await hashPassword(password);
+
+    try {
+      const query =
+        'INSERT INTO users (nome, email, senha, status, user_type) VALUES ($1, $2, $3, 1, $4) RETURNING id, nome, email, user_type';
+      const result = await client.query(query, [
+        name,
+        email,
+        hashedPassword,
+        userType,
+      ]);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Erro ao adicionar usuário:', error);
+      throw new Error('Erro ao adicionar usuário');
+    }
+  },
+
+  update: async (id, name, email, password) => {
+    if (
+      !Number.isInteger(id) ||
+      typeof name !== 'string' ||
+      typeof email !== 'string' ||
+      typeof password !== 'string'
+    ) {
+      throw new Error('Dados inválidos');
+    }
+
+    const hashedPassword = await hashPassword(password);
+
+    try {
+      const query =
+        'UPDATE users SET nome = $1, email = $2, senha = $3 WHERE id = $4 RETURNING id, nome, email';
+      const result = await client.query(query, [
+        name,
+        email,
+        hashedPassword,
+        id,
+      ]);
+      return result.rows[0];
+    } catch (error) {
+      throw new Error('Erro ao atualizar usuário');
+    }
+  },
+
+  delete: async (id) => {
+    if (!Number.isInteger(id)) {
+      throw new Error('ID inválido');
+    }
+    try {
+      const query =
+        'UPDATE users SET status = -1 WHERE id = $1 RETURNING id, nome, email, status';
+      const result = await client.query(query, [id]);
+      return result.rows[0];
+    } catch (error) {
+      throw new Error('Erro ao desativar usuário');
+    }
+  },
 };
 
-const getUserById = async (id) => {
-  if (!Number.isInteger(id)) {
-    throw new Error('ID inválido');
-  }
+async function initializeUsers() {
   try {
-    const result = await client.query('SELECT * FROM users WHERE id = $1', [
-      id,
-    ]);
-    return result.rows[0];
-  } catch (error) {
-    throw new Error('Erro ao buscar usuário');
-  }
-};
-
-const addUser = async (name, email, password) => {
-  if (
-    typeof name !== 'string' ||
-    typeof email !== 'string' ||
-    typeof password !== 'string'
-  ) {
-    throw new Error('Dados inválidos');
-  }
-  try {
-    const result = await client.query(
-      'INSERT INTO users (nome, email, senha) VALUES ($1, $2, $3) RETURNING *',
-      [name, email, password]
+    await usersRepository.create(
+      'Admin',
+      'admin@example.com',
+      process.env.SENHA_SECRETA_1,
+      1
     );
-    return result.rows[0];
-  } catch (error) {
-    console.error('Erro ao adicionar usuário:', error); // Adicione este log para depuração
-    throw new Error('Erro ao adicionar usuário');
-  }
-};
-
-const updateUser = async (id, name, email, password) => {
-  if (
-    !Number.isInteger(id) ||
-    typeof name !== 'string' ||
-    typeof email !== 'string' ||
-    typeof password !== 'string'
-  ) {
-    throw new Error('Dados inválidos');
-  }
-  try {
-    const result = await client.query(
-      'UPDATE users SET nome = $1, email = $2, senha = $3 WHERE id = $4 RETURNING *',
-      [name, email, password, id]
+    await usersRepository.create(
+      'Funcionário',
+      'funcionario@example.com',
+      process.env.SENHA_SECRETA_2,
+      2
     );
-    return result.rows[0];
+    await usersRepository.create(
+      'Usuário Comum',
+      'usuario@example.com',
+      process.env.SENHA_SECRETA_3,
+      3
+    );
+    console.log('Usuários iniciais criados com sucesso.');
   } catch (error) {
-    throw new Error('Erro ao atualizar usuário');
+    console.error('Erro ao criar usuários iniciais:', error);
   }
-};
+}
 
-const deleteUser = async (id) => {
-  if (!Number.isInteger(id)) {
-    throw new Error('ID inválido');
-  }
-  try {
-    await client.query('DELETE FROM users WHERE id = $1', [id]);
-    return { message: 'Usuário removido com sucesso' };
-  } catch (error) {
-    throw new Error('Erro ao remover usuário');
-  }
-};
-
-module.exports = { getAllUsers, getUserById, addUser, updateUser, deleteUser };
+module.exports = { usersRepository, initializeUsers };
