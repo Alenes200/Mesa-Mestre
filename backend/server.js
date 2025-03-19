@@ -4,7 +4,12 @@ const swaggerUI = require('swagger-ui-express');
 const { createServer } = require('http');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
+const loginRepository = require('./repositories/loginRepository');
+const loginRoutes = require('./routes/loginRoutes');
+const produtosRoutes = require('./routes/produtoRoutes');
+const mesasRoutes = require('./routes/mesaRoutes');
 const userRoutes = require('./routes/userRoutes');
+
 const path = require('path');
 
 dotenv.config({ path: './.env' });
@@ -53,7 +58,13 @@ app.use(express.json());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Servir arquivos estáticos da pasta "frontend"
+app.use(express.static(path.join(__dirname, '../frontend')));
+
 // Rotas
+app.use('/api/auth', loginRoutes);
+app.use('/api/produtos', produtosRoutes);
+app.use('/api/mesas', mesasRoutes);
 app.use('/api/users', userRoutes);
 
 // Middleware para capturar erros não tratados
