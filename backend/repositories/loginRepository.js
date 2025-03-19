@@ -4,7 +4,7 @@ const createTestUsers = require('../utils/createTestUsers');
 const loginRepository = {
   getUserByEmail: async (email) => {
     try {
-      const query = 'SELECT * FROM users WHERE email = $1';
+      const query = 'SELECT * FROM TBL_USERS WHERE USR_EMAIL = $1';
       const result = await client.query(query, [email]);
       return result.rows[0];
     } catch (err) {

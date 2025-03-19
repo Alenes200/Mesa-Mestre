@@ -5,10 +5,10 @@
   "main": "app.js",
   "scripts": {
     "start": "node backend/server.js",
+    "start dev": "node --watch backend/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "sass": "sass --watch frontend/Styles/scss:frontend/Styles"
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "Grupo 02 - Iteron",
