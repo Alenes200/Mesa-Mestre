@@ -13,8 +13,6 @@ const path = require('path');
 dotenv.config({ path: './.env' });
 
 const port = process.env.PORT || 3000;
-console.log(process.env.PORT);
-
 const app = express();
 
 // Configuração do Swagger
@@ -57,6 +55,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Servir arquivos estáticos da pasta "frontend"
 app.use(express.static(path.join(__dirname, '../frontend')));
 
