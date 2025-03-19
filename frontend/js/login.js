@@ -5,16 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // Função principal para lidar com o processo de login
 async function handleLogin() {
   try {
-    // 1. Obter os dados de login
     const { email, senha } = getLoginData();
 
-    // 2. Fazer login e obter o token
     const token = await login(email, senha);
 
-    // 3. Obter os dados do usuário logado
     const userData = await getCurrentUser(token);
 
-    // 4. Redirecionar o usuário com base no tipo de usuário
     redirectUser(userData);
   } catch (error) {
     console.error('Erro ao fazer login:', error);
@@ -28,7 +24,6 @@ async function handleLogin() {
 function getLoginData() {
   const email = document.getElementById('email').value;
   const senha = document.getElementById('password').value;
-  console.log('Dados de login:', email, senha);
   return { email, senha };
 }
 
@@ -47,7 +42,7 @@ async function login(email, senha) {
   }
 
   const data = await response.json();
-  return data.token; // Retorna o token JWT
+  return data.token;
 }
 
 // Função para obter os dados do usuário logado
@@ -64,15 +59,14 @@ async function getCurrentUser(token) {
   }
 
   const userData = await userResponse.json();
-  console.log('Dados do usuário logado:', userData);
   return userData; // Retorna os dados do usuário
 }
 
 // Função para redirecionar o usuário com base no tipo de usuário
 function redirectUser(userData) {
-  if (userData.user_type === 1) {
+  if (userData.userType === 1) {
     window.location.href = '../pages/pagina_adm.html';
-  } else if (userData.user_type === 2) {
+  } else if (userData.userType === 2) {
     window.location.href = '../pages/cardapio.html';
   } else {
     alert('Você não tem permissão para acessar esta área.');
