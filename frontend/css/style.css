@@ -1,0 +1,120 @@
+.opcao {
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.opcao:hover {
+  background-color: #ff634730;
+  transform: scale(1.05);
+}
+
+.op_ativa {
+  background-color: #ff6347;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+  animation: pulse 1.5s infinite;
+}
+
+.main-adm .esquerda .opocoes nav {
+    gap: 20px;
+}
+
+/* Animação de pulsação */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ================================================================== */
+/* Estilo padrão do menu */
+.esquerda {
+  width: 250px;
+  transition: width 0.15s ease;
+}
+
+/* Estilo do menu minimizado */
+.esquerda.minimizado {
+  width: 75px;
+  align-items: center;
+}
+
+.esquerda.minimizado .logo h1 {
+  display: none;
+}
+
+.esquerda.minimizado .logo {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0; 
+}
+
+/* Aumentar o tamanho dos ícones */
+.esquerda.minimizado .opcao img {
+  /* width: 24px; 
+  height: 24px; */
+}
+
+/* Esconder o texto "Logout" na versão minimizada */
+.esquerda.minimizado .sair h3 {
+  display: none;
+}
+
+/* Estilo do botão de logout */
+.esquerda.minimizado .sair {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+/* Estilo do botão de minimizar */
+.minimizar {
+  cursor: pointer;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Esconder o texto e centralizar ícones no estado minimizado */
+.esquerda.minimizado .opcao h3 {
+  display: none;
+}
+
+/* Ajuste o padding da div .opocoes no estado minimizado */
+.esquerda.minimizado .conteudo .opocoes {
+  padding: 0;
+}
+
+.esquerda.minimizado .opcao {
+  justify-content: center;
+  padding: 10px 15px;
+}
+
+/* Estilo do botão de expandir */
+.botao-expandir {
+  display: none;
+  cursor: pointer;
+  padding: 10px;
+  text-align: center;
+}
+
+.esquerda.minimizado .botao-expandir {
+  display: block;
+}
+
+.esquerda.minimizado .top {
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+}
+
+.esquerda.minimizado .minimizar {
+  display: none;
+}
+
+/* ================================================================== */

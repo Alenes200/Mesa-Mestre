@@ -24,15 +24,62 @@ document.addEventListener('DOMContentLoaded', () => {
   const conteudoCardapio = document.querySelector('.conteudo-cardapio');
   const conteudoMesas = document.querySelector('.conteudo-mesas');
 
-  menuCardapio.addEventListener('click', () => {
-    console.log('teste');
+  const botaoLogout = document.querySelector('.sair');
 
+  // Adiciona um evento de clique ao botão de logout
+  botaoLogout.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        window.location.href = '../pages/login_adm.html';
+      } else {
+        const errorData = await response.json();
+        console.error('Erro ao fazer logout:', errorData);
+        alert('Erro ao fazer logout. Tente novamente.');
+      }
+    } catch (error) {
+      console.error('Erro na requisição:', error);
+      alert('Erro ao fazer logout. Tente novamente.');
+    }
+  });
+
+  const removeActiveClass = () => {
+    document.querySelectorAll('.opcao').forEach((opcao) => {
+      opcao.classList.remove('op_ativa');
+    });
+  };
+
+  const minimizarBtn = document.querySelector('.minimizar');
+  const divTop = document.querySelector('.top')
+  const esquerda = document.querySelector('.esquerda');
+  const botaoExpandir = document.createElement('div');
+  botaoExpandir.classList.add('botao-expandir');
+  botaoExpandir.innerHTML = '<img src="../images/icon-maximizar.svg" alt="expandir opções" />';
+  divTop.appendChild(botaoExpandir);
+
+  minimizarBtn.addEventListener('click', () => {
+    esquerda.classList.toggle('minimizado');
+  });
+
+  botaoExpandir.addEventListener('click', () => {
+    esquerda.classList.remove('minimizado');
+  });
+
+  menuCardapio.addEventListener('click', () => {
+    removeActiveClass();
+    document.getElementById("op_cardapio").classList.add("op_ativa");
     conteudoMesas.style.display = 'none';
     conteudoCardapio.style.display = 'flex';
   });
 
   menuMesas.addEventListener('click', () => {
-    console.log('teste');
+    removeActiveClass();
+    document.getElementById("op_mesa").classList.add("op_ativa")
     conteudoCardapio.style.display = 'none';
     conteudoMesas.style.display = 'block';
   });
