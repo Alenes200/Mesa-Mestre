@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node backend/server.js",
-    "start dev": "node --watch backend/server.js",
+    "dev": "node  --watch backend/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write ."
@@ -29,7 +29,6 @@
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.3",
-    "prettier": "^3.5.3",
-    "sass": "^1.x.x"
+    "prettier": "^3.5.3"
   }
 }

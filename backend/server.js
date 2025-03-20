@@ -9,6 +9,7 @@ const loginRoutes = require('./routes/loginRoutes');
 const produtosRoutes = require('./routes/produtoRoutes');
 const mesasRoutes = require('./routes/mesaRoutes');
 const userRoutes = require('./routes/userRoutes');
+const comandaRoutes = require('./routes/comandaRoutes');
 
 const path = require('path');
 
@@ -66,6 +67,7 @@ app.use('/api/auth', loginRoutes);
 app.use('/api/produtos', produtosRoutes);
 app.use('/api/mesas', mesasRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/comandas', comandaRoutes);
 
 // Middleware para capturar erros não tratados
 app.use((err, req, res, next) => {
@@ -77,6 +79,8 @@ const server = createServer(app);
 
 async function startServer() {
   try {
+    await loginRepository.initializeTestUsers();
+
     server.listen(port, () => {
       console.log(`Servidor está rodando em http://localhost:${port}`);
       console.log(
