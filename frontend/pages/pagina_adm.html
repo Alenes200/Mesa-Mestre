@@ -10,6 +10,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../Styles/main.css" />
+    <link rel="stylesheet" href="../css/style.css">
     <title>Document</title>
   </head>
   <body>
@@ -30,35 +31,35 @@
           </div>
           <div class="opocoes">
             <nav>
-              <div class="opcao">
+              <div id="op_cardapio" class="opcao">
                 <img
                   src="../images/icon-cardapio.svg"
                   alt="ícone de talheres"
                 />
                 <h3>Cardápio</h3>
               </div>
-              <div class="opcao">
+              <div id="op_funcionario" class="opcao">
                 <img
                   src="../images/funcionarios.svg"
                   alt="ícone de grupo de pessoas"
                 />
                 <h3>Funcionários</h3>
               </div>
-              <div class="opcao">
+              <div id="op_grafico" class="opcao">
                 <img
                   src="../images/icon-graficos.svg"
                   alt="ícone de grafico em tendencia"
                 />
                 <h3>Gráficos</h3>
               </div>
-              <div class="opcao">
+              <div id="op_configuracao" class="opcao">
                 <img
                   src="../images/icon-configuracao.svg"
                   alt="ícone de Configurações"
                 />
                 <h3>Configurações</h3>
               </div>
-              <div class="opcao">
+              <div id="op_mesa" class="opcao op_ativa">
                 <img src="../images/icone-mesas.svg" alt="ícone de mesa" />
                 <h3>Mesas</h3>
               </div>
@@ -247,6 +248,26 @@
         </div>
       </div>
     </main>
+
+  <!-- Modal para exibir mensagens -->
+  <div id="custom-modal" class="custom-modal">
+    <div class="custom-modal-content">
+      <div id="custom-modal-icon"></div> <!-- Ícone -->
+      <p id="custom-modal-message"></p> <!-- Mensagem -->
+      <span class="custom-modal-close">&times;</span> <!-- Botão de fechar -->
+    </div>
+  </div>
+
+  <!-- Modal de confirmação -->
+  <div id="confirm-modal" class="confirm-modal">
+    <div class="confirm-modal-content">
+      <p id="confirm-modal-message">Tem certeza de que deseja deletar este produto?</p>
+      <div class="confirm-modal-buttons">
+        <button id="confirm-modal-cancel">Cancelar</button>
+        <button id="confirm-modal-confirm">Confirmar</button>
+      </div>
+    </div>
+  </div>
   </body>
-  <script src="../js/index.js"></script>
+  <script type="module" src="../js/index.js"></script>
 </html>
