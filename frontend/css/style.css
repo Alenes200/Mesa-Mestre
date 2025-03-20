@@ -17,7 +17,7 @@
 }
 
 .main-adm .esquerda .opocoes nav {
-    gap: 20px;
+  gap: 20px;
 }
 
 /* Animação de pulsação */
@@ -53,13 +53,7 @@
 .esquerda.minimizado .logo {
   display: flex;
   justify-content: center;
-  padding: 10px 0; 
-}
-
-/* Aumentar o tamanho dos ícones */
-.esquerda.minimizado .opcao img {
-  /* width: 24px; 
-  height: 24px; */
+  padding: 10px 0;
 }
 
 /* Esconder o texto "Logout" na versão minimizada */
@@ -117,4 +111,174 @@
   display: none;
 }
 
-/* ================================================================== */
+/* Estilo do modal */
+.custom-modal {
+  display: none; /* Escondido por padrão */
+  position: fixed;
+  z-index: 1000;
+  right: 20px; /* Posiciona no canto inferior direito */
+  bottom: 20px; /* Posiciona no canto inferior direito */
+  max-width: 400px; /* Largura máxima do modal */
+  background-color: #fff; /* Fundo branco */
+  border-radius: 8px; /* Bordas arredondadas */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  animation: fadeIn 0.3s ease; /* Animação de entrada */
+}
+
+/* Conteúdo do modal */
+.custom-modal-content {
+  display: flex;
+  align-items: center; /* Alinha os itens verticalmente ao centro */
+  gap: 10px; /* Espaço entre os elementos */
+  padding: 15px; /* Espaçamento interno */
+}
+
+/* Ícone do modal */
+#custom-modal-icon {
+  font-size: 24px; /* Tamanho do ícone */
+  flex-shrink: 0; /* Impede que o ícone diminua */
+}
+
+/* Mensagem do modal */
+#custom-modal-message {
+  font-size: 14px;
+  color: #333;
+  flex-grow: 1; /* A mensagem ocupa o espaço restante */
+  margin: 0; /* Remove margens padrão do parágrafo */
+}
+
+/* Botão de fechar */
+.custom-modal-close {
+  font-size: 24px; /* Tamanho do "X" */
+  cursor: pointer;
+  color: #333;
+  flex-shrink: 0; /* Impede que o botão de fechar diminua */
+}
+
+.custom-modal-close:hover {
+  color: #ff6347; /* Cor ao passar o mouse */
+}
+
+/* Animação de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px); /* Entra de baixo para cima */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animação de saída */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px); /* Sai de cima para baixo */
+  }
+}
+
+.custom-modal.fade-out {
+  animation: fadeOut 0.3s ease;
+}
+
+/* Estilo do modal de confirmação */
+.confirm-modal {
+  display: none; /* Escondido por padrão */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro semi-transparente */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Conteúdo do modal de confirmação */
+.confirm-modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: fadeIn2 0.3s ease;
+}
+
+/* Mensagem do modal de confirmação */
+#confirm-modal-message {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Botões do modal de confirmação */
+.confirm-modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#confirm-modal-cancel,
+#confirm-modal-confirm {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#confirm-modal-cancel {
+  background-color: #ccc;
+  color: #333;
+}
+
+#confirm-modal-cancel:hover {
+  background-color: #bbb;
+}
+
+#confirm-modal-confirm {
+  background-color: #ff6347;
+  color: #fff;
+}
+
+#confirm-modal-confirm:hover {
+  background-color: #e5533d;
+}
+
+/* Animação de entrada */
+@keyframes fadeIn2 {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animação de saída */
+@keyframes fadeOut2 {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.confirm-modal.fade-out {
+  animation: fadeOut2 0.3s ease;
+}

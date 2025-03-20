@@ -248,6 +248,26 @@
         </div>
       </div>
     </main>
+
+  <!-- Modal para exibir mensagens -->
+  <div id="custom-modal" class="custom-modal">
+    <div class="custom-modal-content">
+      <div id="custom-modal-icon"></div> <!-- Ícone -->
+      <p id="custom-modal-message"></p> <!-- Mensagem -->
+      <span class="custom-modal-close">&times;</span> <!-- Botão de fechar -->
+    </div>
+  </div>
+
+  <!-- Modal de confirmação -->
+  <div id="confirm-modal" class="confirm-modal">
+    <div class="confirm-modal-content">
+      <p id="confirm-modal-message">Tem certeza de que deseja deletar este produto?</p>
+      <div class="confirm-modal-buttons">
+        <button id="confirm-modal-cancel">Cancelar</button>
+        <button id="confirm-modal-confirm">Confirmar</button>
+      </div>
+    </div>
+  </div>
   </body>
-  <script src="../js/index.js"></script>
+  <script type="module" src="../js/index.js"></script>
 </html>
