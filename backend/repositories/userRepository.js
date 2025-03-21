@@ -10,6 +10,21 @@ const getAllUsers = async () => {
   }
 };
 
+const getAllUsersIgnoreStatus = async (userId) => {
+  try {
+    const query = `
+      SELECT * 
+      FROM TBL_USERS 
+      WHERE USR_ID != $1
+      ORDER BY USR_ID ASC;
+    `;
+    const result = await client.query(query, [userId]);
+    return result.rows;
+  } catch (error) {
+    throw new Error('Erro ao buscar usuários');
+  }
+};
+
 const getUserById = async (id) => {
   if (!Number.isInteger(id)) {
     throw new Error('ID inválido');
@@ -37,7 +52,7 @@ const getUserByIdIgnoreStatus = async (id) => {
   }
 };
 
-const addUser = async (name, email, password) => {
+const addUser = async (name, email, password, telefone, funcao) => {
   if (
     typeof name !== 'string' ||
     typeof email !== 'string' ||
@@ -45,10 +60,11 @@ const addUser = async (name, email, password) => {
   ) {
     throw new Error('Dados inválidos');
   }
+
   try {
     const result = await client.query(
-      'INSERT INTO TBL_USERS (USR_NOME, USR_EMAIL, USR_SENHA) VALUES ($1, $2, $3) RETURNING *',
-      [name, email, password]
+      'INSERT INTO TBL_USERS (USR_NOME, USR_EMAIL, USR_SENHA, USR_TELEFONE, USR_FUNCAO) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [name, email, password, telefone || null, funcao || null]
     );
     return result.rows[0];
   } catch (error) {
@@ -115,4 +131,4 @@ const deleteUser = async (id) => {
   }
 };
 
-module.exports = { getAllUsers, getUserById, addUser, updateUser, deleteUser, getUserByIdIgnoreStatus };
+module.exports = { getAllUsers, getUserById, addUser, updateUser, deleteUser, getUserByIdIgnoreStatus, getAllUsersIgnoreStatus };

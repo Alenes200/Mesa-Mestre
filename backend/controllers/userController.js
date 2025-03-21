@@ -9,6 +9,20 @@ const getUsers = async (req, res) => {
   }
 };
 
+const getAllUsersIgnoreStatus = async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    if (!userId) {
+      return res.status(400).json({ message: 'ID do usuário não fornecido.' });
+    }
+
+    const users = await userRepository.getAllUsersIgnoreStatus(userId);
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar usuários' });
+  }
+};
+
 const getUserById = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
@@ -25,9 +39,28 @@ const getUserById = async (req, res) => {
   }
 };
 
+const getUserByIdIgnoreStatus = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ message: 'ID inválido' });
+    }
+
+    const user = await userRepository.getUserByIdIgnoreStatus(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar usuário' });
+  }
+};
+
 const createUser = async (req, res) => {
   try {
-    const { nome, email, senha } = req.body;
+    const { nome, email, senha, telefone, funcao } = req.body;
+
     if (
       typeof nome !== 'string' ||
       typeof email !== 'string' ||
@@ -35,7 +68,8 @@ const createUser = async (req, res) => {
     ) {
       return res.status(400).json({ message: 'Dados inválidos' });
     }
-    const newUser = await userRepository.addUser(nome, email, senha);
+
+    const newUser = await userRepository.addUser(nome, email, senha, telefone, funcao);
     res.status(201).json(newUser);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao adicionar usuário' });
@@ -99,4 +133,4 @@ const updateUser = async (req, res) => {
     }
   };
 
-module.exports = { getUsers, getUserById, createUser, updateUser, deleteUser };
+module.exports = { getUsers, getUserById, createUser, updateUser, deleteUser, getAllUsersIgnoreStatus, getUserByIdIgnoreStatus };

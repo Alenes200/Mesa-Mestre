@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const { ensureAuthenticated } = require('../middlewares/authMiddleware');
 
 /**
  * @swagger
@@ -8,6 +9,10 @@ const userController = require('../controllers/userController');
  *   name: Usuários
  *   description: Gerenciamento de usuários
  */
+
+router.get('/all', ensureAuthenticated, userController.getAllUsersIgnoreStatus);
+
+router.get('/:id/ignore-status', userController.getUserByIdIgnoreStatus);
 
 /**
  * @swagger

@@ -246,6 +246,69 @@
             </div>
           </div>
         </div>
+
+        <div class="conteudo-funcionarios" style="display: none">
+          <div class="esquerda-funcionarios">
+            <div class="pesquisa">
+              <input type="text" placeholder="Pesquisar" />
+              <img src="../images/icon-pesquisa.svg" alt="ícone de pesquisa" />
+            </div>
+            <div class="funcionarios-table-container">
+              <table class="funcionarios-table">
+                <thead>
+                  <tr>
+                    <th class="nome-column">Nome</th>
+                    <th class="email-column">Email</th>
+                    <th class="telefone-column">Telefone</th>
+                    <th class="data-column">Data de Início</th>
+                    <th class="funcao-column">Função</th>
+                    <th class="funcao-column">Status</th>
+                    <th class="opcoes-column">Opções</th>
+                  </tr>
+                </thead>
+                <tbody id="funcionarios-table-body">
+                  <!-- Linhas dos funcionários serão adicionadas aqui dinamicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="direita-funcionarios">
+            <button class="add-button" id="btn-adicionar-funcionario">
+              Adicionar Funcionário
+            </button>
+            <div class="funcionario-form-container" id="funcionario-form-container">
+              <h2 class="form-title">Adicionar Funcionário</h2>
+              <div class="form-content">
+                <div class="form-group">
+                  <label for="nome-funcionario">Nome:</label>
+                  <input type="text" id="nome-funcionario" />
+                </div>
+                <div class="form-group">
+                  <label for="email-funcionario">Email:</label>
+                  <input type="email" id="email-funcionario" />
+                </div>
+                <div class="form-group">
+                  <label for="telefone-funcionario">Telefone:</label>
+                  <input type="text" id="telefone-funcionario" />
+                </div>
+                <div class="form-group">
+                  <label for="funcao-funcionario">Função:</label>
+                  <input type="text" id="funcao-funcionario" />
+                </div>
+                <div class="form-group">
+                  <label for="senha-funcionario">Senha:</label>
+                  <input type="password" id="senha-funcionario" />
+                </div>
+                <div class="form-actions">
+                  <button class="btn-salvar" id="btn-salvar-funcionario">Salvar</button>
+                  <button class="btn-cancelar" id="btn-cancelar-funcionario">Cancelar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </main>
 
@@ -268,6 +331,44 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal de edição de funcionário -->
+  <div id="editar-funcionario-modal" class="custom-modal">
+    <div class="custom-modal-content">
+      <span class="custom-modal-close">&times;</span>
+      <h2>Editar Funcionário</h2>
+      <div class="form-content">
+        <div class="form-group">
+          <label for="editar-nome-funcionario">Nome:</label>
+          <input type="text" id="editar-nome-funcionario" />
+        </div>
+        <div class="form-group">
+          <label for="editar-email-funcionario">Email:</label>
+          <input type="email" id="editar-email-funcionario" />
+        </div>
+        <div class="form-group">
+          <label for="editar-telefone-funcionario">Telefone:</label>
+          <input type="text" id="editar-telefone-funcionario" />
+        </div>
+        <div class="form-group">
+          <label for="editar-funcao-funcionario">Função:</label>
+          <input type="text" id="editar-funcao-funcionario" />
+        </div>
+        <div class="form-group">
+          <label for="editar-status-funcionario">Status</label>
+          <select id="editar-status-funcionario" class="form-control">
+            <option value="1">Ativo</option>
+            <option value="0">Inativo</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button class="btn-salvar" id="btn-salvar-edicao">Salvar</button>
+          <button class="btn-cancelar" id="btn-cancelar-edicao">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   </body>
   <script type="module" src="../js/index.js"></script>
 </html>

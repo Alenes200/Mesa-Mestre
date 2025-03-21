@@ -1,6 +1,38 @@
 import { showModal, openConfirmModal } from './modal.js';
+import { listarFuncionarios } from './funcionario.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+const token = localStorage.getItem('token');
+
+let userData;
+let userId;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!token) {
+    window.location.href = '../pages/login_adm.html';
+    return;
+  }
+  try {
+    const userResponse = await fetch('/api/auth', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!userResponse.ok) {
+      throw new Error('Erro ao obter dados do usuário.');
+    }
+    userData = await userResponse.json();
+    userId = userData.id;
+
+    console.log('UserId recebido:', userId);
+  
+    // listarFuncionarios(token, userId);
+  
+  } catch (error) {
+    console.error('Erro ao carregar dados do usuário:', error);
+    showModal('Erro ao carregar dados do usuário. Tente novamente mais tarde.', 'error');
+  }
+
   // Modal functionality remains the same
   const cardMesas = document.querySelectorAll('.card-mesa');
   const modal = document.querySelector('.modal-mesa');
@@ -37,17 +69,17 @@ document.addEventListener('DOMContentLoaded', () => {
           'Content-Type': 'application/json',
         },
       });
+
       if (response.ok) {
+        localStorage.removeItem('token');
         window.location.href = '../pages/login_adm.html';
       } else {
         const errorData = await response.json();
         console.error('Erro ao fazer logout:', errorData);
-        // alert('Erro ao fazer logout. Tente novamente.');
         showModal('Erro ao fazer logout. Tente novamente.' + errorData.error, 'error');
       }
     } catch (error) {
       console.error('Erro na requisição:', error);
-      // alert('Erro ao fazer logout. Tente novamente.');
       showModal('Erro ao fazer logout. Tente novamente.', 'error');
     }
   });
@@ -78,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     removeActiveClass();
     document.getElementById("op_cardapio").classList.add("op_ativa");
     conteudoMesas.style.display = 'none';
+    conteudoFuncionarios.style.display = 'none'
     conteudoCardapio.style.display = 'flex';
   });
 
@@ -85,8 +118,221 @@ document.addEventListener('DOMContentLoaded', () => {
     removeActiveClass();
     document.getElementById("op_mesa").classList.add("op_ativa")
     conteudoCardapio.style.display = 'none';
+    conteudoFuncionarios.style.display = 'none'
     conteudoMesas.style.display = 'block';
   });
+
+  const menuFuncionarios = document.getElementById('op_funcionario');
+  const conteudoFuncionarios = document.querySelector('.conteudo-funcionarios');
+
+  menuFuncionarios.addEventListener('click', () => {
+    removeActiveClass();
+    document.getElementById("op_funcionario").classList.add("op_ativa")
+    conteudoMesas.style.display = 'none';
+    conteudoCardapio.style.display = 'none';
+    conteudoFuncionarios.style.display = 'flex'; 
+
+    listarFuncionarios(token, userId);
+  });
+
+  // Abrir/Fechar o formulário de adicionar funcionário
+  const btnAdicionarFuncionario = document.getElementById('btn-adicionar-funcionario');
+  const funcionarioFormContainer = document.getElementById('funcionario-form-container');
+  const btnCancelarFuncionario = document.getElementById('btn-cancelar-funcionario');
+
+  btnAdicionarFuncionario.addEventListener('click', () => {
+    funcionarioFormContainer.classList.add('aberto');
+  });
+
+  btnCancelarFuncionario.addEventListener('click', () => {
+    funcionarioFormContainer.classList.remove('aberto');
+  });
+});
+
+const btnSalvarFuncionario = document.getElementById('btn-salvar-funcionario');
+
+btnSalvarFuncionario.addEventListener('click', async () => {
+  const nome = document.getElementById('nome-funcionario').value.trim();
+  const email = document.getElementById('email-funcionario').value.trim();
+  const telefone = document.getElementById('telefone-funcionario').value.trim();
+  const funcao = document.getElementById('funcao-funcionario').value.trim();
+  const senha = document.getElementById('senha-funcionario').value.trim();
+  const funcionarioFormContainer = document.getElementById('funcionario-form-container');
+
+  if (!nome || !email || !senha) {
+    showModal('Por favor, preencha todos os campos obrigatórios.', 'warning');
+    return;
+  }
+
+  const novoFuncionario = {
+    nome: nome,
+    email: email,
+    telefone: telefone,
+    funcao: funcao,
+    senha: senha,
+  };
+
+  try {
+    const response = await fetch('/api/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(novoFuncionario),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Funcionário adicionado com sucesso:', data);
+      showModal('Funcionário adicionado com sucesso!', 'success');
+      listarFuncionarios(token, userId) // Atualiza a lista de funcionários
+      funcionarioFormContainer.classList.remove('aberto'); // Fecha o formulário
+    } else {
+      const errorData = await response.json();
+      console.error('Erro ao adicionar funcionário:', errorData);
+      showModal('Erro ao adicionar funcionário: ' + errorData.error, 'error');
+    }
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    showModal('Erro ao adicionar funcionário. Tente novamente mais tarde.', 'error');
+  }
+});
+
+// Abrir modal de edição
+document.addEventListener('click', (event) => {
+  if (event.target.classList.contains('editar-funcionario')) {
+    const funcionarioId = event.target.getAttribute('data-id');
+    abrirModalEdicao(funcionarioId);
+  }
+});
+
+async function abrirModalEdicao(funcionarioId) {
+  try {
+    const response = await fetch(`/api/users/${funcionarioId}/ignore-status`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    if (response.ok) {
+      const funcionario = await response.json();
+
+      // Preenche o modal com os dados do funcionário
+      document.getElementById('editar-nome-funcionario').value = funcionario.usr_nome;
+      document.getElementById('editar-email-funcionario').value = funcionario.usr_email;
+      document.getElementById('editar-telefone-funcionario').value = funcionario.usr_telefone || '';
+      document.getElementById('editar-funcao-funcionario').value = funcionario.usr_funcao || '';
+      document.getElementById('editar-status-funcionario').value = funcionario.usr_status;
+
+      // Exibe o modal
+      const modalEdicao = document.getElementById('editar-funcionario-modal');
+      modalEdicao.style.display = 'flex';
+
+      // Remove eventos anteriores
+      document.getElementById('btn-cancelar-edicao').removeEventListener('click', closeModalEdicao);
+      modalEdicao.removeEventListener('click', closeModalEdicaoOutside);
+      document.getElementById('btn-salvar-edicao').removeEventListener('click', salvarEdicao);
+
+      // Fechar modal ao clicar no botão de cancelar ou fora do modal
+      document.getElementById('btn-cancelar-edicao').addEventListener('click', closeModalEdicao);
+      modalEdicao.addEventListener('click', closeModalEdicaoOutside);
+
+      // Salvar edição
+      document.getElementById('btn-salvar-edicao').addEventListener('click', salvarEdicao);
+
+      async function salvarEdicao() {
+        const nome = document.getElementById('editar-nome-funcionario').value.trim();
+        const email = document.getElementById('editar-email-funcionario').value.trim();
+        const telefone = document.getElementById('editar-telefone-funcionario').value.trim();
+        const funcao = document.getElementById('editar-funcao-funcionario').value.trim();
+        const status = parseInt(document.getElementById('editar-status-funcionario').value);
+      
+        if (!nome || !email) {
+          showModal('Por favor, preencha todos os campos obrigatórios.', 'warning');
+          return;
+        }
+      
+        const dadosAtualizados = {
+          nome: nome,
+          email: email,
+          telefone: telefone,
+          funcao: funcao,
+          status: status,
+        };
+      
+        try {
+          const response = await fetch(`/api/users/${funcionarioId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dadosAtualizados),
+          });
+      
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Funcionário atualizado com sucesso:', data);
+            showModal('Funcionário atualizado com sucesso!', 'success');
+            listarFuncionarios(token, userId) // Atualiza a lista de funcionários
+            closeModalEdicao(); // Fecha o modal
+          } else {
+            const errorData = await response.json();
+            console.error('Erro ao atualizar funcionário:', errorData);
+            showModal('Erro ao atualizar funcionário: ' + errorData.error, 'error');
+          }
+        } catch (error) {
+          console.error('Erro na requisição:', error);
+          showModal('Erro ao atualizar funcionário. Tente novamente mais tarde.', 'error');
+        }
+      }
+
+      function closeModalEdicao() {
+        modalEdicao.style.display = 'none';
+      }
+
+      function closeModalEdicaoOutside(event) {
+        if (event.target === modalEdicao) {
+          closeModalEdicao();
+        }
+      }
+    } else {
+      const errorData = await response.json();
+      console.error('Erro ao buscar funcionário:', errorData);
+      showModal('Erro ao buscar funcionário.', 'error');
+    }
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    showModal('Erro ao buscar funcionário. Tente novamente mais tarde.', 'error');
+  }
+}
+// Deletar funcionário
+document.addEventListener('click', (event) => {
+  if (event.target.classList.contains('deletar-funcionario')) {
+    const funcionarioId = event.target.getAttribute('data-id');
+
+    openConfirmModal('Tem certeza de que deseja deletar este funcionário?', async () => {
+      try {
+        const response = await fetch(`/api/users/${funcionarioId}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Funcionário deletado com sucesso:', data);
+          showModal('Funcionário deletado com sucesso!', 'success');
+          listarFuncionarios(token, userId) // Atualiza a lista de funcionários
+        } else {
+          const errorData = await response.json();
+          console.error('Erro ao deletar funcionário:', errorData);
+          showModal('Erro ao deletar funcionário: ' + errorData.error, 'error');
+        }
+      } catch (error) {
+        console.error('Erro na requisição:', error);
+        showModal('Erro ao deletar funcionário. Tente novamente mais tarde.', 'error');
+      }
+    });
+  }
 });
 
 function limparFormulario() {
