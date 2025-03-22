@@ -252,6 +252,9 @@
             <div class="pesquisa">
               <input type="text" placeholder="Pesquisar" />
               <img src="../images/icon-pesquisa.svg" alt="ícone de pesquisa" />
+              <button class="btn-adicionar-funcionario" id="btn-adicionar-funcionario">
+                Adicionar Funcionário
+              </button>
             </div>
             <div class="funcionarios-table-container">
               <table class="funcionarios-table">
@@ -273,9 +276,6 @@
             </div>
           </div>
           <div class="direita-funcionarios">
-            <button class="add-button" id="btn-adicionar-funcionario">
-              Adicionar Funcionário
-            </button>
             <div class="funcionario-form-container" id="funcionario-form-container">
               <h2 class="form-title">Adicionar Funcionário</h2>
               <div class="form-content">
@@ -333,10 +333,12 @@
   </div>
 
   <!-- Modal de edição de funcionário -->
-  <div id="editar-funcionario-modal" class="custom-modal">
+  <div id="editar-funcionario-modal">
     <div class="custom-modal-content">
-      <span class="custom-modal-close">&times;</span>
-      <h2>Editar Funcionário</h2>
+      <div class="flex">
+        <h2>Editar Funcionário</h2>
+        <span id="close-modal-editar" class="custom-modal-close2">&times;</span>
+      </div>
       <div class="form-content">
         <div class="form-group">
           <label for="editar-nome-funcionario">Nome:</label>

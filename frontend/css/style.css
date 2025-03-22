@@ -1,3 +1,12 @@
+.flex {
+  display: flex;
+  justify-content: space-between;
+  background-color: #ff6347;
+  border-radius: 8px 8px 0px 0px;
+  padding: 0px 12px;
+  align-items: center;
+}
+
 .opcao {
   padding: 10px 15px;
   border-radius: 8px;
@@ -155,8 +164,19 @@
   flex-shrink: 0; /* Impede que o botão de fechar diminua */
 }
 
+.custom-modal-close2 {
+  font-size: 38px; /* Tamanho do "X" */
+  cursor: pointer;
+  color: #333;
+  flex-shrink: 0; /* Impede que o botão de fechar diminua */
+}
+
 .custom-modal-close:hover {
   color: #ff6347; /* Cor ao passar o mouse */
+}
+
+.custom-modal-close2:hover {
+  color: white; /* Cor ao passar o mouse */
 }
 
 /* Animação de entrada */
@@ -415,22 +435,27 @@
   display: none;
   position: fixed;
   z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  left: 40%;
+  top: 15%;
+  /* width: 100%; */
+  /* height: 100%; */
+  /* background-color: rgba(0, 0, 0, 0.5); */
   justify-content: center;
   align-items: center;
 }
 
 #editar-funcionario-modal .custom-modal-content {
+  display: block;
   background-color: #fff;
-  padding: 20px;
+  padding: 0px;
   border-radius: 8px;
   width: 400px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.3s ease;
+}
+
+#editar-funcionario-modal .custom-modal-content .form-content {
+  padding: 20px;
 }
 
 #editar-funcionario-modal .form-content {
@@ -494,4 +519,26 @@
 .status-inativo {
   color: red;
   font-weight: bold;
+}
+
+.btn-adicionar-funcionario {
+  background-color: #ff6347;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-adicionar-funcionario:hover {
+  background-color: #e5533d;
+}
+
+.conteudo-funcionarios .esquerda-funcionarios .pesquisa {
+  justify-content: space-between;
+}
+
+.funcionario-form-container .form-title {
+  background-color: #ff6347;
+  padding: 12px;
 }

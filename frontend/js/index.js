@@ -236,6 +236,7 @@ async function abrirModalEdicao(funcionarioId) {
 
       // Fechar modal ao clicar no botão de cancelar ou fora do modal
       document.getElementById('btn-cancelar-edicao').addEventListener('click', closeModalEdicao);
+      document.getElementById('close-modal-editar').addEventListener('click', closeModalEdicao)
       modalEdicao.addEventListener('click', closeModalEdicaoOutside);
 
       // Salvar edição
