@@ -30,6 +30,7 @@
       font-size: 23px;
       line-height: 39px;
     }
+
     .carrinho {
       img {
         width: 38px;
@@ -42,6 +43,7 @@
   position: relative;
   height: calc(100vh - 89px);
   display: flex;
+
   .imagem-principal {
     width: 100%;
     height: calc(100vh - 89px);
@@ -51,6 +53,7 @@
     top: 0;
     right: 0;
   }
+
   .overlay {
     z-index: 1;
     width: 100%;
@@ -105,6 +108,7 @@
 
           color: #ffffff;
         }
+
         &:hover {
           background-color: $cor-primaira-cardapio;
         }
@@ -143,6 +147,7 @@
 
         color: white;
       }
+
       p {
         font-family: 'Inter';
         font-style: normal;

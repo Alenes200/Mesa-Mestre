@@ -63,7 +63,6 @@ CREATE TABLE TBL_USERS (
 	USR_UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Funções de atualização
 CREATE OR REPLACE FUNCTION atualizar_ped_updated_at() RETURNS TRIGGER AS $$
 BEGIN
     IF TG_TABLE_NAME = 'tbl_users' THEN
@@ -79,12 +78,12 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER trigger_atualizar_usr_updated_at
 BEFORE UPDATE ON tbl_users
-FOR EACH ROW EXECUTE FUNCTION atualizar_updated_at();
+FOR EACH ROW EXECUTE FUNCTION atualizar_ped_updated_at();
 
 CREATE OR REPLACE TRIGGER trigger_atualizar_ped_updated_at
 BEFORE UPDATE ON tbl_pedido
-FOR EACH ROW EXECUTE FUNCTION atualizar_updated_at();
+FOR EACH ROW EXECUTE FUNCTION atualizar_ped_updated_at();
 
 CREATE OR REPLACE TRIGGER trigger_atualizar_pro_updated_at
 BEFORE UPDATE ON tbl_produto
-FOR EACH ROW EXECUTE FUNCTION atualizar_updated_at();
+FOR EACH ROW EXECUTE FUNCTION atualizar_ped_updated_at();
