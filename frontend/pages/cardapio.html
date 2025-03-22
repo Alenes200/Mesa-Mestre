@@ -37,7 +37,7 @@
           <img src="../images/Kaori 香り.svg" alt="logo restaurante" />
         </div>
         <nav>
-          <div class="card-nav">
+          <div class="card-nav" data-tipo="Entrada">
             <div class="icone">
               <img
                 src="../images/icon-entradas.svg"
@@ -46,19 +46,28 @@
             </div>
             <h2>Entradas</h2>
           </div>
-          <div class="card-nav">
+          <div class="card-nav" data-tipo="Prato Principal">
             <div class="icone">
               <img src="../images/icon-combos.svg" alt="Ícone de combos" />
             </div>
-            <h2>Combos</h2>
+            <h2>Pratos Principais</h2>
           </div>
-          <div class="card-nav">
+          <div class="card-nav" data-tipo="Acompanhamento">
+            <div class="icone">
+              <img
+                src="../images/icon-acompanhamentos.svg"
+                alt="Ícone de acompanhamentos"
+              />
+            </div>
+            <h2>Acompanhamentos</h2>
+          </div>
+          <div class="card-nav" data-tipo="Bebida">
             <div class="icone">
               <img src="../images/icon-bebidas.svg" alt="Ícone de bebidas" />
             </div>
             <h2>Bebidas</h2>
           </div>
-          <div class="card-nav">
+          <div class="card-nav" data-tipo="Sobremesa">
             <div class="icone">
               <img
                 src="../images/icon-sobremesas.svg"
@@ -70,61 +79,7 @@
         </nav>
       </div>
       <div class="direita">
-        <div class="card-produto">
-          <div class="descricao">
-            <h2>Brigadeiro do chefe</h2>
-            <p>
-              sorvete, chantilly, nutella,castanha de caju granulada ,kit kat.
-            </p>
-          </div>
-          <div class="imagem-produto">
-            <img src="../images/image 14.png" alt="imagem de brigadeiro" />
-          </div>
-        </div>
-        <div class="card-produto">
-          <div class="descricao">
-            <h2>Brigadeiro do chefe</h2>
-            <p>
-              sorvete, chantilly, nutella,castanha de caju granulada ,kit kat.
-            </p>
-          </div>
-          <div class="imagem-produto">
-            <img src="../images/image 14.png" alt="imagem de brigadeiro" />
-          </div>
-        </div>
-        <div class="card-produto">
-          <div class="descricao">
-            <h2>Brigadeiro do chefe</h2>
-            <p>
-              sorvete, chantilly, nutella,castanha de caju granulada ,kit kat.
-            </p>
-          </div>
-          <div class="imagem-produto">
-            <img src="../images/image 14.png" alt="imagem de brigadeiro" />
-          </div>
-        </div>
-        <div class="card-produto">
-          <div class="descricao">
-            <h2>Brigadeiro do chefe</h2>
-            <p>
-              sorvete, chantilly, nutella,castanha de caju granulada ,kit kat.
-            </p>
-          </div>
-          <div class="imagem-produto">
-            <img src="../images/image 14.png" alt="imagem de brigadeiro" />
-          </div>
-        </div>
-        <div class="card-produto">
-          <div class="descricao">
-            <h2>Brigadeiro do chefe</h2>
-            <p>
-              sorvete, chantilly, nutella,castanha de caju granulada ,kit kat.
-            </p>
-          </div>
-          <div class="imagem-produto">
-            <img src="../images/image 14.png" alt="imagem de brigadeiro" />
-          </div>
-        </div>
+        <div id="produtos-container"></div>
       </div>
       <img
         src="../images/imagem-principal.png"
@@ -132,5 +87,6 @@
         class="imagem-principal"
       />
     </main>
+    <script src="../js/cardapio.js"></script>
   </body>
 </html>
