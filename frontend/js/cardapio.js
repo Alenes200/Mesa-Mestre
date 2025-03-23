@@ -3,11 +3,14 @@ let allProdutos = [];
 // Função para buscar os produtos do backend
 async function fetchProdutos() {
   try {
+    // Faz uma requisição GET para o endpoint /api/produtos
     const response = await fetch('/api/produtos');
     if (!response.ok) {
       throw new Error('Erro ao obter produtos.');
     }
+    // Converte a resposta para JSON
     allProdutos = await response.json();
+    // Exibe todos os produtos inicialmente
     displayProdutos(allProdutos);
   } catch (error) {
     console.error('Erro ao obter produtos:', error);
