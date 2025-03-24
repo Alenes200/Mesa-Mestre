@@ -29,7 +29,7 @@ function displayProdutos(produtos) {
   // Para cada tipo de produto, cria uma seção
   tipos.forEach((tipo) => {
     const tipoSection = document.createElement('section');
-    tipoSection.className = 'tipo-section';
+    tipoSection.className = 'card-produto';
     tipoSection.id = tipo.toLowerCase().replace(/\s+/g, '-'); // Adiciona um ID baseado no tipo
     tipoSection.innerHTML = `<h2>${tipo}</h2>`;
 
@@ -66,10 +66,12 @@ function displayProdutosPorTipo(tipo) {
   const produtosContainer = document.getElementById('produtos-container');
   produtosContainer.innerHTML = '';
 
+  // Filtra os produtos pelo tipo selecionado
   const tipoProdutos = allProdutos.filter(
     (produto) => produto.pro_tipo === tipo
   );
 
+  // Para cada produto do tipo selecionado, cria um elemento de produto
   tipoProdutos.forEach((produto) => {
     const produtoElement = document.createElement('div');
     produtoElement.className = 'card-produto'; // Adiciona a classe de estilo
