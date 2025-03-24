@@ -131,4 +131,19 @@ const deleteUser = async (id) => {
   }
 };
 
-module.exports = { getAllUsers, getUserById, addUser, updateUser, deleteUser, getUserByIdIgnoreStatus, getAllUsersIgnoreStatus };
+const searchUsers = async (searchTerm) => {
+  try {
+    const query = `
+      SELECT * 
+      FROM TBL_USERS 
+      WHERE USR_NOME ILIKE $1 OR USR_EMAIL ILIKE $1 OR USR_FUNCAO ILIKE $1
+      ORDER BY USR_ID ASC;
+    `;
+    const result = await client.query(query, [`%${searchTerm}%`]);
+    return result.rows;
+  } catch (error) {
+    throw new Error('Erro ao buscar usuários.');
+  }
+};
+
+module.exports = { getAllUsers, getUserById, addUser, updateUser, deleteUser, getUserByIdIgnoreStatus, getAllUsersIgnoreStatus, searchUsers };

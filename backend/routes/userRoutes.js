@@ -10,6 +10,8 @@ const { ensureAuthenticated } = require('../middlewares/authMiddleware');
  *   description: Gerenciamento de usuários
  */
 
+router.get('/search', userController.searchUsers);
+
 router.get('/all', ensureAuthenticated, userController.getAllUsersIgnoreStatus);
 
 router.get('/:id/ignore-status', userController.getUserByIdIgnoreStatus);

@@ -1,5 +1,5 @@
 import { showModal, openConfirmModal } from './modal.js';
-import { listarFuncionarios } from './funcionario.js';
+import { listarFuncionarios, buscarFuncionarios } from './funcionario.js';
 
 const token = localStorage.getItem('token');
 
@@ -24,9 +24,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     userData = await userResponse.json();
     userId = userData.id;
 
-    console.log('UserId recebido:', userId);
-  
-    // listarFuncionarios(token, userId);
+    // Configuração do evento de pesquisa
+    document.getElementById('search-button-func').addEventListener('click', () => {
+      buscarFuncionarios(token, userId);
+    });;
   
   } catch (error) {
     console.error('Erro ao carregar dados do usuário:', error);
@@ -307,6 +308,7 @@ async function abrirModalEdicao(funcionarioId) {
     showModal('Erro ao buscar funcionário. Tente novamente mais tarde.', 'error');
   }
 }
+
 // Deletar funcionário
 document.addEventListener('click', (event) => {
   if (event.target.classList.contains('deletar-funcionario')) {

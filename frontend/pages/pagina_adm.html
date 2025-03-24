@@ -10,7 +10,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../Styles/main.css" />
-    <link rel="stylesheet" href="../css/style.css">
+    <!-- <link rel="stylesheet" href="../css/style.css"> -->
     <title>Document</title>
   </head>
   <body>
@@ -250,29 +250,33 @@
         <div class="conteudo-funcionarios" style="display: none">
           <div class="esquerda-funcionarios">
             <div class="pesquisa">
-              <input type="text" placeholder="Pesquisar" />
-              <img src="../images/icon-pesquisa.svg" alt="ícone de pesquisa" />
+              <div style="display: flex;">
+                <input id="search-input-func" type="text" placeholder="Pesquisar" />
+                <img id="search-button-func" src="../images/icon-pesquisa.svg" alt="ícone de pesquisa" />
+              </div>
               <button class="btn-adicionar-funcionario" id="btn-adicionar-funcionario">
                 Adicionar Funcionário
               </button>
             </div>
             <div class="funcionarios-table-container">
-              <table class="funcionarios-table">
-                <thead>
-                  <tr>
-                    <th class="nome-column">Nome</th>
-                    <th class="email-column">Email</th>
-                    <th class="telefone-column">Telefone</th>
-                    <th class="data-column">Data de Início</th>
-                    <th class="funcao-column">Função</th>
-                    <th class="funcao-column">Status</th>
-                    <th class="opcoes-column">Opções</th>
-                  </tr>
-                </thead>
-                <tbody id="funcionarios-table-body">
-                  <!-- Linhas dos funcionários serão adicionadas aqui dinamicamente -->
-                </tbody>
-              </table>
+              <div class="funcionarios-table-wrapper">
+                <table class="funcionarios-table">
+                  <thead>
+                    <tr>
+                      <th class="nome-column">Nome</th>
+                      <th class="email-column">Email</th>
+                      <th class="telefone-column">Telefone</th>
+                      <th class="data-column">Data de Início</th>
+                      <th class="funcao-column">Função</th>
+                      <th class="funcao-column">Status</th>
+                      <th class="opcoes-column">Opções</th>
+                    </tr>
+                  </thead>
+                  <tbody id="funcionarios-table-body">
+                    <!-- Linhas dos funcionários serão adicionadas aqui dinamicamente -->
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
           <div class="direita-funcionarios">

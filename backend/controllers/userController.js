@@ -133,4 +133,18 @@ const updateUser = async (req, res) => {
     }
   };
 
-module.exports = { getUsers, getUserById, createUser, updateUser, deleteUser, getAllUsersIgnoreStatus, getUserByIdIgnoreStatus };
+  const searchUsers = async (req, res) => {
+    try {
+      const searchTerm = req.query.term;
+      if (!searchTerm) {
+        return res.status(400).json({ message: 'Termo de pesquisa não fornecido.' });
+      }
+  
+      const users = await userRepository.searchUsers(searchTerm);
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ message: 'Erro ao buscar usuários.' });
+    }
+  };
+
+module.exports = { getUsers, getUserById, createUser, updateUser, deleteUser, getAllUsersIgnoreStatus, getUserByIdIgnoreStatus, searchUsers };

@@ -334,27 +334,27 @@
 }
 
 /* Colunas específicas */
-.nome-column {
+.funcionarios-table .nome-column {
   width: 25%;
 }
 
-.email-column {
+.funcionarios-table .email-column {
   width: 25%;
 }
 
-.telefone-column {
+.funcionarios-table .telefone-column {
   width: 15%;
 }
 
-.data-column {
+.funcionarios-table .data-column {
   width: 15%;
 }
 
-.funcao-column {
+.funcionarios-table .funcao-column {
   width: 15%;
 }
 
-.opcoes-column {
+.funcionarios-table .opcoes-column {
   width: 5%;
   text-align: center;
 }
@@ -541,4 +541,8 @@
 .funcionario-form-container .form-title {
   background-color: #ff6347;
   padding: 12px;
+}
+
+#search-button-func {
+  cursor: pointer;
 }

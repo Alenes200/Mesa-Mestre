@@ -1,0 +1,209 @@
+// Variáveis
+$cor-primaria: #ff6347;
+$cor-secundaria: #e5533d;
+$cor-texto: #333;
+$cor-borda: #ddd;
+$cor-fundo: #f8f9fa;
+$cor-hover: #f1f1f1;
+
+/* ====================================================================================== */
+/* Parte de funcionários */
+.funcionarios-table-container {
+  margin-top: 20px;
+  transition: margin-right 0.3s ease;
+  overflow: hidden; // Importante para conter a tabela rolável
+  height: calc(100vh - 200px); // Ajuste conforme necessário
+  position: relative;
+
+  .funcionarios-table-wrapper {
+    overflow-y: auto;
+    max-height: 100%;
+    position: relative;
+    
+    // Estilo da barra de rolagem
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $cor-primaria;
+      border-radius: 4px;
+      
+      &:hover {
+        background: $cor-secundaria;
+      }
+    }
+  }
+
+  .funcionarios-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid $cor-borda;
+    }
+
+    th {
+      background-color: $cor-fundo;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    tbody tr:hover {
+      background-color: $cor-hover;
+      cursor: pointer;
+    }
+
+    // Colunas específicas
+    .nome-column { width: 20%; }
+    .email-column { width: 25%; }
+    .telefone-column { width: 20%; }
+    .data-column { width: 15%; }
+    .funcao-column { width: 15%; }
+    .opcoes-column {
+      width: 5%;
+      text-align: center;
+    }
+  }
+}
+
+// Formulário de funcionário
+.funcionario-form-container {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.3s ease;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+
+  &.aberto {
+    width: 400px;
+  }
+
+  .form-content {
+    padding: 20px;
+
+    .form-group {
+      margin-bottom: 15px;
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+      }
+
+      input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid $cor-borda;
+        border-radius: 4px;
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+  }
+
+  .form-title {
+    background-color: $cor-primaria;
+    padding: 12px;
+  }
+}
+
+// Botões
+.btn-salvar, .btn-adicionar-funcionario {
+  background-color: $cor-primaria;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  
+  &:hover {
+    background-color: $cor-secundaria;
+  }
+}
+
+.btn-cancelar {
+  background-color: #ccc;
+  color: $cor-texto;
+  padding: 10px;
+  border-radius: 8px;
+  
+  &:hover {
+    background-color: #bbb;
+  }
+}
+
+// Status
+.status-ativo {
+  color: green;
+  font-weight: bold;
+}
+
+.status-inativo {
+  color: red;
+  font-weight: bold;
+}
+
+// Modal de edição
+#editar-funcionario-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 40%;
+  top: 15%;
+  
+  .custom-modal-content {
+    display: block;
+    background-color: #fff;
+    padding: 0;
+    border-radius: 8px;
+    width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease;
+
+    .form-content {
+        padding: 20px;
+    
+        .form-group {
+          margin-bottom: 15px;
+    
+          label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+          }
+    
+          input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid $cor-borda;
+            border-radius: 4px;
+          }
+        }
+  }
+}
+}
+// Pesquisa
+.conteudo-funcionarios .esquerda-funcionarios .pesquisa {
+  justify-content: space-between;
+}
+
+#search-button-func {
+  cursor: pointer;
+}
