@@ -12,8 +12,10 @@
     justify-content: space-between;
 
     background: #d9d9d9;
+    transition: all 0.1s;
 
     .top {
+      transition: 0.3s;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -83,6 +85,7 @@
     }
 
     .sair {
+      transition: 0.3s;
       padding: 0px 21px;
       padding-bottom: 15px;
       cursor: pointer;
