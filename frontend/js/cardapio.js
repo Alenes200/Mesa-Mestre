@@ -41,7 +41,7 @@ function displayProdutos(produtos) {
     // Para cada produto do tipo atual, cria um elemento de produto
     tipoProdutos.forEach((produto) => {
       const produtoElement = document.createElement('div');
-      produtoElement.className = 'card-produto';
+      produtoElement.className = 'card-produto'; // Adiciona a classe de estilo
       const preco =
         typeof produto.pro_preco === 'number'
           ? `R$ ${produto.pro_preco.toFixed(2)}`
@@ -51,6 +51,7 @@ function displayProdutos(produtos) {
                   <p>${produto.pro_descricao}</p>
                   <p>${preco}</p>
               `;
+      produtoElement.addEventListener('click', () => openModal(produto));
       // Adiciona o elemento de produto à seção do tipo
       tipoSection.appendChild(produtoElement);
     });
@@ -71,7 +72,7 @@ function displayProdutosPorTipo(tipo) {
 
   tipoProdutos.forEach((produto) => {
     const produtoElement = document.createElement('div');
-    produtoElement.className = 'card-produto';
+    produtoElement.className = 'card-produto'; // Adiciona a classe de estilo
     const preco =
       typeof produto.pro_preco === 'number'
         ? `R$ ${produto.pro_preco.toFixed(2)}`
@@ -81,12 +82,53 @@ function displayProdutosPorTipo(tipo) {
               <p>${produto.pro_descricao}</p>
               <p>${preco}</p>
           `;
+    produtoElement.addEventListener('click', () => openModal(produto));
     produtosContainer.appendChild(produtoElement);
   });
 }
 
+// Função para abrir o modal
+function openModal(produto) {
+  const modal = document.getElementById('modal');
+  console.log('Abrindo modal para o produto:', produto); // Log para depuração
+  document.getElementById('modal-nome').innerText = produto.pro_nome;
+  document.getElementById('modal-imagem').src =
+    `../images/${produto.pro_imagem}`;
+  document.getElementById('modal-descricao').innerText = produto.pro_descricao;
+  document.getElementById('modal-preco').innerText =
+    typeof produto.pro_preco === 'number'
+      ? `R$ ${produto.pro_preco.toFixed(2)}`
+      : 'Preço indisponível';
+  modal.style.display = 'block';
+
+  // Adiciona o evento para o botão "Adicionar ao carrinho"
+  document.getElementById('adicionar-carrinho').onclick = () => {
+    addToCart(produto);
+    closeModal();
+  };
+}
+
+// Função para fechar o modal
+function closeModal() {
+  const modal = document.getElementById('modal');
+  modal.style.display = 'none';
+}
+
+// Função para adicionar o item ao carrinho
+function addToCart(produto) {
+  const quantidade = document.getElementById('quantidade').value;
+  console.log(
+    `Adicionado ao carrinho: ${produto.pro_nome}, Quantidade: ${quantidade}`
+  );
+  // Aqui você pode adicionar a lógica para adicionar o item ao carrinho
+}
+
 // Adiciona um event listener para carregar os produtos quando a página for carregada
-document.addEventListener('DOMContentLoaded', fetchProdutos);
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('modal');
+  modal.style.display = 'none';
+  fetchProdutos();
+});
 
 // Adiciona event listeners para os itens do menu lateral
 document.querySelectorAll('.card-nav').forEach((navItem) => {
@@ -96,4 +138,15 @@ document.querySelectorAll('.card-nav').forEach((navItem) => {
     // Exibe os produtos do tipo selecionado
     displayProdutosPorTipo(tipo);
   });
+});
+
+// Adiciona um event listener para fechar o modal quando o botão de fechar for clicado
+document.querySelector('.close').addEventListener('click', closeModal);
+
+// Adiciona um event listener para fechar o modal quando clicar fora do modal
+window.addEventListener('click', (event) => {
+  const modal = document.getElementById('modal');
+  if (event.target === modal) {
+    closeModal();
+  }
 });
