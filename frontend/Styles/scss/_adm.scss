@@ -11,7 +11,7 @@
     flex-direction: column;
     justify-content: space-between;
 
-    background: #d9d9d9;
+    background: #F1F0F5;
     transition: all 0.1s;
 
     .top {
@@ -111,7 +111,7 @@
   }
 
   .direita {
-    width: calc(100% - 256px);
+    width: 100%;
     // padding: 55px 34px;
     padding: 0 34px;
     display: flex;
@@ -123,7 +123,8 @@
       }
 
       border-radius: 20px;
-      width: 1519px;
+      width: 100%;
+      max-width: 1519px;
 
       padding: 55px 34px;
 
@@ -196,11 +197,12 @@
     }
 
     .conteudo-cardapio {
-      background: #d9d9d9;
+      background: white;
       border-radius: 20px;
-      width: 1519px;
+      width: 100%;
 
       padding: 55px 34px;
+      padding-bottom: 34px;
       display: flex;
       justify-content: space-between;
 
@@ -212,9 +214,20 @@
         flex-direction: column;
         align-items: center;
 
+        margin-right: 21px;
+
         .pesquisa {
           width: 100%;
           margin-top: 0px;
+
+          .box-pesquisa {
+            width: 100%;
+            background: #FFFFFF;
+            border: 1px solid rgba(0, 0, 0, 0.26);
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 6px;
+
+          }
 
           input {
             width: 100%;
@@ -223,9 +236,8 @@
 
         .menu-table-container {
           width: 100%;
-          background-color: #f8f8f8;
+          background-color: #ffffff;
           border-radius: 12px;
-          padding: 8px;
           box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
           max-width: 600px;
           margin-top: 21px;
@@ -238,20 +250,42 @@
           font-family: Arial, sans-serif;
         }
 
+
         .menu-table th {
+          background-color: #f1f0f5;
           text-align: left;
           padding: 12px 15px;
-          background-color: #f2f2f2;
-          color: #333;
+          border-bottom: 1px solid #D9D9D9;
+
+          font-family: 'Poppins';
+          font-style: normal;
           font-weight: 600;
-          font-size: 14px;
-          border-bottom: 1px solid #ddd;
+          font-size: 18px;
+          line-height: 112%;
+          /* or 22px */
+          letter-spacing: -1px;
+
+          /* Grey/600 */
+          color: #33303E;
+
         }
 
         .menu-table td {
           padding: 10px 15px;
-          border-bottom: 1px solid #eee;
+          border-bottom: 1px solid #D9D9D9;
           font-size: 14px;
+
+          font-style: normal;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 112%;
+          /* identical to box height, or 16px */
+          letter-spacing: -1px;
+
+          /* Grey/600 */
+          color: #33303E;
+
+
         }
 
         .menu-table tr:last-child td {
@@ -265,10 +299,12 @@
         .nome-column {
           font-weight: 500;
           color: #333;
+          border-radius: 12px 0 0 0;
         }
 
         .local-column {
           color: #ff6b6b;
+          border-radius: 0 12px 0 0;
         }
 
         .location-tag {
@@ -320,8 +356,8 @@
           .form-title {
             margin: 0;
             padding: 13px 21px;
-            background-color: #f8f8f8;
-            border-bottom: 1px solid #eee;
+            background-color: #f1f0f5;
+            border-bottom: 1px solid #d9d9d9;
             font-size: 16px;
             font-weight: bold;
             color: #333;
@@ -329,13 +365,14 @@
 
           /* Form content */
           .form-content {
+            width: 100%;
             padding: 13px 21px;
-            background-color: #f8f8f8;
             border-radius: 8px;
 
             /* Form groups */
             .form-group {
               margin-bottom: 15px;
+              width: 100%;
 
               label {
                 display: block;
@@ -356,13 +393,14 @@
               }
 
               textarea {
-                min-height: 120px;
-                resize: vertical;
+                height: 55px;
+                resize: none;
               }
             }
 
             /* Price and location row */
             .form-row {
+              width: 100%;
               display: flex;
               justify-content: space-between;
               gap: 15px;
@@ -370,17 +408,19 @@
 
               .form-column {
                 input {
-
+                  width: 100%;
                   padding: 3px;
-                  width: 80px;
+                  max-width: 80px;
                   border-radius: 5px;
                   margin-left: 13px;
+                  border: 1px solid #d9d9d9;
                 }
 
                 select {
                   padding: 3px;
                   border-radius: 5px;
                   margin-left: 13px;
+                  border: 1px solid #d9d9d9;
                 }
               }
 
@@ -388,6 +428,7 @@
 
             /* Product image section */
             .form-row-image {
+              width: 100%;
               display: flex;
               justify-content: space-between;
 
@@ -407,7 +448,8 @@
 
                 .image-placeholder {
                   margin-top: 13px;
-                  width: 250px;
+                  width: 100%;
+                  max-width: 151px;
                   aspect-ratio: 1;
                   background-color: #e0e0e0;
                   border: 1px solid #ccc;
@@ -440,6 +482,7 @@
                     padding: 3px;
                     border-radius: 5px;
                     margin-left: 13px;
+                    border: 1px solid #d9d9d9;
                   }
                 }
               }
@@ -447,6 +490,7 @@
 
             /* Action buttons */
             .form-actions {
+              width: 100%;
               display: flex;
               gap: 10px;
               justify-content: flex-end;
@@ -584,7 +628,7 @@
       padding: 0px 34px;
 
       textarea {
-        background-color: #F1F0F5;
+        border: 1px solid #d9d9d9;
         margin-top: 8px;
         width: 100%;
         height: 162px;
@@ -624,7 +668,7 @@
             width: 58px;
             height: 33px;
 
-            background: #F1F0F5;
+            border: 1px solid #d9d9d9;
             border-radius: 5px;
             text-align: center;
           }
@@ -639,7 +683,7 @@
             width: 181px;
             height: 33px;
 
-            background: #F1F0F5;
+            border: 1px solid #d9d9d9;
             border-radius: 5px;
           }
         }
@@ -657,7 +701,7 @@
             width: 86px;
             height: 33px;
 
-            background: #F1F0F5;
+            border: 1px solid #d9d9d9;
             border-radius: 5px;
             text-align: center;
           }
@@ -683,7 +727,7 @@
 
 .preview-image {
   max-width: 100%;
-  max-height: 150px;
+  height: 100%;
   display: block;
   border: 1px solid #ccc;
   border-radius: 5px;
