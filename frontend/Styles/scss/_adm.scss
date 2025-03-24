@@ -236,12 +236,18 @@
 
         .menu-table-container {
           width: 100%;
+          max-width: 600px;
           background-color: #ffffff;
           border-radius: 12px;
           box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-          max-width: 600px;
           margin-top: 21px;
-          height: 100%;
+          overflow: hidden;
+        }
+
+        .menu-table-wrapper {
+          max-height: 350px;
+          /* Altura fixa, ajuste conforme necessário */
+          overflow-y: auto;
         }
 
         .menu-table {
@@ -250,42 +256,35 @@
           font-family: Arial, sans-serif;
         }
 
+        .menu-table thead {
+          position: sticky;
+          top: 0;
+          z-index: 1;
+        }
 
         .menu-table th {
           background-color: #f1f0f5;
           text-align: left;
           padding: 12px 15px;
           border-bottom: 1px solid #D9D9D9;
-
           font-family: 'Poppins';
           font-style: normal;
           font-weight: 600;
           font-size: 18px;
           line-height: 112%;
-          /* or 22px */
           letter-spacing: -1px;
-
-          /* Grey/600 */
           color: #33303E;
-
         }
 
         .menu-table td {
           padding: 10px 15px;
           border-bottom: 1px solid #D9D9D9;
           font-size: 14px;
-
           font-style: normal;
           font-weight: 500;
-          font-size: 14px;
           line-height: 112%;
-          /* identical to box height, or 16px */
           letter-spacing: -1px;
-
-          /* Grey/600 */
           color: #33303E;
-
-
         }
 
         .menu-table tr:last-child td {
@@ -309,6 +308,24 @@
 
         .location-tag {
           color: #ff6b6b;
+        }
+
+        /* Scrollbar styling */
+        .menu-table-wrapper::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        .menu-table-wrapper::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+
+        .menu-table-wrapper::-webkit-scrollbar-thumb {
+          background: #888;
+          border-radius: 4px;
+        }
+
+        .menu-table-wrapper::-webkit-scrollbar-thumb:hover {
+          background: #555;
         }
 
         @media (max-width: 480px) {
