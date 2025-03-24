@@ -24,12 +24,23 @@ const mesasRepository = {
     }
   },
 
+  getLocais: async () => {
+    try {
+      const query = 'SELECT LOC_DESCRICAO FROM TBL_LOCAL;';
+      const result = await client.query(query);
+      return result.rows;
+    } catch (error) {
+      console.error('Erro ao buscar os locais:', error);
+      throw error;
+    }
+  },
+
   create: async (mesa) => {
     const { capacidade, descricao, local } = mesa;
 
     try {
       const query = `
-                INSERT INTO TBL_MESA (MES_CAPACIDADE, MES_DESCRICAO, MES_LOCAL)
+                INSERT INTO TBL_MESA (MES_CAPACIDADE, MES_DESCRICAO, LOC_ID)
                 VALUES ($1, $2, $3)
                 RETURNING *;
             `;
@@ -52,7 +63,7 @@ const mesasRepository = {
                 UPDATE TBL_MESA
                 SET MES_CAPACIDADE = COALESCE($1, MES_CAPACIDADE),
                     MES_DESCRICAO = COALESCE($2, MES_DESCRICAO),
-                    MES_LOCAL = COALESCE($3, MES_LOCAL),
+                    LOC_ID = COALESCE($3, LOC_ID),
                     MES_STATUS = COALESCE($4, MES_STATUS)
                 WHERE MES_ID = $5
                 RETURNING *;
@@ -98,14 +109,27 @@ const mesasRepository = {
   getByLocal: async (local) => {
     try {
       const query = `
-        SELECT * FROM TBL_MESA
-        WHERE MES_LOCAL ILIKE '%' || $1 || '%'
-        AND MES_STATUS >= 1
+        SELECT * 
+        FROM TBL_MESA AS MES
+        INNER JOIN TBL_LOCAL AS LOC ON LOC.LOC_ID = MES.LOC_ID
+        WHERE LOC.LOC_DESCRICAO LIKE $1
+        AND MES.MES_STATUS >= 1;
       `;
-      const result = await client.query(query, [local]);
+      const result = await client.query(query, [`%${local}%`]);
       return result.rows;
     } catch (error) {
       console.error('Erro ao buscar mesas por tipo:', error);
+      throw error;
+    }
+  },
+
+  getLocalById: async (id) => {
+    try {
+      const query = `SELECT LOC_DESCRICAO FROM TBL_LOCAL WHERE LOC_ID = $1;`;
+      const result = await client.query(query, [id]);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Erro ao buscar local por ID:', error);
       throw error;
     }
   },

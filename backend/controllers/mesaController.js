@@ -25,6 +25,15 @@ const mesasController = {
     }
   },
 
+  getLocais: async (req, res) => {
+    try {
+      const locais = await mesasRepository.getLocais();
+      res.json(locais);
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao listar os locais.' });
+    }
+  },
+
   create: async (req, res) => {
     try {
       const { capacidade, descricao, local } = req.body;
@@ -112,6 +121,24 @@ const mesasController = {
     } catch (error) {
       console.error('Erro ao buscar mesas por local:', error);
       res.status(500).json({ error: 'Erro ao buscar mesas por local.' });
+    }
+  },
+
+  getLocalById: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const descricao = await mesasRepository.getLocalById(id);
+
+      if (descricao) {
+        res.status(200).json(descricao);
+      } else {
+        res
+          .status(404)
+          .json({ error: 'Nenhum local encontrado para esse ID.' });
+      }
+    } catch (error) {
+      console.error('Erro ao buscar local por ID:', error);
+      res.status(500).json({ error: 'Erro ao buscar local por ID.' });
     }
   },
 };

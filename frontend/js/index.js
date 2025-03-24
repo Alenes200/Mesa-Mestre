@@ -1,24 +1,28 @@
 import { showModal, openConfirmModal } from './modal.js';
+import {
+  carregarLocais,
+  carregarMesasModal,
+  salvar,
+  buscar,
+  adicionar,
+} from './mesas.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Modal functionality remains the same
-  const cardMesas = document.querySelectorAll('.card-mesa');
-  const modal = document.querySelector('.modal-mesa');
-  const closeIcon = document.querySelector('#fechar-modal-mesas');
-  const overlay = document.querySelector('.overlay');
+  // Mesas
+  carregarLocais();
+  carregarMesasModal('Externa');
 
-  cardMesas.forEach((card) => {
-    card.addEventListener('click', () => {
-      modal.style.display = 'flex';
-    });
-  });
+  const botaoSalvar = document.getElementById('salvar-alteracoes');
 
-  const closeModal = () => {
-    modal.style.display = 'none';
-  };
+  botaoSalvar.addEventListener('click', salvar);
 
-  closeIcon.addEventListener('click', closeModal);
-  overlay.addEventListener('click', closeModal);
+  const botaoAdicionar = document.getElementById('adicionar');
+
+  botaoAdicionar.addEventListener('click', adicionar);
+
+  const pesquisar = document.getElementById('pesquisar');
+
+  pesquisar.addEventListener('input', buscar);
 
   // New content switching functionality
   const menuCardapio = document.querySelector('.opcao:nth-child(1)');
@@ -43,7 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const errorData = await response.json();
         console.error('Erro ao fazer logout:', errorData);
         // alert('Erro ao fazer logout. Tente novamente.');
-        showModal('Erro ao fazer logout. Tente novamente.' + errorData.error, 'error');
+        showModal(
+          'Erro ao fazer logout. Tente novamente.' + errorData.error,
+          'error'
+        );
       }
     } catch (error) {
       console.error('Erro na requisição:', error);
@@ -59,11 +66,12 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const minimizarBtn = document.querySelector('.minimizar');
-  const divTop = document.querySelector('.top')
+  const divTop = document.querySelector('.top');
   const esquerda = document.querySelector('.esquerda');
   const botaoExpandir = document.createElement('div');
   botaoExpandir.classList.add('botao-expandir');
-  botaoExpandir.innerHTML = '<img src="../images/icon-maximizar.svg" alt="expandir opções" />';
+  botaoExpandir.innerHTML =
+    '<img src="../images/icon-maximizar.svg" alt="expandir opções" />';
   divTop.appendChild(botaoExpandir);
 
   minimizarBtn.addEventListener('click', () => {
@@ -76,14 +84,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   menuCardapio.addEventListener('click', () => {
     removeActiveClass();
-    document.getElementById("op_cardapio").classList.add("op_ativa");
+    document.getElementById('op_cardapio').classList.add('op_ativa');
     conteudoMesas.style.display = 'none';
     conteudoCardapio.style.display = 'flex';
   });
 
   menuMesas.addEventListener('click', () => {
     removeActiveClass();
-    document.getElementById("op_mesa").classList.add("op_ativa")
+    document.getElementById('op_mesa').classList.add('op_ativa');
     conteudoCardapio.style.display = 'none';
     conteudoMesas.style.display = 'block';
   });
@@ -107,7 +115,9 @@ function limparFormulario() {
 }
 
 // Adicione um evento de clique ao botão "Adicionar Produto" enviando uma requisição POST para o backend
-document.getElementById('btn-adicionar-produto').addEventListener('click', async () => {
+document
+  .getElementById('btn-adicionar-produto')
+  .addEventListener('click', async () => {
     // Captura os valores dos campos do formulário
     const nome = document.getElementById('nome').value.trim();
     const descricao = document.getElementById('descricao').value.trim();
@@ -130,7 +140,10 @@ document.getElementById('btn-adicionar-produto').addEventListener('click', async
       // alert(
       //   'Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.'
       // );
-      showModal('Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.', 'warning');
+      showModal(
+        'Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.',
+        'warning'
+      );
       return;
     }
 
@@ -154,7 +167,7 @@ document.getElementById('btn-adicionar-produto').addEventListener('click', async
         const data = await response.json();
         console.log('Produto adicionado com sucesso:', data);
         // alert('Produto adicionado com sucesso!');
-        showModal('Produto adicionado com sucesso!', 'success'); 
+        showModal('Produto adicionado com sucesso!', 'success');
         listarProdutos(); // Atualiza a lista de produtos após a adição
         limparFormulario();
       } else {
@@ -166,7 +179,10 @@ document.getElementById('btn-adicionar-produto').addEventListener('click', async
     } catch (error) {
       console.error('Erro na requisição:', error);
       // alert('Erro ao adicionar produto. Tente novamente mais tarde.');
-      showModal('Erro ao adicionar produto. Tente novamente mais tarde.', 'error');
+      showModal(
+        'Erro ao adicionar produto. Tente novamente mais tarde.',
+        'error'
+      );
     }
   });
 
@@ -369,7 +385,10 @@ document.querySelector('.btn-save').addEventListener('click', async () => {
   } catch (error) {
     console.error('Erro na requisição:', error);
     // alert('Erro ao atualizar produto. Tente novamente mais tarde.');
-    showModal('Erro ao atualizar produto. Tente novamente mais tarde.', 'error');
+    showModal(
+      'Erro ao atualizar produto. Tente novamente mais tarde.',
+      'error'
+    );
   }
 });
 
@@ -384,28 +403,33 @@ document.querySelector('.btn-delete').addEventListener('click', async () => {
   }
 
   // Abre o modal de confirmação
-  openConfirmModal('Tem certeza de que deseja deletar este produto?', async () => {
-    try {
-      // Faz a requisição DELETE para o backend
-      const response = await fetch(`/api/produtos/${produtoId}`, {
-        method: 'DELETE',
-      });
+  openConfirmModal(
+    'Tem certeza de que deseja deletar este produto?',
+    async () => {
+      try {
+        // Faz a requisição DELETE para o backend
+        const response = await fetch(`/api/produtos/${produtoId}`, {
+          method: 'DELETE',
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Produto deletado com sucesso:', data);
-        showModal('Produto deletado com sucesso!', 'success');
-        listarProdutos(); // Atualiza a lista de produtos
-        limparFormulario();
-      } else {
-        const errorData = await response.json();
-        console.error('Erro ao deletar produto:', errorData);
-        showModal('Erro ao deletar produto: ' + errorData.error, 'error');
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Produto deletado com sucesso:', data);
+          showModal('Produto deletado com sucesso!', 'success');
+          listarProdutos(); // Atualiza a lista de produtos
+          limparFormulario();
+        } else {
+          const errorData = await response.json();
+          console.error('Erro ao deletar produto:', errorData);
+          showModal('Erro ao deletar produto: ' + errorData.error, 'error');
+        }
+      } catch (error) {
+        console.error('Erro na requisição:', error);
+        showModal(
+          'Erro ao deletar produto. Tente novamente mais tarde.',
+          'error'
+        );
       }
-    } catch (error) {
-      console.error('Erro na requisição:', error);
-      showModal('Erro ao deletar produto. Tente novamente mais tarde.', 'error');
     }
-  });
+  );
 });
-

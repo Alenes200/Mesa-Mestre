@@ -52,6 +52,32 @@ router.get('/:id', mesasController.get);
 
 /**
  * @swagger
+ * /api/mesas/local/locais:
+ *   get:
+ *     summary: Obtém a lista de locais distintos das mesas
+ *     tags: [Mesas]
+ *     responses:
+ *       200:
+ *         description: Lista de locais distintos das mesas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   mes_local:
+ *                     type: string
+ *                     description: Nome do local da mesa
+ *       500:
+ *         description: Erro ao listar os locais
+ */
+router.get('/local/locais', mesasController.getLocais);
+
+router.get('/local/:id', mesasController.getLocalById);
+
+/**
+ * @swagger
  * /api/mesas:
  *   post:
  *     summary: Cria uma nova mesa
@@ -188,7 +214,7 @@ router.delete('/:id', mesasController.delete);
  *       500:
  *         description: Erro ao buscar mesas por local
  */
-router.get('/local/:local', mesasController.getByLocal);
+router.get('/local/descricao/:local', mesasController.getByLocal);
 
 /**
  * @swagger
