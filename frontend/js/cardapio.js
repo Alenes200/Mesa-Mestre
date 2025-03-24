@@ -41,7 +41,7 @@ function displayProdutos(produtos) {
     // Para cada produto do tipo atual, cria um elemento de produto
     tipoProdutos.forEach((produto) => {
       const produtoElement = document.createElement('div');
-      produtoElement.className = 'produto';
+      produtoElement.className = 'card-produto';
       const preco =
         typeof produto.pro_preco === 'number'
           ? `R$ ${produto.pro_preco.toFixed(2)}`
@@ -71,7 +71,7 @@ function displayProdutosPorTipo(tipo) {
 
   tipoProdutos.forEach((produto) => {
     const produtoElement = document.createElement('div');
-    produtoElement.className = 'produto';
+    produtoElement.className = 'card-produto';
     const preco =
       typeof produto.pro_preco === 'number'
         ? `R$ ${produto.pro_preco.toFixed(2)}`

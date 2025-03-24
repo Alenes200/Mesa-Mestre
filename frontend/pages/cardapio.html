@@ -87,6 +87,24 @@
         class="imagem-principal"
       />
     </main>
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modal-nome"></h2>
+        <img id="modal-imagem" src="" alt="Imagem do produto" />
+        <p id="modal-descricao"></p>
+        <p id="modal-preco"></p>
+        <label for="quantidade">Quantidade:</label>
+        <input
+          type="number"
+          id="quantidade"
+          name="quantidade"
+          min="1"
+          value="1"
+        />
+        <button id="adicionar-carrinho">Adicionar ao carrinho</button>
+      </div>
+    </div>
     <script src="../js/cardapio.js"></script>
   </body>
 </html>
