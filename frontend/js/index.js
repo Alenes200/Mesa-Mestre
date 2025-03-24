@@ -153,30 +153,40 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   const menuGraficos = document.getElementById('op_grafico');
-  const conteudoGraficos = document.createElement('div');
-  conteudoGraficos.className = 'conteudo-graficos-container';
-  document.querySelector('.direita').appendChild(conteudoGraficos);
+  const conteudoGraficos = document.querySelector('.conteudo-graficos-container');
 
   menuGraficos.addEventListener('click', async () => {
     removeActiveClass();
     menuGraficos.classList.add('op_ativa');
     
-     // Esconder outros conteúdos
+    // Esconder outros conteúdos
     document.querySelectorAll('.direita > div').forEach(div => {
       if (div !== conteudoGraficos) {
         div.style.display = 'none';
       }
     });
     
-    // Limpar e mostrar container
-    conteudoGraficos.innerHTML = '';
+    // Mostrar container antes de carregar
     conteudoGraficos.style.display = 'block';
+    conteudoGraficos.style.opacity = '0'; // Usar opacity em vez de visibility
     
-    // Carregar gráficos
-    const token = localStorage.getItem('token');
-    await carregarGraficoComandas(token);
-    // conteudoGraficos.appendChild(graficoElement);
-    // conteudoGraficos.style.display = 'block';
+    // Pequeno delay para o browser processar
+    await new Promise(resolve => setTimeout(resolve, 50));
+    
+    try {
+      const token = localStorage.getItem('token');
+      await carregarGraficoComandas(token);
+      conteudoGraficos.style.opacity = '1'; // Mostrar gradualmente
+    } catch (error) {
+      console.error('Erro ao carregar gráficos:', error);
+      conteudoGraficos.innerHTML = `
+        <div class="graficos-error">
+          <p>Erro ao carregar gráficos. Tente novamente.</p>
+          <button id="retry-graficos">Tentar Novamente</button>
+        </div>
+      `;
+      conteudoGraficos.style.opacity = '1';
+    }
   });
 
   // Abrir/Fechar o formulário de adicionar funcionário
@@ -702,6 +712,14 @@ document.querySelector('.btn-delete').addEventListener('click', async () => {
 });
 
 function esconderGraficos() {
-  destruirGrafico();
-  document.querySelector('.conteudo-graficos-container').style.display = 'none';
+  // Adicione um pequeno delay para garantir que a transição de tela foi concluída
+  setTimeout(() => {
+    destruirGrafico();
+    const container = document.querySelector('.conteudo-graficos-container');
+    if (container) {
+      container.style.display = 'none';
+      // Limpar o conteúdo para evitar acúmulo de elementos
+      container.innerHTML = '';
+    }
+  }, 100);
 }

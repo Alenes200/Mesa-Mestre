@@ -312,6 +312,73 @@
           </div>
         </div>
 
+        <div class="conteudo-graficos-container">
+          <div class="graficos-header">
+            <h2>Dashboard de Gráficos</h2>
+            <div class="filtros-grafico">
+              <div class="data-filtro">
+                <label for="data-inicio">Data Início:</label>
+                <input type="date" id="data-inicio">
+              </div>
+              <div class="data-filtro">
+                <label for="data-fim">Data Fim:</label>
+                <input type="date" id="data-fim">
+              </div>
+              <button id="btn-atualizar-grafico">Atualizar</button>
+            </div>
+          </div>
+          
+          <div class="graficos-grid">
+            <!-- Gráfico 1 - Comandas por dia da semana -->
+            <div class="grafico-card grafico-grande">
+              <div class="grafico-wrapper">
+                <canvas id="graficoComandas" width="400" height="400"></canvas>
+              </div>
+            </div>
+            
+            <!-- Gráfico 2 - Top 10 produtos -->
+            <div class="grafico-card grafico-grande">
+              <div class="grafico-wrapper">
+                <canvas id="graficoTopProdutos" width="400" height="400"></canvas>
+              </div>
+            </div>
+            
+            <!-- Gráfico 3 - Faturamento diário -->
+            <div class="grafico-card grafico-grande">
+              <div class="grafico-wrapper">
+                <canvas id="graficoFaturamento" width="400" height="400"></canvas>
+              </div>
+            </div>
+            
+            <!-- Gráfico 4 - Formas de pagamento -->
+            <div class="grafico-card">
+              <div class="grafico-wrapper">
+                <canvas id="graficoPagamentos" width="400" height="400"></canvas>
+              </div>
+            </div>
+            
+            <!-- Gráfico 5 - Média por comanda -->
+            <div class="grafico-card">
+              <div class="grafico-wrapper">
+                <canvas id="graficoMediaComanda" width="400" height="400"></canvas>
+              </div>
+            </div>
+            
+            <!-- Gráfico 6 - Ocupação de mesas -->
+            <div class="grafico-card">
+              <div class="grafico-wrapper">
+                <canvas id="graficoOcupacao" width="400" height="400"></canvas>
+              </div>
+            </div>
+            
+            <!-- Gráfico 7 - Vendas por categoria -->
+            <div class="grafico-card">
+              <div class="grafico-wrapper">
+                <canvas id="graficoCategorias" width="400" height="400"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
 
       </div>
     </main>
@@ -377,5 +444,6 @@
 
   </body>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="../js/grafico.js"></script>
   <script type="module" src="../js/index.js"></script>
 </html>

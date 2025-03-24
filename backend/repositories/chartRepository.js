@@ -114,9 +114,9 @@ const chartRepository = {
           COUNT(ped.ped_id) AS quantidade_pedidos,
           SUM(ped.ped_preco_total) AS total_faturado,
           ROUND(100.0 * SUM(ped.ped_preco_total) / 
-            (SELECT SUM(ped2.ped_preco_total) 
+            NULLIF((SELECT SUM(ped2.ped_preco_total) 
              FROM tbl_pedido ped2
-             ${dataInicio && dataFim ? `WHERE ped2.ped_created_at BETWEEN $3 AND $4` : ''}), 2) AS percentual
+             ${dataInicio && dataFim ? `WHERE ped2.ped_created_at BETWEEN $3 AND $4` : ''}), 0), 2) AS percentual
         FROM tbl_pedido ped
         JOIN tbl_forma_pagamento fp ON ped.fpa_id = fp.fpa_id
         ${dataInicio && dataFim ? `WHERE ped.ped_created_at BETWEEN $1 AND $2` : ''}
@@ -128,10 +128,10 @@ const chartRepository = {
       if (dataInicio && dataFim) {
         params.push(dataInicio, dataFim, dataInicio, dataFim);
       }
-
+  
       const result = await client.query(query, params);
       return result.rows;
-
+  
     } catch (error) {
       console.error('Erro no chartRepository.getFormasPagamento:', error);
       throw error;
