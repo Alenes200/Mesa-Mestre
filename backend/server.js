@@ -4,13 +4,14 @@ const swaggerUI = require('swagger-ui-express');
 const { createServer } = require('http');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
-// const loginRepository = require('./repositories/loginRepository');
+const loginRepository = require('./repositories/loginRepository');
 const loginRoutes = require('./routes/loginRoutes');
 const produtosRoutes = require('./routes/produtoRoutes');
 const mesasRoutes = require('./routes/mesaRoutes');
 const userRoutes = require('./routes/userRoutes');
 const comandaRoutes = require('./routes/comandaRoutes');
-
+const pedidoRoutes = require('./routes/pedidoRoutes');
+const pedidoProdutoRoutes = require('./routes/pedidoProdutoRoutes');
 const path = require('path');
 
 dotenv.config({ path: './.env' });
@@ -68,7 +69,8 @@ app.use('/api/produtos', produtosRoutes);
 app.use('/api/mesas', mesasRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/comandas', comandaRoutes);
-
+app.use('/api/pedidos', pedidoRoutes);
+app.use('/api/pedidos-produtos', pedidoProdutoRoutes);
 // Middleware para capturar erros não tratados
 app.use((err, req, res, next) => {
   console.error('Erro interno:', err);
