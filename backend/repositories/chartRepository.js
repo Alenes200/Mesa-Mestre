@@ -205,8 +205,8 @@ const chartRepository = {
       const query = `
         SELECT
           p.pro_tipo AS categoria,
-          SUM(pp.ppr_quantidade) AS quantidade_vendida,
-          SUM(pp.ppr_quantidade * p.pro_preco) AS faturamento
+          COALESCE(SUM(pp.ppr_quantidade), 0) AS quantidade_vendida,
+          COALESCE(SUM(pp.ppr_quantidade * p.pro_preco), 0) AS faturamento
         FROM tbl_pedido_produto pp
         JOIN tbl_produto p ON pp.pro_id = p.pro_id
         JOIN tbl_pedido ped ON pp.ped_id = ped.ped_id

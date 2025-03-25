@@ -440,6 +440,7 @@ export async function carregarGraficoComandas(token) {
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
+                yAxisID: 'y' // Eixo principal
               },
               {
                 label: 'Quantidade Vendida',
@@ -448,16 +449,65 @@ export async function carregarGraficoComandas(token) {
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1,
                 type: 'bar',
-              },
-            ],
+                yAxisID: 'y1' // Eixo secundário
+              }
+            ]
           },
           {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-              tooltip: { mode: 'index', intersect: false },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    let label = context.dataset.label || '';
+                    if (label) {
+                      label += ': ';
+                    }
+                    
+                    // Tratamento seguro para valores numéricos
+                    const rawValue = context.raw;
+                    if (typeof rawValue === 'number') {
+                      if (context.dataset.yAxisID === 'y') {
+                        label += 'R$ ' + rawValue.toFixed(2);
+                      } else {
+                        label += rawValue + ' un';
+                      }
+                    } else {
+                      // Caso o valor não seja numérico
+                      label += rawValue ? rawValue.toString() : '0';
+                    }
+                    
+                    return label;
+                  }
+                }
+              }
             },
-            scales: { y: { beginAtZero: true } },
+            scales: {
+              y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: {
+                  display: true,
+                  text: 'Faturamento (R$)'
+                },
+                beginAtZero: true
+              },
+              y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
+                  display: true,
+                  text: 'Quantidade Vendida'
+                },
+                grid: {
+                  drawOnChartArea: false // não desenhar grid do eixo secundário
+                },
+                beginAtZero: true
+              }
+            }
           }
         );
 

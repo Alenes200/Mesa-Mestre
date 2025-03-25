@@ -9,25 +9,31 @@ $font-secondary: 'Inter', sans-serif;
 
 .conteudo-graficos-container {
   width: 100%;
-  height: 100%;
-  padding: 20px;
-  overflow: auto;
+  height: calc(100vh - 60px); // Ajuste para altura total menos o header
   background: #f5f5f5;
   font-family: $font-primary;
   display: none;
-  transition: opacity 0.3s ease;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
 
   &.active {
-    display: block;
+    display: flex;
   }
 
   .graficos-header {
+    padding: 20px;
+    background: #f5f5f5;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
     flex-wrap: wrap;
     gap: 15px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    flex-shrink: 0; // Impede que o header diminua
 
     h2 {
       color: $text-color;
@@ -79,11 +85,42 @@ $font-secondary: 'Inter', sans-serif;
     }
   }
 
+  .graficos-content {
+    flex: 1;
+    padding: 0 20px;
+    overflow-y: auto;
+    height: calc(100% - 110px);
+
+    scrollbar-width: thin;
+    scrollbar-color: #ff6347 #f1f1f1;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+      
+      &:hover {
+        background: #a8a8a8;
+      }
+    }
+  }
+
   .graficos-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: minmax(300px, auto);
     gap: 20px;
+    padding: 20px 0; // Espaço vertical
+    min-height: min-content; // Força altura mínima
 
     .grafico-card {
       background: white;
@@ -93,17 +130,10 @@ $font-secondary: 'Inter', sans-serif;
       display: flex;
       flex-direction: column;
       min-height: 300px;
-      overflow: hidden;
+      height: 100%;
 
       &.grafico-grande {
         grid-column: span 2;
-      }
-
-      h3 {
-        margin-top: 0;
-        margin-bottom: 15px;
-        color: $text-color;
-        font-size: 18px;
       }
 
       .grafico-wrapper {
@@ -111,14 +141,11 @@ $font-secondary: 'Inter', sans-serif;
         width: 100%;
         height: 100%;
         min-height: 300px;
-        max-height: 500px;
         flex-grow: 1;
 
         canvas {
           width: 100% !important;
           height: 100% !important;
-          min-height: 300px;
-          max-height: 100%;
           display: block;
         }
       }
@@ -136,8 +163,21 @@ $font-secondary: 'Inter', sans-serif;
   }
 
   @media (max-width: 768px) {
+    height: calc(100vh - 50px);
+
+    .graficos-header {
+      padding: 15px;
+    }
+
+    .graficos-content {
+      padding: 0 15px;
+      height: calc(100% - 70px);
+    }
+
     .graficos-grid {
       grid-template-columns: 1fr;
+      gap: 15px;
+      padding: 15px 0;
 
       .grafico-card.grafico-grande {
         grid-column: span 1;
