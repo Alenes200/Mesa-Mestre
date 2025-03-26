@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../Styles/main.css" />
-    <!-- <link rel="stylesheet" href="../Styles/scss/_cardapio.css" /> -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -24,10 +23,7 @@
         </div>
         <img src="../images/svg linha header.svg" alt="linha branca" />
         <div class="carrinho">
-          <img
-            src="../images/cart-shopping-svgrepo-com 1.svg"
-            alt="imagem de carrio de compras"
-          />
+          <button id="carrinho-button">Carrinho</button>
         </div>
       </nav>
     </header>
@@ -106,6 +102,18 @@
         class="imagem-principal"
       />
     </main>
+
+    <!-- Off-canvas Carrinho -->
+    <div id="carrinho-offcanvas" class="offcanvas">
+      <div class="offcanvas-content">
+        <span class="close" onclick="closeCarrinho()">&times;</span>
+        <h2>Carrinho</h2>
+        <div id="carrinho-container"></div>
+        <button id="enviar-pedidos-button">Enviar pedidos</button>
+        <button onclick="closeCarrinho()">Adicionar mais itens</button>
+      </div>
+    </div>
+
     <script src="../js/cardapio.js"></script>
   </body>
 </html>

@@ -1,4 +1,5 @@
 let allProdutos = [];
+let carrinho = [];
 
 // Função para buscar os produtos do backend
 async function fetchProdutos() {
@@ -29,7 +30,7 @@ function displayProdutos(produtos) {
   // Para cada tipo de produto, cria uma seção
   tipos.forEach((tipo) => {
     const tipoSection = document.createElement('section');
-    tipoSection.className = 'card-produto';
+    tipoSection.className = 'tipo-section';
     tipoSection.id = tipo.toLowerCase().replace(/\s+/g, '-'); // Adiciona um ID baseado no tipo
     tipoSection.innerHTML = `<h2>${tipo}</h2>`;
 
@@ -89,7 +90,7 @@ function displayProdutosPorTipo(tipo) {
   });
 }
 
-// Função para abrir o modal
+// Função para abrir o modal do produto
 function openModal(produto) {
   const modal = document.getElementById('modal');
   console.log('Abrindo modal para o produto:', produto); // Log para depuração
@@ -110,7 +111,7 @@ function openModal(produto) {
   };
 }
 
-// Função para fechar o modal
+// Função para fechar o modal do produto
 function closeModal() {
   const modal = document.getElementById('modal');
   modal.style.display = 'none';
@@ -118,11 +119,94 @@ function closeModal() {
 
 // Função para adicionar o item ao carrinho
 function addToCart(produto) {
-  const quantidade = document.getElementById('quantidade').value;
-  console.log(
-    `Adicionado ao carrinho: ${produto.pro_nome}, Quantidade: ${quantidade}`
-  );
-  // Aqui você pode adicionar a lógica para adicionar o item ao carrinho
+  const quantidade = parseInt(document.getElementById('quantidade').value, 10);
+  const itemCarrinho = carrinho.find((item) => item.pro_id === produto.pro_id);
+
+  if (itemCarrinho) {
+    itemCarrinho.quantidade += quantidade;
+  } else {
+    carrinho.push({ ...produto, quantidade });
+  }
+
+  console.log('Carrinho:', carrinho);
+  closeModal();
+}
+
+// Função para abrir o off-canvas do carrinho
+function openCarrinho() {
+  const carrinhoOffcanvas = document.getElementById('carrinho-offcanvas');
+  const carrinhoContainer = document.getElementById('carrinho-container');
+  carrinhoContainer.innerHTML = '';
+
+  let total = 0;
+
+  carrinho.forEach((item) => {
+    const subtotal = item.pro_preco * item.quantidade;
+    total += subtotal;
+
+    const itemElement = document.createElement('div');
+    itemElement.innerHTML = `
+      <p>${item.pro_nome} - Quantidade: ${item.quantidade} - Subtotal: R$ ${subtotal.toFixed(2)}</p>
+    `;
+    carrinhoContainer.appendChild(itemElement);
+  });
+
+  const totalElement = document.createElement('div');
+  totalElement.innerHTML = `<p>Total: R$ ${total.toFixed(2)}</p>`;
+  carrinhoContainer.appendChild(totalElement);
+
+  carrinhoOffcanvas.classList.add('open');
+}
+
+function closeCarrinho() {
+  const carrinhoOffcanvas = document.getElementById('carrinho-offcanvas');
+  carrinhoOffcanvas.classList.remove('open');
+}
+
+// Função para enviar os pedidos
+async function enviarPedidos() {
+  try {
+    // Cria um novo pedido
+    const responsePedido = await fetch('/api/pedidos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ descricao: 'Pedido do carrinho', status: 1 }),
+    });
+
+    const pedido = await responsePedido.json();
+    const pedidoId = pedido.ped_id;
+
+    // Adiciona os produtos ao pedido
+    for (const item of carrinho) {
+      await fetch('/api/pedido_produto', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ped_id: pedidoId,
+          pro_id: item.pro_id,
+          quantidade: item.quantidade,
+        }),
+      });
+    }
+
+    // Atualiza o pedido com o preço total
+    const total = carrinho.reduce(
+      (acc, item) => acc + item.pro_preco * item.quantidade,
+      0
+    );
+    await fetch(`/api/pedidos/${pedidoId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ped_preco_total: total }),
+    });
+
+    alert('Pedido enviado com sucesso!');
+    carrinho = [];
+    closeCarrinho();
+  } catch (error) {
+    console.error('Erro ao enviar pedidos:', error);
+    alert('Erro ao enviar pedidos. Verifique o console para mais detalhes.');
+  }
 }
 
 // Adiciona um event listener para carregar os produtos quando a página for carregada
@@ -152,3 +236,13 @@ window.addEventListener('click', (event) => {
     closeModal();
   }
 });
+
+// Adiciona um event listener para abrir o carrinho
+document
+  .getElementById('carrinho-button')
+  .addEventListener('click', openCarrinho);
+
+// Adiciona um event listener para enviar os pedidos
+document
+  .getElementById('enviar-pedidos-button')
+  .addEventListener('click', enviarPedidos);
