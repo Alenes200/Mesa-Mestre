@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         div.style.display = 'none';
       }
     });
-    // esconderGraficos();
+
     conteudoCardapio.style.display = 'flex';
   });
 
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         div.style.display = 'none';
       }
     });
-    // esconderGraficos();
+
     conteudoMesas.style.display = 'block';
   });
 
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         div.style.display = 'none';
       }
     });
-    // esconderGraficos();
+
     conteudoFuncionarios.style.display = 'flex'; 
 
     listarFuncionarios(token, userId);
