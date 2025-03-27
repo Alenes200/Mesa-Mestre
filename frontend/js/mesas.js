@@ -24,7 +24,7 @@ export function adicionar() {
   }
 
   // Faz a requisição POST para criar a nova mesa
-  fetch('http://localhost:3000/api/mesas', {
+  fetch('/api/mesas', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export function adicionar() {
 export function desativar() {
   const mesaId = Number(tituloModal.innerText.match(/\d+/)?.[0]);
   // Realiza a requisição DELETE utilizando fetch
-  fetch(`http://localhost:3000/api/mesas/${mesaId}`, {
+  fetch(`/api/mesas/${mesaId}`, {
     method: 'DELETE',
   })
     .then((response) => {
@@ -123,7 +123,7 @@ export function salvar() {
 
   let locId;
 
-  fetch(`http://localhost:3000/api/mesas/${mesaId}`)
+  fetch(`/api/mesas/${mesaId}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error('Erro ao buscar os dados da mesa');
@@ -152,7 +152,7 @@ export function salvar() {
   };
 
   // Fazendo a requisição para atualizar os dados da mesa
-  fetch(`http://localhost:3000/api/mesas/${mesaId}`, {
+  fetch(`/api/mesas/${mesaId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -166,7 +166,7 @@ export function salvar() {
       alert('Mesa atualizada com sucesso!');
 
       // Agora faz o segundo fetch para pegar o local
-      return fetch(`http://localhost:3000/api/mesas/local/${locId}`);
+      return fetch(`/api/mesas/local/${locId}`);
     })
     .then((localResponse) => {
       if (!localResponse.ok) throw new Error('Erro ao buscar o local');
@@ -231,7 +231,7 @@ export function funcoesModal() {
         descricao.value = '';
         capacidade.value = '';
 
-        fetch(`http://localhost:3000/api/mesas/local/locais/Restritos`)
+        fetch(`/api/mesas/local/locais/Restritos`)
           .then((response) => {
             if (!response.ok) {
               throw new Error('Erro ao buscar dados dos locais');
@@ -283,7 +283,7 @@ export function funcoesModal() {
 async function buscarDescricaoLocal(locId) {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/mesas/local/${locId}`
+      `/api/mesas/local/${locId}`
     );
     if (!response.ok) throw new Error('Erro ao buscar descrição do local');
 
@@ -297,11 +297,11 @@ async function buscarDescricaoLocal(locId) {
 
 export async function buscarDadosMesa(mesaId) {
   try {
-    const response = await fetch(`http://localhost:3000/api/mesas/${mesaId}`);
+    const response = await fetch(`/api/mesas/${mesaId}`);
     if (!response.ok) throw new Error('Erro ao buscar dados da mesa');
 
     const locais = await fetch(
-      `http://localhost:3000/api/mesas/local/locais/Restritos`
+      `/api/mesas/local/locais/Restritos`
     );
     if (!locais.ok) throw new Error('Erro ao buscar dados dos locais');
 
@@ -342,12 +342,12 @@ export async function buscarDadosMesa(mesaId) {
 
 export async function carregarMesasPesquisa(id, descricao, local) {
   try {
-    let url = `http://localhost:3000/api/mesas/pesquisa/area?mes_id=${id}&mes_descricao=${descricao}&loc_descricao=${local}`;
+    let url = `/api/mesas/pesquisa/area?mes_id=${id}&mes_descricao=${descricao}&loc_descricao=${local}`;
 
     if (local === 'Ativas') {
-      url = `http://localhost:3000/api/mesas/pesquisa/ativas?mes_id=${id}&mes_descricao=${descricao}`;
+      url = `/api/mesas/pesquisa/ativas?mes_id=${id}&mes_descricao=${descricao}`;
     } else if (local === 'Inativas') {
-      url = `http://localhost:3000/api/mesas/pesquisa/inativas?mes_id=${id}&mes_descricao=${descricao}`;
+      url = `/api/mesas/pesquisa/inativas?mes_id=${id}&mes_descricao=${descricao}`;
     }
 
     const response = await fetch(url);
@@ -379,7 +379,7 @@ export async function carregarMesas(local) {
   console.log(local);
   try {
     const response = await fetch(
-      `http://localhost:3000/api/mesas/local/descricao/${local}`
+      `/api/mesas/local/descricao/${local}`
     ); // Corrigido: URL para buscar todas as mesas
     // if (!response.ok) throw new Error('Erro ao carregar as mesas');
 
@@ -406,7 +406,7 @@ export async function carregarMesas(local) {
 
 export async function carregarTodasMesasAtivas() {
   try {
-    const response = await fetch('http://localhost:3000/api/mesas');
+    const response = await fetch('/api/mesas');
     // if (!response.ok) throw new Error('Erro ao buscar mesas');
 
     const mesas = await response.json();
@@ -435,7 +435,7 @@ export async function carregarTodasMesasAtivas() {
 
 export async function carregarTodasMesasInativas() {
   try {
-    const response = await fetch('http://localhost:3000/api/mesas/inativas');
+    const response = await fetch('/api/mesas/inativas');
     // if (!response.ok) throw new Error('Erro ao buscar mesas');
 
     const mesas = await response.json();
@@ -463,7 +463,7 @@ export async function carregarTodasMesasInativas() {
 export async function carregarLocais() {
   try {
     const response = await fetch(
-      'http://localhost:3000/api/mesas/local/locais/Todos'
+      '/api/mesas/local/locais/Todos'
     );
     // if (!response.ok) throw new Error('Erro ao buscar locais distintos');
 
