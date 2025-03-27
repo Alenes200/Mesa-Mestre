@@ -1,17 +1,22 @@
-INSERT INTO TBL_MESA (MES_CAPACIDADE, MES_DESCRICAO, MES_LOCAL, MES_STATUS)
+INSERT INTO TBL_LOCAL (LOC_DESCRICAO) VALUES 
+    ('Área Externa'),
+    ('Área Interna'),
+    ('Área VIP');
+
+INSERT INTO TBL_MESA (MES_CAPACIDADE, MES_DESCRICAO, LOC_ID, MES_STATUS)
 VALUES
-    (5, 'Mesa 1', 'Área interna', 1),
-    (5, 'Mesa 2', 'Área externa', 1),
-    (5, 'Mesa 3', 'Área interna', 1),
-	(5, 'Mesa 4', 'Área interna', -1),
-    (5, 'Mesa 5', 'Área externa', 1),
-    (5, 'Mesa 6', 'Área interna', 1),
-	(4, 'Mesa 7', 'Área externa', 1),
-    (6, 'Mesa 8', 'Área interna', 1),
-    (2, 'Mesa 9', 'Área VIP', 1),
-    (8, 'Mesa 10', 'Área interna', -1),
-    (4, 'Mesa 11', 'Área externa', 1),
-    (6, 'Mesa 12', 'Área VIP', 1);
+    (5, 'Mesa 1', 2, 1),
+    (5, 'Mesa 2', 1, 1),
+    (5, 'Mesa 3', 2, 1),
+	(5, 'Mesa 4', 2, -1),
+    (5, 'Mesa 5', 1, 1),
+    (5, 'Mesa 6', 2, 1),
+	(4, 'Mesa 7', 1, 1),
+    (6, 'Mesa 8', 2, 1),
+    (2, 'Mesa 9', 3, 1),
+    (8, 'Mesa 10', 2, -1),
+    (4, 'Mesa 11', 1, 1),
+    (6, 'Mesa 12', 3, 1);
 
 INSERT INTO TBL_COMANDA (MES_ID, COM_STATUS)
 VALUES
