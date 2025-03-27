@@ -44,7 +44,8 @@ export function showModal(message, type = 'info', autoClose = true) {
   }
 }
 
-// Função para abrir o modal de confirmação
+let confirmCallback = null;
+
 export function openConfirmModal(message, onConfirm) {
   const confirmModal = document.getElementById('confirm-modal');
   const confirmMessage = document.getElementById('confirm-modal-message');
@@ -55,25 +56,29 @@ export function openConfirmModal(message, onConfirm) {
 
   confirmModal.style.display = 'flex';
 
-  confirmButton.addEventListener('click', () => {
-    closeConfirmModal();
+  confirmButton.removeEventListener('click', confirmCallback);
+  cancelButton.removeEventListener('click', closeConfirmModal);
+  confirmModal.removeEventListener('click', closeConfirmModalOutside);
+
+  confirmCallback = () => {
     onConfirm();
-  });
+    closeConfirmModal();
+  };
+
+  confirmButton.addEventListener('click', confirmCallback);
 
   cancelButton.addEventListener('click', closeConfirmModal);
 
-  window.addEventListener('click', (event) => {
-    if (event.target === confirmModal) {
-      closeConfirmModal();
-    }
-  });
+  confirmModal.addEventListener('click', closeConfirmModalOutside);
 }
 
 function closeConfirmModal() {
   const confirmModal = document.getElementById('confirm-modal');
-  confirmModal.classList.add('fade-out2');
-  setTimeout(() => {
-    confirmModal.style.display = 'none';
-    confirmModal.classList.remove('fade-out2');
-  }, 300);
+  confirmModal.style.display = 'none';
+}
+
+function closeConfirmModalOutside(event) {
+  if (event.target === document.getElementById('confirm-modal')) {
+    closeConfirmModal();
+  }
 }

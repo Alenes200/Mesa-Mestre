@@ -10,8 +10,6 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../Styles/main.css" />
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/style.css" />
     <title>Document</title>
   </head>
   <body>
@@ -288,6 +286,142 @@
             </div>
           </div>
         </div>
+
+        <div class="conteudo-funcionarios" style="display: none">
+          <div class="esquerda-funcionarios">
+            <div class="pesquisa">
+              <div style="display: flex;">
+                <input id="search-input-func" type="text" placeholder="Pesquisar" />
+                <img id="search-button-func" src="../images/icon-pesquisa.svg" alt="ícone de pesquisa" />
+              </div>
+              <button class="btn-adicionar-funcionario" id="btn-adicionar-funcionario">
+                Adicionar Funcionário
+              </button>
+            </div>
+            <div class="funcionarios-table-container">
+              <div class="funcionarios-table-wrapper">
+                <table class="funcionarios-table">
+                  <thead>
+                    <tr>
+                      <th class="nome-column">Nome</th>
+                      <th class="email-column">Email</th>
+                      <th class="telefone-column">Telefone</th>
+                      <th class="data-column">Data de Início</th>
+                      <th class="funcao-column">Função</th>
+                      <th class="funcao-column">Status</th>
+                      <th class="opcoes-column">Opções</th>
+                    </tr>
+                  </thead>
+                  <tbody id="funcionarios-table-body">
+                    <!-- Linhas dos funcionários serão adicionadas aqui dinamicamente -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="direita-funcionarios">
+            <div class="funcionario-form-container" id="funcionario-form-container">
+              <h2 class="form-title">Adicionar Funcionário</h2>
+              <div class="form-content">
+                <div class="form-group">
+                  <label for="nome-funcionario">Nome:</label>
+                  <input type="text" id="nome-funcionario" />
+                </div>
+                <div class="form-group">
+                  <label for="email-funcionario">Email:</label>
+                  <input type="email" id="email-funcionario" />
+                </div>
+                <div class="form-group">
+                  <label for="telefone-funcionario">Telefone:</label>
+                  <input type="text" id="telefone-funcionario" />
+                </div>
+                <div class="form-group">
+                  <label for="funcao-funcionario">Função:</label>
+                  <input type="text" id="funcao-funcionario" />
+                </div>
+                <div class="form-group">
+                  <label for="senha-funcionario">Senha:</label>
+                  <input type="password" id="senha-funcionario" />
+                </div>
+                <div class="form-actions">
+                  <button class="btn-salvar" id="btn-salvar-funcionario">Salvar</button>
+                  <button class="btn-cancelar" id="btn-cancelar-funcionario">Cancelar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="conteudo-graficos-container">
+          <div class="graficos-header">
+            <h2>Dashboard de Gráficos</h2>
+            <div class="filtros-grafico">
+              <div class="data-filtro">
+                <label for="data-inicio">Data Início:</label>
+                <input type="date" id="data-inicio">
+              </div>
+              <div class="data-filtro">
+                <label for="data-fim">Data Fim:</label>
+                <input type="date" id="data-fim">
+              </div>
+              <button id="btn-atualizar-grafico">Atualizar</button>
+            </div>
+          </div>
+          <div class="graficos-content">
+            <div class="graficos-grid">
+              <!-- Gráfico 1 - Comandas por dia da semana -->
+              <div class="grafico-card grafico-grande">
+                <div class="grafico-wrapper">
+                  <canvas id="graficoComandas" width="400" height="400"></canvas>
+                </div>
+              </div>
+
+              <!-- Gráfico 4 - Formas de pagamento -->
+              <div class="grafico-card">
+                <div class="grafico-wrapper">
+                  <canvas id="graficoPagamentos" width="400" height="400"></canvas>
+                </div>
+              </div>
+              
+              <!-- Gráfico 2 - Top 10 produtos -->
+              <div class="grafico-card grafico-grande">
+                <div class="grafico-wrapper">
+                  <canvas id="graficoTopProdutos" width="400" height="400"></canvas>
+                </div>
+              </div>
+
+              <!-- Gráfico 7 - Vendas por categoria -->
+              <div class="grafico-card">
+                <div class="grafico-wrapper">
+                  <canvas id="graficoCategorias" width="400" height="400"></canvas>
+                </div>
+              </div>
+              
+              <!-- Gráfico 3 - Faturamento diário -->
+              <div class="grafico-card ">
+                <div class="grafico-wrapper">
+                  <canvas id="graficoFaturamento" width="400" height="400"></canvas>
+                </div>
+              </div>
+              
+              <!-- Gráfico 5 - Média por comanda -->
+              <div class="grafico-card">
+                <div class="grafico-wrapper">
+                  <canvas id="graficoMediaComanda" width="400" height="400"></canvas>
+                </div>
+              </div>
+              
+              <!-- Gráfico 6 - Ocupação de mesas -->
+              <div class="grafico-card">
+                <div class="grafico-wrapper">
+                  <canvas id="graficoOcupacao" width="400" height="400"></canvas>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
       </div>
     </main>
 
@@ -318,6 +452,49 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Modal de edição de funcionário -->
+  <div id="editar-funcionario-modal">
+    <div class="custom-modal-content">
+      <div class="flex">
+        <h2>Editar Funcionário</h2>
+        <span id="close-modal-editar" class="custom-modal-close2">&times;</span>
+      </div>
+      <div class="form-content">
+        <div class="form-group">
+          <label for="editar-nome-funcionario">Nome:</label>
+          <input type="text" id="editar-nome-funcionario" />
+        </div>
+        <div class="form-group">
+          <label for="editar-email-funcionario">Email:</label>
+          <input type="email" id="editar-email-funcionario" />
+        </div>
+        <div class="form-group">
+          <label for="editar-telefone-funcionario">Telefone:</label>
+          <input type="text" id="editar-telefone-funcionario" />
+        </div>
+        <div class="form-group">
+          <label for="editar-funcao-funcionario">Função:</label>
+          <input type="text" id="editar-funcao-funcionario" />
+        </div>
+        <div class="form-group">
+          <label for="editar-status-funcionario">Status</label>
+          <select id="editar-status-funcionario" class="form-control">
+            <option value="1">Ativo</option>
+            <option value="0">Inativo</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button class="btn-salvar" id="btn-salvar-edicao">Salvar</button>
+          <button class="btn-cancelar" id="btn-cancelar-edicao">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   </body>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="../js/grafico.js"></script>
   <script type="module" src="../js/index.js"></script>
 </html>
