@@ -1,13 +1,24 @@
 import { showModal, openConfirmModal } from './modal.js';
+import {
+  carregarLocais,
+  carregarMesasModal,
+  carregarMesas,
+  salvar,
+  buscar,
+  adicionar,
+  desativar,
+} from './mesas.js';
 import { listarFuncionarios, buscarFuncionarios } from './funcionario.js';
 import { carregarGraficoComandas, destruirGrafico } from './grafico.js';
 
-const token = localStorage.getItem('token');
-
-let userData;
-let userId;
-
 document.addEventListener('DOMContentLoaded', async () => {
+  carregarLocais();
+  carregarMesasModal(carregarMesas, 'Externa');
+
+  const token = localStorage.getItem('token');
+
+  let userData;
+  let userId;
   if (!token) {
     window.location.href = '../pages/login_adm.html';
     return;
@@ -47,12 +58,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  const closeModal = () => {
-    modal.style.display = 'none';
-  };
+  const botaoSalvar = document.getElementById('salvar-alteracoes');
 
-  closeIcon.addEventListener('click', closeModal);
-  overlay.addEventListener('click', closeModal);
+  botaoSalvar.addEventListener('click', salvar);
+
+  const botaoAdicionar = document.getElementById('adicionar');
+
+  botaoAdicionar.addEventListener('click', adicionar);
+
+  const botaoDesativar = document.getElementById('desativar');
+
+  botaoDesativar.addEventListener('click', desativar);
+
+  const pesquisar = document.getElementById('pesquisar');
+
+  pesquisar.addEventListener('input', buscar);
 
   // New content switching functionality
   const menuCardapio = document.querySelector('.opcao:nth-child(1)');
@@ -93,11 +113,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   };
 
   const minimizarBtn = document.querySelector('.minimizar');
-  const divTop = document.querySelector('.top')
+  const divTop = document.querySelector('.top');
   const esquerda = document.querySelector('.esquerda');
   const botaoExpandir = document.createElement('div');
   botaoExpandir.classList.add('botao-expandir');
-  botaoExpandir.innerHTML = '<img src="../images/icon-maximizar.svg" alt="expandir opções" />';
+  botaoExpandir.innerHTML =
+    '<img src="../images/icon-maximizar.svg" alt="expandir opções" />';
   divTop.appendChild(botaoExpandir);
 
   minimizarBtn.addEventListener('click', () => {
@@ -409,7 +430,9 @@ function limparFormulario() {
 }
 
 // Adicione um evento de clique ao botão "Adicionar Produto" enviando uma requisição POST para o backend
-document.getElementById('btn-adicionar-produto').addEventListener('click', async () => {
+document
+  .getElementById('btn-adicionar-produto')
+  .addEventListener('click', async () => {
     // Captura os valores dos campos do formulário
     const nome = document.getElementById('nome').value.trim();
     const descricao = document.getElementById('descricao').value.trim();
@@ -432,7 +455,10 @@ document.getElementById('btn-adicionar-produto').addEventListener('click', async
       // alert(
       //   'Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.'
       // );
-      showModal('Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.', 'warning');
+      showModal(
+        'Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.',
+        'warning'
+      );
       return;
     }
 
@@ -456,7 +482,7 @@ document.getElementById('btn-adicionar-produto').addEventListener('click', async
         const data = await response.json();
         console.log('Produto adicionado com sucesso:', data);
         // alert('Produto adicionado com sucesso!');
-        showModal('Produto adicionado com sucesso!', 'success'); 
+        showModal('Produto adicionado com sucesso!', 'success');
         listarProdutos(); // Atualiza a lista de produtos após a adição
         limparFormulario();
       } else {
@@ -468,7 +494,10 @@ document.getElementById('btn-adicionar-produto').addEventListener('click', async
     } catch (error) {
       console.error('Erro na requisição:', error);
       // alert('Erro ao adicionar produto. Tente novamente mais tarde.');
-      showModal('Erro ao adicionar produto. Tente novamente mais tarde.', 'error');
+      showModal(
+        'Erro ao adicionar produto. Tente novamente mais tarde.',
+        'error'
+      );
     }
   });
 
@@ -671,7 +700,10 @@ document.querySelector('.btn-save').addEventListener('click', async () => {
   } catch (error) {
     console.error('Erro na requisição:', error);
     // alert('Erro ao atualizar produto. Tente novamente mais tarde.');
-    showModal('Erro ao atualizar produto. Tente novamente mais tarde.', 'error');
+    showModal(
+      'Erro ao atualizar produto. Tente novamente mais tarde.',
+      'error'
+    );
   }
 });
 
@@ -686,29 +718,35 @@ document.querySelector('.btn-delete').addEventListener('click', async () => {
   }
 
   // Abre o modal de confirmação
-  openConfirmModal('Tem certeza de que deseja deletar este produto?', async () => {
-    try {
-      // Faz a requisição DELETE para o backend
-      const response = await fetch(`/api/produtos/${produtoId}`, {
-        method: 'DELETE',
-      });
+  openConfirmModal(
+    'Tem certeza de que deseja deletar este produto?',
+    async () => {
+      try {
+        // Faz a requisição DELETE para o backend
+        const response = await fetch(`/api/produtos/${produtoId}`, {
+          method: 'DELETE',
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Produto deletado com sucesso:', data);
-        showModal('Produto deletado com sucesso!', 'success');
-        listarProdutos(); // Atualiza a lista de produtos
-        limparFormulario();
-      } else {
-        const errorData = await response.json();
-        console.error('Erro ao deletar produto:', errorData);
-        showModal('Erro ao deletar produto: ' + errorData.error, 'error');
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Produto deletado com sucesso:', data);
+          showModal('Produto deletado com sucesso!', 'success');
+          listarProdutos(); // Atualiza a lista de produtos
+          limparFormulario();
+        } else {
+          const errorData = await response.json();
+          console.error('Erro ao deletar produto:', errorData);
+          showModal('Erro ao deletar produto: ' + errorData.error, 'error');
+        }
+      } catch (error) {
+        console.error('Erro na requisição:', error);
+        showModal(
+          'Erro ao deletar produto. Tente novamente mais tarde.',
+          'error'
+        );
       }
-    } catch (error) {
-      console.error('Erro na requisição:', error);
-      showModal('Erro ao deletar produto. Tente novamente mais tarde.', 'error');
     }
-  });
+  );
 });
 
 function esconderGraficos() {
