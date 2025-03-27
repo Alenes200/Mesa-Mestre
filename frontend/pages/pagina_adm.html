@@ -11,6 +11,7 @@
     />
     <link rel="stylesheet" href="../Styles/main.css" />
     <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/style.css" />
     <title>Document</title>
   </head>
   <body>
@@ -87,8 +88,10 @@
             </div>
           </div>
           <div class="pesquisa">
-            <input type="text" placeholder="Pesquisar" id="pesquisar" />
-            <img src="../images/icon-pesquisa.svg" alt="ícone de pesquisa" />
+            <div class="box-pesquisa">
+              <input type="text" placeholder="Pesquisar" id="pesquisar" />
+              <img src="../images/icon-pesquisa.svg" alt="ícone de pesquisa" />
+            </div>
           </div>
           <div class="mesas">
             <!-- <div class="card-mesa">
@@ -170,8 +173,13 @@
         <div class="conteudo-cardapio" style="display: none">
           <div class="esquerda-cardapio">
             <div class="pesquisa">
-              <input type="text" placeholder="Pesquisar" />
-              <img src="../images/icon-pesquisa.svg" alt="ícone de pesquisa" />
+              <div class="box-pesquisa">
+                <input type="text" placeholder="Pesquisar" />
+                <img
+                  src="../images/icon-pesquisa.svg"
+                  alt="ícone de pesquisa"
+                />
+              </div>
             </div>
             <div class="menu-table-container">
               <table class="menu-table">
@@ -186,6 +194,12 @@
                     <td class="nome-column">Bife à Parmegiana</td>
                     <td class="local-column">
                       <span class="location-tag">Cozinha principal</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="nome-column">Picanha Grelhada</td>
+                    <td class="local-column">
+                      <span class="location-tag">Chapa/Grill</span>
                     </td>
                   </tr>
                   <tr>
@@ -281,10 +295,13 @@
     <div id="custom-modal" class="custom-modal">
       <div class="custom-modal-content">
         <div id="custom-modal-icon"></div>
+
         <!-- Ícone -->
         <p id="custom-modal-message"></p>
+
         <!-- Mensagem -->
         <span class="custom-modal-close">&times;</span>
+
         <!-- Botão de fechar -->
       </div>
     </div>
