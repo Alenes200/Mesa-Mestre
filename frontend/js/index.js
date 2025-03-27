@@ -2,15 +2,17 @@ import { showModal, openConfirmModal } from './modal.js';
 import {
   carregarLocais,
   carregarMesasModal,
+  carregarMesas,
   salvar,
   buscar,
   adicionar,
+  desativar,
 } from './mesas.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Mesas
   carregarLocais();
-  carregarMesasModal('Externa');
+  carregarMesasModal(carregarMesas, 'Externa');
 
   const botaoSalvar = document.getElementById('salvar-alteracoes');
 
@@ -19,6 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const botaoAdicionar = document.getElementById('adicionar');
 
   botaoAdicionar.addEventListener('click', adicionar);
+
+  const botaoDesativar = document.getElementById('desativar');
+
+  botaoDesativar.addEventListener('click', desativar);
 
   const pesquisar = document.getElementById('pesquisar');
 

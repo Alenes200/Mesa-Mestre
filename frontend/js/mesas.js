@@ -13,12 +13,12 @@ const salvarStatus = document.getElementById('salvarStatus');
 const adicionarStatus = document.getElementById('adicionarStatus');
 
 export function adicionar() {
-  const capacidadeAtual = document.getElementById('capacidade').value;
-  const descricaoAtual = document.getElementById('descricao').value;
-  const localAtual = document.getElementById('local').value;
+  const capacidadeAtual = capacidade.value;
+  const descricaoAtual = descricao.value;
+  const localAtual = setor.value;
 
   // Verifica se os campos estão preenchidos
-  if (!capacidade || !descricao || !local) {
+  if (!capacidadeAtual || !descricaoAtual || !localAtual) {
     alert('Todos os campos são obrigatórios!');
     return;
   }
@@ -30,16 +30,16 @@ export function adicionar() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      capacidade,
-      descricao,
-      local,
+      capacidade: capacidadeAtual,
+      descricao: descricaoAtual,
+      local: Number(localAtual),
     }),
   })
     .then((response) => response.json())
     .then((data) => {
       console.log('Mesa criada:', data);
       alert('Mesa criada com sucesso!');
-      // Aqui você pode adicionar a lógica para atualizar a lista de mesas ou fechar o modal
+      carregarMesasModal(carregarTodasMesasAtivas);
     })
     .catch((error) => {
       console.error('Erro:', error);
@@ -47,19 +47,101 @@ export function adicionar() {
     });
 }
 
-export function buscar() {
-  const pesquisa = pesquisar.value.match(/\d+/)?.[0].trim(); // Pega o valor digitado e remove espaços extras
+export function desativar() {
+  const mesaId = Number(tituloModal.innerText.match(/\d+/)?.[0]);
+  // Realiza a requisição DELETE utilizando fetch
+  fetch(`http://localhost:3000/api/mesas/${mesaId}`, {
+    method: 'DELETE',
+  })
+    .then((response) => {
+      // Verifica se a resposta foi bem-sucedida
+      if (!response.ok) {
+        return Promise.reject('Erro ao desativar a mesa.');
+      }
+      // Converte a resposta para JSON
+      return response.json();
+    })
+    .then((data) => {
+      // Exibe a mensagem de sucesso
+      alert(data.message);
+      console.log(data.mesa); // Exibe os dados da mesa desativada no console
 
-  if (!pesquisa) {
-    carregarMesasModal('Externa');
+      if (data.mesa.loc_descricao == 'Ativas') {
+        carregarMesasModal(carregarTodasMesasAtivas);
+        return;
+      }
+
+      if (data.mesa.loc_descricao == 'Inativas') {
+        carregarMesasModal(carregarTodasMesasInativas);
+        return;
+      }
+
+      carregarMesasModal(carregarMesas, data.mesa.loc_descricao);
+    })
+    .catch((error) => {
+      // Trata os erros
+      console.error(error);
+      alert('Erro ao desativar mesa.');
+    });
+}
+
+export function buscar() {
+  const pesquisa = pesquisar.value.trim();
+  const mes_id = pesquisa.match(/\d+/) ? pesquisa.match(/\d+/)[0] : null; // Extrai apenas o número
+
+  const locais = document.getElementsByClassName('locais');
+
+  let localPesquisa;
+
+  // Obtém o local selecionado e o id do local
+  Array.from(locais).forEach(function (local, index) {
+    if (local.style.color == 'rgb(255, 99, 71)') {
+      localPesquisa = local.dataset.local;
+    }
+  });
+
+  if (!pesquisa && localPesquisa === 'Ativas') {
+    carregarMesasModal(carregarTodasMesasAtivas);
     return;
   }
 
-  carregarMesa(pesquisa);
+  if (!pesquisa && localPesquisa === 'Inativas') {
+    carregarMesasModal(carregarTodasMesasInativas);
+    return;
+  }
+
+  if (!pesquisa) {
+    carregarMesasModal(carregarMesas, localPesquisa);
+    return;
+  }
+
+  carregarMesasPesquisa(mes_id, pesquisa, localPesquisa).then(funcoesModal);
 }
 
 export function salvar() {
   const mesaId = Number(tituloModal.innerText.match(/\d+/)?.[0]);
+
+  let locId;
+
+  fetch(`http://localhost:3000/api/mesas/${mesaId}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Erro ao buscar os dados da mesa');
+      }
+      return response.json(); // Converte a resposta em JSON
+    })
+    .then((mesa) => {
+      console.log('Mesa encontrada:', mesa);
+
+      // Pegando o loc_id da mesa
+      locId = mesa.loc_id;
+      console.log('loc_id:', locId);
+
+      // Aqui você pode usar o loc_id como precisar
+    })
+    .catch((error) => {
+      console.error('Erro:', error);
+    });
 
   // Coletando os dados dos campos
   const data = {
@@ -69,22 +151,59 @@ export function salvar() {
     local: Number(setor.value),
   };
 
-  // Fazendo a requisição para o servidor para atualizar os dados
+  // Fazendo a requisição para atualizar os dados da mesa
   fetch(`http://localhost:3000/api/mesas/${mesaId}`, {
-    // URL do seu endpoint para atualizar os dados
-    method: 'PUT', // Pode ser 'PUT' ou 'PATCH', dependendo da sua implementação
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data), // Enviando os dados como JSON
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
   })
     .then((response) => {
       if (!response.ok) throw new Error('Erro ao atualizar a mesa');
-      return response.json(); // Retorna a resposta do servidor (se necessário)
+      return response.json(); // Converte a resposta em JSON
     })
     .then((data) => {
       console.log('Mesa atualizada com sucesso', data);
       alert('Mesa atualizada com sucesso!');
+
+      // Agora faz o segundo fetch para pegar o local
+      return fetch(`http://localhost:3000/api/mesas/local/${locId}`);
+    })
+    .then((localResponse) => {
+      if (!localResponse.ok) throw new Error('Erro ao buscar o local');
+      return localResponse.json(); // Converte a resposta em JSON
+    })
+    .then((localJson) => {
+      console.log(localJson.loc_descricao);
+
+      const locais = document.querySelectorAll('.locais');
+
+      let retornou = false;
+
+      locais.forEach(function (elemento) {
+        const estiloElemento = window.getComputedStyle(elemento); // Pega o estilo computado
+
+        if (
+          estiloElemento.color === 'rgb(255, 99, 71)' &&
+          elemento.dataset.local === 'Ativas'
+        ) {
+          carregarMesasModal(carregarTodasMesasAtivas);
+          retornou = true;
+          return;
+        }
+
+        if (
+          estiloElemento.color === 'rgb(255, 99, 71)' &&
+          elemento.dataset.local === 'Inativas'
+        ) {
+          carregarMesasModal(carregarTodasMesasInativas);
+          retornou = true;
+          return;
+        }
+      });
+
+      if (retornou == false) {
+        carregarMesasModal(carregarMesas, localJson.loc_descricao);
+      }
     })
     .catch((error) => {
       console.error('Erro:', error);
@@ -92,49 +211,73 @@ export function salvar() {
     });
 }
 
-export function carregarMesasModal(local) {
-  carregarMesas(local).then(() => {
-    // Modal functionality remains the same
-    const cardMesas = document.querySelectorAll('.card-mesa');
-    const modal = document.querySelector('.modal-mesa');
-    const closeIcon = document.querySelector('#fechar-modal-mesas');
-    const overlay = document.querySelector('.overlay');
+export function carregarMesasModal(carregar, local = null) {
+  carregar(local).then(funcoesModal);
+}
 
-    cardMesas.forEach((card) => {
-      card.addEventListener('click', async () => {
-        modal.style.display = 'flex';
+export function funcoesModal() {
+  // Modal functionality remains the same
+  const cardMesas = document.querySelectorAll('.card-mesa');
+  const modal = document.querySelector('.modal-mesa');
+  const closeIcon = document.querySelector('#fechar-modal-mesas');
+  const overlay = document.querySelector('.overlay');
 
-        if (card.classList.contains('adicionar-mesa')) {
-          tituloModal.textContent = 'ADICIONAR MESA';
-          descricao.value = '';
-          capacidade.value = '';
-          setor.innerHTML = `<option value="selecionar">Selecionar</option>`;
-          statusText.innerText = '1';
+  cardMesas.forEach((card) => {
+    card.addEventListener('click', async () => {
+      modal.style.display = 'flex';
 
-          salvarStatus.style.display = 'None';
-          adicionarStatus.style.display = 'Block';
+      if (card.classList.contains('adicionar-mesa')) {
+        tituloModal.textContent = 'ADICIONAR MESA';
+        descricao.value = '';
+        capacidade.value = '';
 
-          botaoSalvar.style.display = 'None';
-          botaoAdicionar.style.display = 'Block';
-          return;
-        }
+        fetch(`http://localhost:3000/api/mesas/local/locais/Restritos`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Erro ao buscar dados dos locais');
+            }
+            return response.json(); // Converte a resposta para JSON
+          })
+          .then((locaisSelect) => {
+            setor.innerHTML = `<option value="selecionar">Selecionar</option>`;
 
-        salvarStatus.style.display = 'Block';
-        adicionarStatus.style.display = 'None';
+            locaisSelect.forEach((local, index) => {
+              const option = document.createElement('option');
+              option.value = index + 1;
+              option.textContent = local.loc_descricao;
 
-        botaoSalvar.style.display = 'Block';
-        botaoAdicionar.style.display = 'None';
-        await buscarDadosMesa(card.dataset.id);
-      });
+              setor.appendChild(option);
+            });
+          })
+          .catch((error) => {
+            console.error('Erro:', error);
+          });
+
+        statusText.innerText = '1';
+
+        salvarStatus.style.display = 'None';
+        adicionarStatus.style.display = 'Block';
+
+        botaoSalvar.style.display = 'None';
+        botaoAdicionar.style.display = 'Block';
+        return;
+      }
+
+      salvarStatus.style.display = 'Block';
+      adicionarStatus.style.display = 'None';
+
+      botaoSalvar.style.display = 'Block';
+      botaoAdicionar.style.display = 'None';
+      await buscarDadosMesa(card.dataset.id);
     });
-
-    const closeModal = () => {
-      modal.style.display = 'none';
-    };
-
-    closeIcon.addEventListener('click', closeModal);
-    overlay.addEventListener('click', closeModal);
   });
+
+  const closeModal = () => {
+    modal.style.display = 'none';
+  };
+
+  closeIcon.addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
 }
 
 async function buscarDescricaoLocal(locId) {
@@ -154,8 +297,15 @@ async function buscarDescricaoLocal(locId) {
 
 export async function buscarDadosMesa(mesaId) {
   try {
-    const response = await fetch(`http://localhost:3000/api/mesas/${mesaId}`); // Corrigido: URL para buscar uma mesa específica
+    const response = await fetch(`http://localhost:3000/api/mesas/${mesaId}`);
     if (!response.ok) throw new Error('Erro ao buscar dados da mesa');
+
+    const locais = await fetch(
+      `http://localhost:3000/api/mesas/local/locais/Restritos`
+    );
+    if (!locais.ok) throw new Error('Erro ao buscar dados dos locais');
+
+    const locaisSelect = await locais.json();
 
     const dados = await response.json();
 
@@ -163,10 +313,25 @@ export async function buscarDadosMesa(mesaId) {
 
     console.log(dados);
     // Aqui você pode preencher os campos do seu modal com os dados da mesa
-    tituloModal.textContent = `MESA ${dados.mes_id}`;
+    tituloModal.textContent = `EDITAR - MESA ${dados.mes_id}`;
     descricao.value = dados.mes_descricao || '';
     capacidade.value = dados.mes_capacidade || 1;
-    setor.innerHTML = `<option value="${dados.loc_id}">${descricaoLocal}</option>`;
+
+    setor.innerHTML = '';
+
+    locaisSelect.forEach(function (local, index) {
+      const option = document.createElement('option');
+      option.value = index + 1;
+      option.textContent = local.loc_descricao;
+
+      if (descricaoLocal == local.loc_descricao) {
+        option.selected = true;
+      }
+
+      setor.appendChild(option);
+    });
+
+    // setor.innerHTML = `<option value="${dados.loc_id}">${descricaoLocal}</option>`;
     statusInput.value = dados.mes_status || '';
     return dados;
   } catch (error) {
@@ -175,37 +340,83 @@ export async function buscarDadosMesa(mesaId) {
   }
 }
 
-export async function carregarMesa(id) {
+export async function carregarMesasPesquisa(id, descricao, local) {
   try {
-    const response = await fetch(`http://localhost:3000/api/mesas/${id}`);
-    if (!response.ok) throw new Error('Erro ao carregar a mesa');
+    let url = `http://localhost:3000/api/mesas/pesquisa/area?mes_id=${id}&mes_descricao=${descricao}&loc_descricao=${local}`;
 
-    const mesa = await response.json();
+    if (local === 'Ativas') {
+      url = `http://localhost:3000/api/mesas/pesquisa/ativas?mes_id=${id}&mes_descricao=${descricao}`;
+    } else if (local === 'Inativas') {
+      url = `http://localhost:3000/api/mesas/pesquisa/inativas?mes_id=${id}&mes_descricao=${descricao}`;
+    }
+
+    const response = await fetch(url);
+    // if (!response.ok)
+    //   throw new Error(`Erro ao carregar a mesa do local ${local}`);
+
+    const mesas = await response.json();
     containerMesas.innerHTML = ''; // Limpa as mesas antes de renderizar
 
-    const divMesa = document.createElement('div');
-    divMesa.classList.add('card-mesa');
-    divMesa.dataset.id = mesa.mes_id;
-    divMesa.innerHTML = `<p>Mesa ${mesa.mes_id}</p>`;
-    containerMesas.appendChild(divMesa);
+    if (mesas.length === 0) {
+      // Caso não haja mesas, apenas limpa e deixa vazio
+      return;
+    }
 
-    // Reinsere o botão de adicionar mesa
-    containerMesas.appendChild(btnAdicionarMesa);
+    mesas.forEach((mesa) => {
+      const divMesa = document.createElement('div');
+      divMesa.classList.add('card-mesa');
+      divMesa.dataset.id = mesa.mes_id;
+      divMesa.innerHTML = `<p>Mesa ${mesa.mes_id}</p>`;
+      containerMesas.appendChild(divMesa);
+    });
   } catch (error) {
     console.error(error);
-    // alert('Erro ao carregar as mesas.');
+    containerMesas.innerHTML = '';
   }
 }
 
 export async function carregarMesas(local) {
+  console.log(local);
   try {
     const response = await fetch(
-      `http://localhost:3000/api/mesas//local/descricao/${local}`
+      `http://localhost:3000/api/mesas/local/descricao/${local}`
     ); // Corrigido: URL para buscar todas as mesas
-    if (!response.ok) throw new Error('Erro ao carregar as mesas');
+    // if (!response.ok) throw new Error('Erro ao carregar as mesas');
 
     const mesas = await response.json();
     containerMesas.innerHTML = ''; // Limpa as mesas antes de renderizar
+
+    if (mesas.length === 0) {
+      // Caso não haja mesas, apenas limpa e deixa vazio
+      return;
+    }
+
+    mesas.forEach((mesa) => {
+      const divMesa = document.createElement('div');
+      divMesa.classList.add('card-mesa');
+      divMesa.dataset.id = mesa.mes_id;
+      divMesa.innerHTML = `<p>Mesa ${mesa.mes_id}</p>`;
+      containerMesas.appendChild(divMesa);
+    });
+  } catch (error) {
+    console.error(error);
+    containerMesas.innerHTML = '';
+  }
+}
+
+export async function carregarTodasMesasAtivas() {
+  try {
+    const response = await fetch('http://localhost:3000/api/mesas');
+    // if (!response.ok) throw new Error('Erro ao buscar mesas');
+
+    const mesas = await response.json();
+
+    containerMesas.innerHTML = ''; // Limpa as mesas antes de renderizar
+
+    if (mesas.length === 0) {
+      // Caso não haja mesas, apenas limpa e deixa vazio
+      return;
+    }
 
     mesas.forEach((mesa) => {
       const divMesa = document.createElement('div');
@@ -215,30 +426,66 @@ export async function carregarMesas(local) {
       containerMesas.appendChild(divMesa);
     });
 
-    // Reinsere o botão de adicionar mesa
     containerMesas.appendChild(btnAdicionarMesa);
   } catch (error) {
     console.error(error);
-    alert('Erro ao carregar as mesas.');
+    containerMesas.innerHTML = '';
+  }
+}
+
+export async function carregarTodasMesasInativas() {
+  try {
+    const response = await fetch('http://localhost:3000/api/mesas/inativas');
+    // if (!response.ok) throw new Error('Erro ao buscar mesas');
+
+    const mesas = await response.json();
+
+    containerMesas.innerHTML = ''; // Limpa as mesas antes de renderizar
+
+    if (mesas.length === 0) {
+      // Caso não haja mesas, apenas limpa e deixa vazio
+      return;
+    }
+
+    mesas.forEach((mesa) => {
+      const divMesa = document.createElement('div');
+      divMesa.classList.add('card-mesa');
+      divMesa.dataset.id = mesa.mes_id;
+      divMesa.innerHTML = `<p>Mesa ${mesa.mes_id}</p>`;
+      containerMesas.appendChild(divMesa);
+    });
+  } catch (error) {
+    console.error(error);
+    containerMesas.innerHTML = '';
   }
 }
 
 export async function carregarLocais() {
   try {
     const response = await fetch(
-      'http://localhost:3000/api/mesas/local/locais'
-    ); // Ajuste a rota conforme seu backend
-    if (!response.ok) throw new Error('Erro ao buscar locais distintos');
+      'http://localhost:3000/api/mesas/local/locais/Todos'
+    );
+    // if (!response.ok) throw new Error('Erro ao buscar locais distintos');
 
     const locais = await response.json();
 
     const opcoesDiv = document.getElementById('locais'); // Seleciona a div que conterá os h2
     opcoesDiv.innerHTML = ''; // Limpa o conteúdo antes de adicionar novos elementos
 
-    locais.forEach((local) => {
+    if (locais.length === 0) {
+      // Caso não haja locais, apenas limpa e deixa vazio
+      return;
+    }
+
+    locais.forEach((local, index) => {
       const h2 = document.createElement('h2');
       h2.classList.add('locais');
       h2.textContent = local.loc_descricao; // Preenche com o nome da área
+      h2.dataset.local = local.loc_descricao; // Adiciona um atributo data-local
+
+      if (index == 0) {
+        h2.style.color = '#FF6347';
+      }
       opcoesDiv.appendChild(h2);
 
       h2.addEventListener('click', async function () {
@@ -247,11 +494,22 @@ export async function carregarLocais() {
         });
 
         h2.style.color = '#FF6347';
-        carregarMesasModal(h2.textContent);
+
+        if (local.loc_descricao == 'Ativas') {
+          carregarMesasModal(carregarTodasMesasAtivas);
+          return;
+        }
+
+        if (local.loc_descricao == 'Inativas') {
+          carregarMesasModal(carregarTodasMesasInativas);
+          return;
+        }
+
+        carregarMesasModal(carregarMesas, local.loc_descricao);
       });
     });
   } catch (error) {
     console.error(error);
-    alert('Erro ao carregar as áreas.');
+    containerMesas.innerHTML = '';
   }
 }

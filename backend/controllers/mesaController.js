@@ -12,6 +12,15 @@ const mesasController = {
     }
   },
 
+  listInativas: async (req, res) => {
+    try {
+      const mesas = await mesasRepository.getInativas();
+      res.json(mesas);
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao listar mesas.' });
+    }
+  },
+
   get: async (req, res) => {
     try {
       const mesa = await mesasRepository.getById(req.params.id);
@@ -25,9 +34,18 @@ const mesasController = {
     }
   },
 
-  getLocais: async (req, res) => {
+  getLocaisRestritos: async (req, res) => {
     try {
-      const locais = await mesasRepository.getLocais();
+      const locais = await mesasRepository.getLocaisRestritos();
+      res.json(locais);
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao listar os locais.' });
+    }
+  },
+
+  getTodosLocais: async (req, res) => {
+    try {
+      const locais = await mesasRepository.getTodosLocais();
       res.json(locais);
     } catch (error) {
       res.status(500).json({ error: 'Erro ao listar os locais.' });
@@ -139,6 +157,48 @@ const mesasController = {
     } catch (error) {
       console.error('Erro ao buscar local por ID:', error);
       res.status(500).json({ error: 'Erro ao buscar local por ID.' });
+    }
+  },
+
+  getPesquisaArea: async (req, res) => {
+    try {
+      const { mes_id, mes_descricao, loc_descricao } = req.query;
+
+      // Chama o repositório passando os parâmetros
+      const mesas = await mesasRepository.getPesquisaArea(
+        mes_id,
+        mes_descricao,
+        loc_descricao
+      );
+      res.json(mesas);
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao listar mesas.' });
+    }
+  },
+
+  getPesquisaAtivas: async (req, res) => {
+    try {
+      const { mes_id, mes_descricao } = req.query;
+      const mesas = await mesasRepository.getPesquisaAtivas(
+        mes_id,
+        mes_descricao
+      );
+      res.json(mesas);
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao listar mesas.' });
+    }
+  },
+
+  getPesquisaInativas: async (req, res) => {
+    try {
+      const { mes_id, mes_descricao } = req.query;
+      const mesas = await mesasRepository.getPesquisaInativas(
+        mes_id,
+        mes_descricao
+      );
+      res.json(mesas);
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao listar mesas.' });
     }
   },
 };

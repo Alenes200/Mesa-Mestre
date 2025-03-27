@@ -135,7 +135,7 @@
                 <div class="bot" id="salvarStatus">
                   <div class="codigo">
                     <h2>Status</h2>
-                    <input type="text" id="statusText" />
+                    <input type="text" id="statusInput" />
                   </div>
                 </div>
 
@@ -143,14 +143,23 @@
                 <div class="bot" id="adicionarStatus">
                   <div class="codigo">
                     <h2>Status</h2>
-                    <p id="statusInput"></p>
+                    <p id="statusText"></p>
                   </div>
                 </div>
 
-                <div>
-                  <button id="salvar-alteracoes">Salvar</button>
-                  <button id="adicionar" style="display: none">
+                <div class="botoes">
+                  <button id="salvar-alteracoes" class="botaoAdicionar">
+                    Salvar
+                  </button>
+                  <button
+                    id="adicionar"
+                    style="display: none"
+                    class="botaoAdicionar"
+                  >
                     Adicionar
+                  </button>
+                  <button id="desativar" class="botaoDesativar">
+                    Desativar
                   </button>
                 </div>
               </div>

@@ -23,6 +23,14 @@ const router = express.Router();
  */
 router.get('/', mesasController.list);
 
+router.get('/inativas', mesasController.listInativas);
+
+router.get('/pesquisa/area', mesasController.getPesquisaArea);
+
+router.get('/pesquisa/ativas', mesasController.getPesquisaAtivas);
+
+router.get('/pesquisa/inativas', mesasController.getPesquisaInativas);
+
 /**
  * @swagger
  * /api/mesas/{id}:
@@ -72,7 +80,9 @@ router.get('/:id', mesasController.get);
  *       500:
  *         description: Erro ao listar os locais
  */
-router.get('/local/locais', mesasController.getLocais);
+router.get('/local/locais/Restritos', mesasController.getLocaisRestritos);
+
+router.get('/local/locais/Todos', mesasController.getTodosLocais);
 
 router.get('/local/:id', mesasController.getLocalById);
 
