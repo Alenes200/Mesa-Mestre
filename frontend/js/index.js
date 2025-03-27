@@ -1,5 +1,6 @@
 import { showModal, openConfirmModal } from './modal.js';
 import { listarFuncionarios, buscarFuncionarios } from './funcionario.js';
+import { carregarGraficoComandas, destruirGrafico } from './grafico.js';
 
 const token = localStorage.getItem('token');
 
@@ -110,16 +111,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   menuCardapio.addEventListener('click', () => {
     removeActiveClass();
     document.getElementById("op_cardapio").classList.add("op_ativa");
-    conteudoMesas.style.display = 'none';
-    conteudoFuncionarios.style.display = 'none'
+
+    document.querySelectorAll('.direita > div').forEach(div => {
+      if (div !== conteudoCardapio) {
+        div.style.display = 'none';
+      }
+    });
+
     conteudoCardapio.style.display = 'flex';
   });
 
   menuMesas.addEventListener('click', () => {
     removeActiveClass();
     document.getElementById("op_mesa").classList.add("op_ativa")
-    conteudoCardapio.style.display = 'none';
-    conteudoFuncionarios.style.display = 'none'
+    
+    document.querySelectorAll('.direita > div').forEach(div => {
+      if (div !== conteudoMesas) {
+        div.style.display = 'none';
+      }
+    });
+
     conteudoMesas.style.display = 'block';
   });
 
@@ -129,11 +140,53 @@ document.addEventListener('DOMContentLoaded', async () => {
   menuFuncionarios.addEventListener('click', () => {
     removeActiveClass();
     document.getElementById("op_funcionario").classList.add("op_ativa")
-    conteudoMesas.style.display = 'none';
-    conteudoCardapio.style.display = 'none';
+    
+    document.querySelectorAll('.direita > div').forEach(div => {
+      if (div !== conteudoFuncionarios) {
+        div.style.display = 'none';
+      }
+    });
+
     conteudoFuncionarios.style.display = 'flex'; 
 
     listarFuncionarios(token, userId);
+  });
+
+  const menuGraficos = document.getElementById('op_grafico');
+  const conteudoGraficos = document.querySelector('.conteudo-graficos-container');
+
+  menuGraficos.addEventListener('click', async () => {
+    removeActiveClass();
+    menuGraficos.classList.add('op_ativa');
+    
+    // Esconder outros conteúdos
+    document.querySelectorAll('.direita > div').forEach(div => {
+      if (div !== conteudoGraficos) {
+        div.style.display = 'none';
+      }
+    });
+    
+    // Mostrar container antes de carregar
+    conteudoGraficos.style.display = 'block';
+    conteudoGraficos.style.opacity = '0'; // Usar opacity em vez de visibility
+    
+    // Pequeno delay para o browser processar
+    await new Promise(resolve => setTimeout(resolve, 50));
+    
+    try {
+      const token = localStorage.getItem('token');
+      await carregarGraficoComandas(token);
+      conteudoGraficos.style.opacity = '1'; // Mostrar gradualmente
+    } catch (error) {
+      console.error('Erro ao carregar gráficos:', error);
+      conteudoGraficos.innerHTML = `
+        <div class="graficos-error">
+          <p>Erro ao carregar gráficos. Tente novamente.</p>
+          <button id="retry-graficos">Tentar Novamente</button>
+        </div>
+      `;
+      conteudoGraficos.style.opacity = '1';
+    }
   });
 
   // Abrir/Fechar o formulário de adicionar funcionário
@@ -658,3 +711,15 @@ document.querySelector('.btn-delete').addEventListener('click', async () => {
   });
 });
 
+function esconderGraficos() {
+  // Adicione um pequeno delay para garantir que a transição de tela foi concluída
+  setTimeout(() => {
+    destruirGrafico();
+    const container = document.querySelector('.conteudo-graficos-container');
+    if (container) {
+      container.style.display = 'none';
+      // Limpar o conteúdo para evitar acúmulo de elementos
+      container.innerHTML = '';
+    }
+  }, 100);
+}
