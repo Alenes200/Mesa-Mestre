@@ -173,7 +173,7 @@ const chartRepository = {
     try {
       const query = `
         SELECT
-          m.mes_local AS local_mesa,
+          m.LOC_ID AS local_mesa,
           COUNT(c.com_id) AS total_comandas,
           ROUND(100.0 * COUNT(c.com_id) / 
             (SELECT COUNT(*) FROM tbl_comanda c2
@@ -181,7 +181,7 @@ const chartRepository = {
         FROM tbl_comanda c
         JOIN tbl_mesa m ON c.mes_id = m.mes_id
         ${dataInicio && dataFim ? `WHERE c.com_data_inicio BETWEEN $1 AND $2` : ''}
-        GROUP BY m.mes_local
+        GROUP BY m.LOC_ID
         ORDER BY total_comandas DESC
       `;
       
