@@ -38,13 +38,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     userId = userData.id;
 
     // Configuração do evento de pesquisa
-    document.getElementById('search-button-func').addEventListener('click', () => {
-      buscarFuncionarios(token, userId);
-    });;
-  
+    document
+      .getElementById('search-button-func')
+      .addEventListener('click', () => {
+        buscarFuncionarios(token, userId);
+      });
   } catch (error) {
     console.error('Erro ao carregar dados do usuário:', error);
-    showModal('Erro ao carregar dados do usuário. Tente novamente mais tarde.', 'error');
+    showModal(
+      'Erro ao carregar dados do usuário. Tente novamente mais tarde.',
+      'error'
+    );
   }
 
   // Modal functionality remains the same
@@ -99,7 +103,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       } else {
         const errorData = await response.json();
         console.error('Erro ao fazer logout:', errorData);
-        showModal('Erro ao fazer logout. Tente novamente.' + errorData.error, 'error');
+        showModal(
+          'Erro ao fazer logout. Tente novamente.' + errorData.error,
+          'error'
+        );
       }
     } catch (error) {
       console.error('Erro na requisição:', error);
@@ -132,9 +139,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   menuCardapio.addEventListener('click', () => {
     removeActiveClass();
-    document.getElementById("op_cardapio").classList.add("op_ativa");
+    document.getElementById('op_cardapio').classList.add('op_ativa');
 
-    document.querySelectorAll('.direita > div').forEach(div => {
+    document.querySelectorAll('.direita > div').forEach((div) => {
       if (div !== conteudoCardapio) {
         div.style.display = 'none';
       }
@@ -145,9 +152,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   menuMesas.addEventListener('click', () => {
     removeActiveClass();
-    document.getElementById("op_mesa").classList.add("op_ativa")
-    
-    document.querySelectorAll('.direita > div').forEach(div => {
+    document.getElementById('op_mesa').classList.add('op_ativa');
+
+    document.querySelectorAll('.direita > div').forEach((div) => {
       if (div !== conteudoMesas) {
         div.style.display = 'none';
       }
@@ -161,40 +168,42 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   menuFuncionarios.addEventListener('click', () => {
     removeActiveClass();
-    document.getElementById("op_funcionario").classList.add("op_ativa")
-    
-    document.querySelectorAll('.direita > div').forEach(div => {
+    document.getElementById('op_funcionario').classList.add('op_ativa');
+
+    document.querySelectorAll('.direita > div').forEach((div) => {
       if (div !== conteudoFuncionarios) {
         div.style.display = 'none';
       }
     });
 
-    conteudoFuncionarios.style.display = 'flex'; 
+    conteudoFuncionarios.style.display = 'flex';
 
     listarFuncionarios(token, userId);
   });
 
   const menuGraficos = document.getElementById('op_grafico');
-  const conteudoGraficos = document.querySelector('.conteudo-graficos-container');
+  const conteudoGraficos = document.querySelector(
+    '.conteudo-graficos-container'
+  );
 
   menuGraficos.addEventListener('click', async () => {
     removeActiveClass();
     menuGraficos.classList.add('op_ativa');
-    
+
     // Esconder outros conteúdos
-    document.querySelectorAll('.direita > div').forEach(div => {
+    document.querySelectorAll('.direita > div').forEach((div) => {
       if (div !== conteudoGraficos) {
         div.style.display = 'none';
       }
     });
-    
+
     // Mostrar container antes de carregar
     conteudoGraficos.style.display = 'block';
     conteudoGraficos.style.opacity = '0'; // Usar opacity em vez de visibility
-    
+
     // Pequeno delay para o browser processar
-    await new Promise(resolve => setTimeout(resolve, 50));
-    
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
     try {
       const token = localStorage.getItem('token');
       await carregarGraficoComandas(token);
@@ -212,9 +221,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Abrir/Fechar o formulário de adicionar funcionário
-  const btnAdicionarFuncionario = document.getElementById('btn-adicionar-funcionario');
-  const funcionarioFormContainer = document.getElementById('funcionario-form-container');
-  const btnCancelarFuncionario = document.getElementById('btn-cancelar-funcionario');
+  const btnAdicionarFuncionario = document.getElementById(
+    'btn-adicionar-funcionario'
+  );
+  const funcionarioFormContainer = document.getElementById(
+    'funcionario-form-container'
+  );
+  const btnCancelarFuncionario = document.getElementById(
+    'btn-cancelar-funcionario'
+  );
 
   btnAdicionarFuncionario.addEventListener('click', () => {
     funcionarioFormContainer.classList.add('aberto');
@@ -233,7 +248,9 @@ btnSalvarFuncionario.addEventListener('click', async () => {
   const telefone = document.getElementById('telefone-funcionario').value.trim();
   const funcao = document.getElementById('funcao-funcionario').value.trim();
   const senha = document.getElementById('senha-funcionario').value.trim();
-  const funcionarioFormContainer = document.getElementById('funcionario-form-container');
+  const funcionarioFormContainer = document.getElementById(
+    'funcionario-form-container'
+  );
 
   if (!nome || !email || !senha) {
     showModal('Por favor, preencha todos os campos obrigatórios.', 'warning');
@@ -261,7 +278,7 @@ btnSalvarFuncionario.addEventListener('click', async () => {
       const data = await response.json();
       console.log('Funcionário adicionado com sucesso:', data);
       showModal('Funcionário adicionado com sucesso!', 'success');
-      listarFuncionarios(token, userId) // Atualiza a lista de funcionários
+      listarFuncionarios(token, userId); // Atualiza a lista de funcionários
       funcionarioFormContainer.classList.remove('aberto'); // Fecha o formulário
     } else {
       const errorData = await response.json();
@@ -270,7 +287,10 @@ btnSalvarFuncionario.addEventListener('click', async () => {
     }
   } catch (error) {
     console.error('Erro na requisição:', error);
-    showModal('Erro ao adicionar funcionário. Tente novamente mais tarde.', 'error');
+    showModal(
+      'Erro ao adicionar funcionário. Tente novamente mais tarde.',
+      'error'
+    );
   }
 });
 
@@ -295,41 +315,69 @@ async function abrirModalEdicao(funcionarioId) {
       const funcionario = await response.json();
 
       // Preenche o modal com os dados do funcionário
-      document.getElementById('editar-nome-funcionario').value = funcionario.usr_nome;
-      document.getElementById('editar-email-funcionario').value = funcionario.usr_email;
-      document.getElementById('editar-telefone-funcionario').value = funcionario.usr_telefone || '';
-      document.getElementById('editar-funcao-funcionario').value = funcionario.usr_funcao || '';
-      document.getElementById('editar-status-funcionario').value = funcionario.usr_status;
+      document.getElementById('editar-nome-funcionario').value =
+        funcionario.usr_nome;
+      document.getElementById('editar-email-funcionario').value =
+        funcionario.usr_email;
+      document.getElementById('editar-telefone-funcionario').value =
+        funcionario.usr_telefone || '';
+      document.getElementById('editar-funcao-funcionario').value =
+        funcionario.usr_funcao || '';
+      document.getElementById('editar-status-funcionario').value =
+        funcionario.usr_status;
 
       // Exibe o modal
       const modalEdicao = document.getElementById('editar-funcionario-modal');
       modalEdicao.style.display = 'flex';
 
       // Remove eventos anteriores
-      document.getElementById('btn-cancelar-edicao').removeEventListener('click', closeModalEdicao);
+      document
+        .getElementById('btn-cancelar-edicao')
+        .removeEventListener('click', closeModalEdicao);
       modalEdicao.removeEventListener('click', closeModalEdicaoOutside);
-      document.getElementById('btn-salvar-edicao').removeEventListener('click', salvarEdicao);
+      document
+        .getElementById('btn-salvar-edicao')
+        .removeEventListener('click', salvarEdicao);
 
       // Fechar modal ao clicar no botão de cancelar ou fora do modal
-      document.getElementById('btn-cancelar-edicao').addEventListener('click', closeModalEdicao);
-      document.getElementById('close-modal-editar').addEventListener('click', closeModalEdicao)
+      document
+        .getElementById('btn-cancelar-edicao')
+        .addEventListener('click', closeModalEdicao);
+      document
+        .getElementById('close-modal-editar')
+        .addEventListener('click', closeModalEdicao);
       modalEdicao.addEventListener('click', closeModalEdicaoOutside);
 
       // Salvar edição
-      document.getElementById('btn-salvar-edicao').addEventListener('click', salvarEdicao);
+      document
+        .getElementById('btn-salvar-edicao')
+        .addEventListener('click', salvarEdicao);
 
       async function salvarEdicao() {
-        const nome = document.getElementById('editar-nome-funcionario').value.trim();
-        const email = document.getElementById('editar-email-funcionario').value.trim();
-        const telefone = document.getElementById('editar-telefone-funcionario').value.trim();
-        const funcao = document.getElementById('editar-funcao-funcionario').value.trim();
-        const status = parseInt(document.getElementById('editar-status-funcionario').value);
-      
+        const nome = document
+          .getElementById('editar-nome-funcionario')
+          .value.trim();
+        const email = document
+          .getElementById('editar-email-funcionario')
+          .value.trim();
+        const telefone = document
+          .getElementById('editar-telefone-funcionario')
+          .value.trim();
+        const funcao = document
+          .getElementById('editar-funcao-funcionario')
+          .value.trim();
+        const status = parseInt(
+          document.getElementById('editar-status-funcionario').value
+        );
+
         if (!nome || !email) {
-          showModal('Por favor, preencha todos os campos obrigatórios.', 'warning');
+          showModal(
+            'Por favor, preencha todos os campos obrigatórios.',
+            'warning'
+          );
           return;
         }
-      
+
         const dadosAtualizados = {
           nome: nome,
           email: email,
@@ -337,7 +385,7 @@ async function abrirModalEdicao(funcionarioId) {
           funcao: funcao,
           status: status,
         };
-      
+
         try {
           const response = await fetch(`/api/users/${funcionarioId}`, {
             method: 'PUT',
@@ -346,21 +394,27 @@ async function abrirModalEdicao(funcionarioId) {
             },
             body: JSON.stringify(dadosAtualizados),
           });
-      
+
           if (response.ok) {
             const data = await response.json();
             console.log('Funcionário atualizado com sucesso:', data);
             showModal('Funcionário atualizado com sucesso!', 'success');
-            listarFuncionarios(token, userId) // Atualiza a lista de funcionários
+            listarFuncionarios(token, userId); // Atualiza a lista de funcionários
             closeModalEdicao(); // Fecha o modal
           } else {
             const errorData = await response.json();
             console.error('Erro ao atualizar funcionário:', errorData);
-            showModal('Erro ao atualizar funcionário: ' + errorData.error, 'error');
+            showModal(
+              'Erro ao atualizar funcionário: ' + errorData.error,
+              'error'
+            );
           }
         } catch (error) {
           console.error('Erro na requisição:', error);
-          showModal('Erro ao atualizar funcionário. Tente novamente mais tarde.', 'error');
+          showModal(
+            'Erro ao atualizar funcionário. Tente novamente mais tarde.',
+            'error'
+          );
         }
       }
 
@@ -380,7 +434,10 @@ async function abrirModalEdicao(funcionarioId) {
     }
   } catch (error) {
     console.error('Erro na requisição:', error);
-    showModal('Erro ao buscar funcionário. Tente novamente mais tarde.', 'error');
+    showModal(
+      'Erro ao buscar funcionário. Tente novamente mais tarde.',
+      'error'
+    );
   }
 }
 
@@ -389,27 +446,36 @@ document.addEventListener('click', (event) => {
   if (event.target.classList.contains('deletar-funcionario')) {
     const funcionarioId = event.target.getAttribute('data-id');
 
-    openConfirmModal('Tem certeza de que deseja deletar este funcionário?', async () => {
-      try {
-        const response = await fetch(`/api/users/${funcionarioId}`, {
-          method: 'DELETE',
-        });
+    openConfirmModal(
+      'Tem certeza de que deseja deletar este funcionário?',
+      async () => {
+        try {
+          const response = await fetch(`/api/users/${funcionarioId}`, {
+            method: 'DELETE',
+          });
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Funcionário deletado com sucesso:', data);
-          showModal('Funcionário deletado com sucesso!', 'success');
-          listarFuncionarios(token, userId) // Atualiza a lista de funcionários
-        } else {
-          const errorData = await response.json();
-          console.error('Erro ao deletar funcionário:', errorData);
-          showModal('Erro ao deletar funcionário: ' + errorData.error, 'error');
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Funcionário deletado com sucesso:', data);
+            showModal('Funcionário deletado com sucesso!', 'success');
+            listarFuncionarios(token, userId); // Atualiza a lista de funcionários
+          } else {
+            const errorData = await response.json();
+            console.error('Erro ao deletar funcionário:', errorData);
+            showModal(
+              'Erro ao deletar funcionário: ' + errorData.error,
+              'error'
+            );
+          }
+        } catch (error) {
+          console.error('Erro na requisição:', error);
+          showModal(
+            'Erro ao deletar funcionário. Tente novamente mais tarde.',
+            'error'
+          );
         }
-      } catch (error) {
-        console.error('Erro na requisição:', error);
-        showModal('Erro ao deletar funcionário. Tente novamente mais tarde.', 'error');
       }
-    });
+    );
   }
 });
 

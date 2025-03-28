@@ -12,7 +12,8 @@ function renderizarFuncionarios(listaFuncionarios) {
     const linha = document.createElement('tr');
     linha.setAttribute('data-id', funcionario.usr_id);
 
-    const statusClass = funcionario.usr_status === 1 ? 'status-ativo' : 'status-inativo';
+    const statusClass =
+      funcionario.usr_status === 1 ? 'status-ativo' : 'status-inativo';
 
     linha.innerHTML = `
       <td class="nome-column">${funcionario.usr_nome}</td>
@@ -57,7 +58,10 @@ export async function listarFuncionarios(token, userId, termoBusca = null) {
     }
   } catch (error) {
     console.error('Erro na requisição:', error);
-    showModal('Erro ao buscar funcionários. Tente novamente mais tarde.', 'error');
+    showModal(
+      'Erro ao buscar funcionários. Tente novamente mais tarde.',
+      'error'
+    );
   }
 }
 

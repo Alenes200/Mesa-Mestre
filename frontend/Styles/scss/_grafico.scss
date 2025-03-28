@@ -32,7 +32,7 @@ $font-secondary: 'Inter', sans-serif;
     position: sticky;
     top: 0;
     z-index: 10;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     flex-shrink: 0; // Impede que o header diminua
 
     h2 {
@@ -98,16 +98,16 @@ $font-secondary: 'Inter', sans-serif;
       width: 8px;
       height: 8px;
     }
-    
+
     &::-webkit-scrollbar-track {
       background: #f1f1f1;
       border-radius: 4px;
     }
-    
+
     &::-webkit-scrollbar-thumb {
       background: #c1c1c1;
       border-radius: 4px;
-      
+
       &:hover {
         background: #a8a8a8;
       }
