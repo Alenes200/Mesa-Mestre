@@ -19,21 +19,21 @@ $cor-hover: #f1f1f1;
     overflow-y: auto;
     max-height: 100%;
     position: relative;
-    
+
     // Estilo da barra de rolagem
     &::-webkit-scrollbar {
       width: 8px;
     }
-    
+
     &::-webkit-scrollbar-track {
       background: #f1f1f1;
       border-radius: 4px;
     }
-    
+
     &::-webkit-scrollbar-thumb {
       background: $cor-primaria;
       border-radius: 4px;
-      
+
       &:hover {
         background: $cor-secundaria;
       }
@@ -44,7 +44,8 @@ $cor-hover: #f1f1f1;
     width: 100%;
     border-collapse: collapse;
 
-    th, td {
+    th,
+    td {
       padding: 12px;
       text-align: left;
       border-bottom: 1px solid $cor-borda;
@@ -64,11 +65,26 @@ $cor-hover: #f1f1f1;
     }
 
     // Colunas específicas
-    .nome-column { width: 20%; }
-    .email-column { width: 25%; }
-    .telefone-column { width: 20%; }
-    .data-column { width: 15%; }
-    .funcao-column { width: 15%; }
+    .nome-column {
+      width: 20%;
+    }
+
+    .email-column {
+      width: 25%;
+    }
+
+    .telefone-column {
+      width: 20%;
+    }
+
+    .data-column {
+      width: 15%;
+    }
+
+    .funcao-column {
+      width: 15%;
+    }
+
     .opcoes-column {
       width: 5%;
       text-align: center;
@@ -127,12 +143,13 @@ $cor-hover: #f1f1f1;
 }
 
 // Botões
-.btn-salvar, .btn-adicionar-funcionario {
+.btn-salvar,
+.btn-adicionar-funcionario {
   background-color: $cor-primaria;
   color: #fff;
   padding: 10px;
   border-radius: 8px;
-  
+
   &:hover {
     background-color: $cor-secundaria;
   }
@@ -143,7 +160,7 @@ $cor-hover: #f1f1f1;
   color: $cor-texto;
   padding: 10px;
   border-radius: 8px;
-  
+
   &:hover {
     background-color: #bbb;
   }
@@ -167,7 +184,7 @@ $cor-hover: #f1f1f1;
   z-index: 1000;
   left: 40%;
   top: 15%;
-  
+
   .custom-modal-content {
     display: block;
     background-color: #fff;
@@ -178,27 +195,28 @@ $cor-hover: #f1f1f1;
     animation: fadeIn 0.3s ease;
 
     .form-content {
-        padding: 20px;
-    
-        .form-group {
-          margin-bottom: 15px;
-    
-          label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-          }
-    
-          input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid $cor-borda;
-            border-radius: 4px;
-          }
+      padding: 20px;
+
+      .form-group {
+        margin-bottom: 15px;
+
+        label {
+          display: block;
+          margin-bottom: 5px;
+          font-weight: 600;
         }
+
+        input {
+          width: 100%;
+          padding: 8px;
+          border: 1px solid $cor-borda;
+          border-radius: 4px;
+        }
+      }
+    }
   }
 }
-}
+
 // Pesquisa
 .conteudo-funcionarios .esquerda-funcionarios .pesquisa {
   justify-content: space-between;

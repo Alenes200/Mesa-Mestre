@@ -10,6 +10,10 @@
       href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
     <title>Cardapio</title>
   </head>
   <body>
@@ -23,10 +27,7 @@
         </div>
         <img src="../images/svg linha header.svg" alt="linha branca" />
         <div class="carrinho">
-          <img
-            src="../images/cart-shopping-svgrepo-com 1.svg"
-            alt="imagem de carrio de compras"
-          />
+          <button id="carrinho-button">Carrinho</button>
         </div>
       </nav>
     </header>
@@ -37,7 +38,7 @@
           <img src="../images/Kaori 香り.svg" alt="logo restaurante" />
         </div>
         <nav>
-          <div class="card-nav">
+          <div class="card-nav" data-tipo="Entrada">
             <div class="icone">
               <img
                 src="../images/icon-entradas.svg"
@@ -46,19 +47,28 @@
             </div>
             <h2>Entradas</h2>
           </div>
-          <div class="card-nav">
+          <div class="card-nav" data-tipo="Prato Principal">
             <div class="icone">
               <img src="../images/icon-combos.svg" alt="Ícone de combos" />
             </div>
-            <h2>Combos</h2>
+            <h2>Pratos Principais</h2>
           </div>
-          <div class="card-nav">
+          <div class="card-nav" data-tipo="Acompanhamento">
+            <div class="icone">
+              <img
+                src="../images/icon-acompanhamentos.svg"
+                alt="Ícone de acompanhamentos"
+              />
+            </div>
+            <h2>Acompanhamentos</h2>
+          </div>
+          <div class="card-nav" data-tipo="Bebida">
             <div class="icone">
               <img src="../images/icon-bebidas.svg" alt="Ícone de bebidas" />
             </div>
             <h2>Bebidas</h2>
           </div>
-          <div class="card-nav">
+          <div class="card-nav" data-tipo="Sobremesa">
             <div class="icone">
               <img
                 src="../images/icon-sobremesas.svg"
@@ -69,68 +79,104 @@
           </div>
         </nav>
       </div>
-      <div class="direita">
-        <div class="card-produto">
-          <div class="descricao">
-            <h2>Brigadeiro do chefe</h2>
-            <p>
-              sorvete, chantilly, nutella,castanha de caju granulada ,kit kat.
-            </p>
-          </div>
-          <div class="imagem-produto">
-            <img src="../images/image 14.png" alt="imagem de brigadeiro" />
-          </div>
-        </div>
-        <div class="card-produto">
-          <div class="descricao">
-            <h2>Brigadeiro do chefe</h2>
-            <p>
-              sorvete, chantilly, nutella,castanha de caju granulada ,kit kat.
-            </p>
-          </div>
-          <div class="imagem-produto">
-            <img src="../images/image 14.png" alt="imagem de brigadeiro" />
-          </div>
-        </div>
-        <div class="card-produto">
-          <div class="descricao">
-            <h2>Brigadeiro do chefe</h2>
-            <p>
-              sorvete, chantilly, nutella,castanha de caju granulada ,kit kat.
-            </p>
-          </div>
-          <div class="imagem-produto">
-            <img src="../images/image 14.png" alt="imagem de brigadeiro" />
-          </div>
-        </div>
-        <div class="card-produto">
-          <div class="descricao">
-            <h2>Brigadeiro do chefe</h2>
-            <p>
-              sorvete, chantilly, nutella,castanha de caju granulada ,kit kat.
-            </p>
-          </div>
-          <div class="imagem-produto">
-            <img src="../images/image 14.png" alt="imagem de brigadeiro" />
-          </div>
-        </div>
-        <div class="card-produto">
-          <div class="descricao">
-            <h2>Brigadeiro do chefe</h2>
-            <p>
-              sorvete, chantilly, nutella,castanha de caju granulada ,kit kat.
-            </p>
-          </div>
-          <div class="imagem-produto">
-            <img src="../images/image 14.png" alt="imagem de brigadeiro" />
-          </div>
-        </div>
-      </div>
+      <div class="direita" id="produtos-container"></div>
       <img
         src="../images/imagem-principal.png"
         alt=""
         class="imagem-principal"
       />
     </main>
+
+    <div class="modal-produto" style="display: none" id="modal">
+      <div class="conteudo">
+        <div class="E-produto">
+          <img src="../images/image-teste.png" id="modal-imagem" alt="" />
+          <div class="text-produto">
+            <h2 id="modal-nome">BRIGADEIRO DO CHEF FEITO COM AMOR E CARINHO</h2>
+            <p id="modal-descricao">
+              Descrição do brigadeiro do chef super delicia de maravilha
+              Descrição do brigadeiro do chef super delicia de maravilha
+              Descrição do brigadeiro do chef super delicia de maravilha, chama
+            </p>
+          </div>
+          <div class="quantidade-produto">
+            <div class="numero">
+              <span>1</span>
+            </div>
+            <h1>Quantidade</h1>
+          </div>
+          <div class="valor-box">
+            <div class="valor-produto">
+              <span>Subtotal</span>
+              <h1 id="modal-preco">R$ 45,90</h1>
+            </div>
+          </div>
+        </div>
+        <div class="D-produto">
+          <h1>Quantidade</h1>
+          <div class="selecao-produto">
+            <button class="menos-produto" id="menos-produto">
+              <img src="../images/icon-menos.svg" alt="" />
+            </button>
+            <span class="numero-de-itens" id="quantidade">1</span>
+            <button class="mais-produto" id="mais-produto">
+              <img src="../images/icon-mais.svg" alt="" />
+            </button>
+          </div>
+          <div class="adicionar-carrinho">
+            <button class="adicionar-produto" id="adicionar-carrinho">
+              ADICIONAR AO CARRINHO
+            </button>
+          </div>
+          <button class="fechar-modal close">
+            <img src="../images/icon-fechar.svg" alt="" />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-carrinho" id="carrinho-offcanvas" style="display: none">
+      <div class="E-close">
+        <button onclick="closeCarrinho()">
+          <img src="../images/icon-fechar.svg" alt="Fechar carrinho" />
+        </button>
+      </div>
+
+      <div class="D-conteudo">
+        <div class="top">
+          <div class="titulo">
+            <h1>CARRINHO DE COMPRAS</h1>
+          </div>
+          <div class="produtos">
+            <div class="descricao">
+              <p>Remover</p>
+              <div class="valores">
+                <p>Quantidade</p>
+                <p>Subtotal</p>
+              </div>
+            </div>
+            <div class="scroll-produtos"></div>
+          </div>
+        </div>
+        <div class="bot">
+          <div class="fazer-pedido">
+            <div class="total-pedido">
+              <h2>Subtotal</h2>
+              <span>R$ 0,00</span>
+            </div>
+            <div class="enviar-pedido">
+              <button class="btn mais-pedido" onclick="closeCarrinho()">
+                ADICIONAR MAIS ITENS
+              </button>
+              <button class="btn enviar" id="enviar-pedidos-button">
+                ENVIAR PEDIDO
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/cardapio.js"></script>
   </body>
 </html>
