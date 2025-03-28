@@ -11,6 +11,9 @@ async function handleLogin() {
 
     const userData = await getCurrentUser(token);
 
+    // Salva o token e os dados do usuário no localStorage
+    localStorage.setItem('token', token);
+
     redirectUser(userData);
   } catch (error) {
     console.error('Erro ao fazer login:', error);
