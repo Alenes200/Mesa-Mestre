@@ -293,8 +293,6 @@
   cursor: pointer;
 }
 
-// ...existing code...
-
 .toast {
   position: fixed;
   top: 20px;
@@ -325,15 +323,6 @@
     }
   }
 
-  &.active {
-    transform: translateX(0%);
-  }
-
-  &.hide {
-    opacity: 0;
-    pointer-events: none;
-  }
-
   .toast-content {
     display: flex;
     align-items: center;
@@ -345,8 +334,10 @@
 
     .message {
       font-family: 'Inter';
+      font-style: normal;
+      font-weight: 500;
       font-size: 14px;
-      line-height: 1.4;
+      color: #333;
     }
   }
 }

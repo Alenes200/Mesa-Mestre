@@ -165,10 +165,22 @@ function showToast(message, type = 'success') {
   `;
   document.body.appendChild(toast);
 
+  // Força um reflow para garantir que a transição funcione
+  toast.offsetHeight;
+
+  // Adiciona a classe active para mostrar o toast
+  requestAnimationFrame(() => {
+    toast.style.transform = 'translateX(0)';
+  });
+
   // Remove o toast após 3 segundos
   setTimeout(() => {
-    toast.classList.add('hide');
-    setTimeout(() => toast.remove(), 500);
+    toast.style.transform = 'translateX(calc(100% + 30px))';
+    toast.style.opacity = '0';
+
+    setTimeout(() => {
+      toast.remove();
+    }, 500);
   }, 3000);
 }
 
@@ -407,6 +419,5 @@ document
 // Função para obter o ID da mesa dinamicamente
 function obterMesaId() {
   // Implemente a lógica para obter o ID da mesa dinamicamente
-  // Por exemplo, você pode obter o ID da mesa a partir de um elemento HTML ou de uma chamada de API
   return 1; // Exemplo estático, substitua pela lógica real
 }
