@@ -21,40 +21,33 @@ async function fetchProdutos() {
 // Função para exibir os produtos na página
 function displayProdutos(produtos) {
   const produtosContainer = document.getElementById('produtos-container');
-  produtosContainer.innerHTML = '';
+  produtosContainer.innerHTML = ''; // Limpa o container antes de adicionar os produtos
 
-  const tipos = [...new Set(produtos.map((produto) => produto.pro_tipo))];
+  produtos.forEach((produto) => {
+    const produtoElement = document.createElement('div');
+    produtoElement.className = 'card-produto';
 
-  tipos.forEach((tipo) => {
-    const tipoSection = document.createElement('section');
-    tipoSection.className = 'tipo-section';
-    tipoSection.id = tipo.toLowerCase().replace(/\s+/g, '-');
-    tipoSection.innerHTML = `<h2>${tipo}</h2>`;
+    const preco = `R$ ${produto.pro_preco}`;
 
-    const tipoProdutos = produtos.filter(
-      (produto) => produto.pro_tipo === tipo
-    );
+    produtoElement.innerHTML = `
+      <div class="descricao">
+        <h2>${produto.pro_nome} <span>${preco}</span></h2>
+        <p>${produto.pro_descricao}</p>
+        <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
+      </div>
+      <div class="imagem-produto">
+        <img src="../images/${produto.pro_imagem}" alt="Imagem de ${produto.pro_nome}" />
+      </div>
+    `;
 
-    tipoProdutos.forEach((produto) => {
-      const produtoElement = document.createElement('div');
-      produtoElement.className = 'card-produto';
-      const preco =
-        typeof produto.pro_preco === 'number'
-          ? `R$ ${produto.pro_preco.toFixed(2)}`
-          : 'Preço indisponível';
-      produtoElement.innerHTML = `
-                  <h3>${produto.pro_nome}</h3>
-                  <p>${produto.pro_descricao}</p>
-                  <p>${preco}</p>
-              `;
-      produtoElement.addEventListener('click', () => openModal(produto));
-      tipoSection.appendChild(produtoElement);
-    });
+    // Adiciona evento para abrir o modal ao clicar no botão "Adicionar ao carrinho"
+    produtoElement
+      .querySelector('.adicionar-carrinho')
+      .addEventListener('click', () => openModal(produto));
 
-    produtosContainer.appendChild(tipoSection);
+    produtosContainer.appendChild(produtoElement);
   });
 }
-
 // Função para exibir produtos de um tipo específico
 function displayProdutosPorTipo(tipo) {
   const produtosContainer = document.getElementById('produtos-container');
@@ -69,7 +62,7 @@ function displayProdutosPorTipo(tipo) {
     produtoElement.className = 'card-produto';
     const preco =
       typeof produto.pro_preco === 'number'
-        ? `R$ ${produto.pro_preco.toFixed(2)}`
+        ? `R$ ${produto.pro_preco}`
         : 'Preço indisponível';
     produtoElement.innerHTML = `
               <h3>${produto.pro_nome}</h3>
@@ -84,19 +77,43 @@ function displayProdutosPorTipo(tipo) {
 // Função para abrir o modal do produto
 function openModal(produto) {
   const modal = document.getElementById('modal');
-  console.log('Abrindo modal para o produto:', produto);
+  const quantidadeSpan = document.getElementById('quantidade');
+  const precoElement = document.getElementById('modal-preco');
+  const numeroElement = document.querySelector('.numero span');
+
   document.getElementById('modal-nome').innerText = produto.pro_nome;
   document.getElementById('modal-imagem').src =
     `../images/${produto.pro_imagem}`;
   document.getElementById('modal-descricao').innerText = produto.pro_descricao;
-  document.getElementById('modal-preco').innerText =
-    typeof produto.pro_preco === 'number'
-      ? `R$ ${produto.pro_preco.toFixed(2)}`
-      : 'Preço indisponível';
+  precoElement.innerText = `R$ ${produto.pro_preco}`;
+  quantidadeSpan.innerText = '1';
+  numeroElement.innerText = '1'; // Inicializa a quantidade no elemento com class="numero"
+
   modal.style.display = 'block';
 
+  // Event listeners para os botões de aumentar e diminuir
+  document.getElementById('mais-produto').onclick = () => {
+    let quantidade = parseInt(quantidadeSpan.innerText, 10);
+    quantidade += 1;
+    quantidadeSpan.innerText = quantidade;
+    numeroElement.innerText = quantidade; // Atualiza o valor no elemento com class="numero"
+    precoElement.innerText = `R$ ${(produto.pro_preco * quantidade).toFixed(2)}`; // Atualiza o subtotal
+  };
+
+  document.getElementById('menos-produto').onclick = () => {
+    let quantidade = parseInt(quantidadeSpan.innerText, 10);
+    if (quantidade > 1) {
+      quantidade -= 1;
+      quantidadeSpan.innerText = quantidade;
+      numeroElement.innerText = quantidade; // Atualiza o valor no elemento com class="numero"
+      precoElement.innerText = `R$ ${(produto.pro_preco * quantidade).toFixed(2)}`; // Atualiza o subtotal
+    }
+  };
+
+  // Atualiza o botão de adicionar ao carrinho
   document.getElementById('adicionar-carrinho').onclick = () => {
-    addToCart(produto);
+    const quantidade = parseInt(quantidadeSpan.innerText, 10);
+    addToCart(produto, quantidade);
     closeModal();
   };
 }
@@ -109,8 +126,7 @@ function closeModal() {
 }
 
 // Função para adicionar o item ao carrinho
-function addToCart(produto) {
-  const quantidade = parseInt(document.getElementById('quantidade').value, 10);
+function addToCart(produto, quantidade) {
   const itemCarrinho = carrinho.find((item) => item.pro_id === produto.pro_id);
 
   if (itemCarrinho) {
@@ -123,35 +139,112 @@ function addToCart(produto) {
   closeModal();
 }
 
-// Função para abrir o off-canvas do carrinho
+// Função para abrir o modal do carrinho
 function openCarrinho() {
   const carrinhoOffcanvas = document.getElementById('carrinho-offcanvas');
-  const carrinhoContainer = document.getElementById('carrinho-container');
-  carrinhoContainer.innerHTML = '';
+  const carrinhoContainer = document.querySelector('.scroll-produtos');
+  carrinhoContainer.innerHTML = ''; // Limpa o container antes de adicionar os itens
 
   let total = 0;
 
-  carrinho.forEach((item) => {
+  carrinho.forEach((item, index) => {
     const subtotal = item.pro_preco * item.quantidade;
     total += subtotal;
 
     const itemElement = document.createElement('div');
+    itemElement.className = 'card-produto';
     itemElement.innerHTML = `
-      <p>${item.pro_nome} - Quantidade: ${item.quantidade} - Subtotal: R$ ${subtotal.toFixed(2)}</p>
+      <img
+        src="../images/icon-fechar-cinza.svg"
+        alt="Remover produto"
+        class="tirar-produto"
+        data-index="${index}"
+      />
+      <div class="produto">
+        <div class="E-descricao">
+          <img
+            src="../images/${item.pro_imagem}"
+            alt="${item.pro_nome}"
+            class="imagem-produto"
+          />
+          <div class="text-produto">
+            <h2>${item.pro_nome}</h2>
+            <p>${item.pro_descricao}</p>
+          </div>
+        </div>
+        <div class="D-descricao">
+          <div class="quantidade">
+            <button class="btn-quantidade menos" data-index="${index}">
+              <img src="../images/icon-menos.svg" alt="Diminuir quantidade" />
+            </button>
+            <span>${item.quantidade}</span>
+            <button class="btn-quantidade mais" data-index="${index}">
+              <img src="../images/icon-mais.svg" alt="Aumentar quantidade" />
+            </button>
+          </div>
+          <div class="total-produto">
+            <span>R$ ${subtotal.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
     `;
+
     carrinhoContainer.appendChild(itemElement);
   });
 
-  const totalElement = document.createElement('div');
-  totalElement.innerHTML = `<p>Total: R$ ${total.toFixed(2)}</p>`;
-  carrinhoContainer.appendChild(totalElement);
+  // Atualiza o subtotal no rodapé do carrinho
+  const totalElement = document.querySelector('.total-pedido span');
+  totalElement.innerText = `R$ ${total.toFixed(2)}`;
 
-  carrinhoOffcanvas.classList.add('open');
+  // Exibe o modal do carrinho
+  carrinhoOffcanvas.style.display = 'flex';
+
+  // Adiciona eventos para os botões de quantidade e remover
+  document.querySelectorAll('.btn-quantidade.menos').forEach((button) => {
+    button.addEventListener('click', (event) => {
+      const index = event.target.closest('button').dataset.index;
+      alterarQuantidade(index, -1);
+    });
+  });
+
+  document.querySelectorAll('.btn-quantidade.mais').forEach((button) => {
+    button.addEventListener('click', (event) => {
+      const index = event.target.closest('button').dataset.index;
+      alterarQuantidade(index, 1);
+    });
+  });
+
+  document.querySelectorAll('.tirar-produto').forEach((button) => {
+    button.addEventListener('click', (event) => {
+      const index = event.target.dataset.index;
+      removerProduto(index);
+    });
+  });
 }
 
+// Função para alterar a quantidade de um item no carrinho
+function alterarQuantidade(index, delta) {
+  const item = carrinho[index];
+  if (!item) return;
+
+  item.quantidade += delta;
+  if (item.quantidade <= 0) {
+    carrinho.splice(index, 1); // Remove o item se a quantidade for 0
+  }
+
+  openCarrinho(); // Recarrega o carrinho
+}
+
+// Função para remover um item do carrinho
+function removerProduto(index) {
+  carrinho.splice(index, 1); // Remove o item do carrinho
+  openCarrinho(); // Recarrega o carrinho
+}
+
+// Função para fechar o modal do carrinho
 function closeCarrinho() {
   const carrinhoOffcanvas = document.getElementById('carrinho-offcanvas');
-  carrinhoOffcanvas.classList.remove('open');
+  carrinhoOffcanvas.style.display = 'none';
 }
 
 function showToast(message, type = 'success') {

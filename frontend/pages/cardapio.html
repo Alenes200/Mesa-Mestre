@@ -79,40 +79,7 @@
           </div>
         </nav>
       </div>
-      <div class="direita">
-        <!-- <div class="card-produto">
-          <div class="descricao">
-            <h2>Brigadeiro do chefe <span>R$ 37,91</span></h2>
-            <p>
-              sorvete, chantilly, nutella,castanha de caju granulada ,kit kat.
-            </p>
-            <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
-          </div>
-        </div>
-        <div class="imagem-produto">
-          <img src="../images/image 14.png" alt="imagem de brigadeiro" />
-        </div> -->
-
-        <div id="produtos-container"></div>
-        <div id="modal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="modal-nome"></h2>
-            <img id="modal-imagem" src="" alt="Imagem do produto" />
-            <p id="modal-descricao"></p>
-            <p id="modal-preco"></p>
-            <label for="quantidade">Quantidade:</label>
-            <input
-              type="number"
-              id="quantidade"
-              name="quantidade"
-              min="1"
-              value="1"
-            />
-            <button id="adicionar-carrinho">Adicionar ao carrinho</button>
-          </div>
-        </div>
-      </div>
+      <div class="direita" id="produtos-container"></div>
       <img
         src="../images/imagem-principal.png"
         alt=""
@@ -120,13 +87,13 @@
       />
     </main>
 
-    <div class="modal-produto" style="display: none">
+    <div class="modal-produto" style="display: none" id="modal">
       <div class="conteudo">
         <div class="E-produto">
-          <img src="../images/image-teste.png" alt="" />
+          <img src="../images/image-teste.png" id="modal-imagem" alt="" />
           <div class="text-produto">
-            <h2>BRIGADEIRO DO CHEF FEITO COM AMOR E CARINHO</h2>
-            <p>
+            <h2 id="modal-nome">BRIGADEIRO DO CHEF FEITO COM AMOR E CARINHO</h2>
+            <p id="modal-descricao">
               Descrição do brigadeiro do chef super delicia de maravilha
               Descrição do brigadeiro do chef super delicia de maravilha
               Descrição do brigadeiro do chef super delicia de maravilha, chama
@@ -141,35 +108,37 @@
           <div class="valor-box">
             <div class="valor-produto">
               <span>Subtotal</span>
-              <h1>R$ 45,90</h1>
+              <h1 id="modal-preco">R$ 45,90</h1>
             </div>
           </div>
         </div>
         <div class="D-produto">
           <h1>Quantidade</h1>
           <div class="selecao-produto">
-            <button class="menos-produto">
+            <button class="menos-produto" id="menos-produto">
               <img src="../images/icon-menos.svg" alt="" />
             </button>
-            <span class="numero-de-itens">1</span>
-            <button class="mais-produto">
+            <span class="numero-de-itens" id="quantidade">1</span>
+            <button class="mais-produto" id="mais-produto">
               <img src="../images/icon-mais.svg" alt="" />
             </button>
           </div>
           <div class="adicionar-carrinho">
-            <button class="adicionar-produto">ADICIONAR AO CARRINHO</button>
+            <button class="adicionar-produto" id="adicionar-carrinho">
+              ADICIONAR AO CARRINHO
+            </button>
           </div>
-          <button class="fechar-modal">
+          <button class="fechar-modal close">
             <img src="../images/icon-fechar.svg" alt="" />
           </button>
         </div>
       </div>
     </div>
 
-    <div class="modal-carrinho" style="display: none">
+    <div class="modal-carrinho" id="carrinho-offcanvas" style="display: none">
       <div class="E-close">
-        <button>
-          <img src="../images/icon-fechar.svg" alt="" />
+        <button onclick="closeCarrinho()">
+          <img src="../images/icon-fechar.svg" alt="Fechar carrinho" />
         </button>
       </div>
 
@@ -186,476 +155,25 @@
                 <p>Subtotal</p>
               </div>
             </div>
-            <div class="scroll-produtos">
-              <div class="card-produto">
-                <img
-                  src="../images/icon-fechar-cinza.svg"
-                  alt=""
-                  class="tirar-produto"
-                />
-                <div class="produto">
-                  <div class="E-descricao">
-                    <img
-                      src="../images/image-teste.png"
-                      alt=""
-                      class="imagem-produto"
-                    />
-                    <div class="text-produto">
-                      <h2>BRIGADEIRO DO CHEF</h2>
-                      <p>
-                        Descrição do brigadeiro do chef super delicia de
-                        maravilha
-                      </p>
-                    </div>
-                  </div>
-                  <div class="D-descricao">
-                    <div class="quantidade">
-                      <button class="btn-quantidade menos">
-                        <img src="../images/icon-menos.svg" alt="" />
-                      </button>
-                      <span>1</span>
-                      <button class="btn-quantidade mais">
-                        <img src="../images/icon-mais.svg" alt="" />
-                      </button>
-                    </div>
-                    <div class="total-produto">
-                      <span>R$ 45,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-produto">
-                <img
-                  src="../images/icon-fechar-cinza.svg"
-                  alt=""
-                  class="tirar-produto"
-                />
-                <div class="produto">
-                  <div class="E-descricao">
-                    <img
-                      src="../images/image-teste.png"
-                      alt=""
-                      class="imagem-produto"
-                    />
-                    <div class="text-produto">
-                      <h2>BRIGADEIRO DO CHEF</h2>
-                      <p>
-                        Descrição do brigadeiro do chef super delicia de
-                        maravilha
-                      </p>
-                    </div>
-                  </div>
-                  <div class="D-descricao">
-                    <div class="quantidade">
-                      <button class="btn-quantidade menos">
-                        <img src="../images/icon-menos.svg" alt="" />
-                      </button>
-                      <span>1</span>
-                      <button class="btn-quantidade mais">
-                        <img src="../images/icon-mais.svg" alt="" />
-                      </button>
-                    </div>
-                    <div class="total-produto">
-                      <span>R$ 45,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-produto">
-                <img
-                  src="../images/icon-fechar-cinza.svg"
-                  alt=""
-                  class="tirar-produto"
-                />
-                <div class="produto">
-                  <div class="E-descricao">
-                    <img
-                      src="../images/image-teste.png"
-                      alt=""
-                      class="imagem-produto"
-                    />
-                    <div class="text-produto">
-                      <h2>BRIGADEIRO DO CHEF</h2>
-                      <p>
-                        Descrição do brigadeiro do chef super delicia de
-                        maravilha
-                      </p>
-                    </div>
-                  </div>
-                  <div class="D-descricao">
-                    <div class="quantidade">
-                      <button class="btn-quantidade menos">
-                        <img src="../images/icon-menos.svg" alt="" />
-                      </button>
-                      <span>1</span>
-                      <button class="btn-quantidade mais">
-                        <img src="../images/icon-mais.svg" alt="" />
-                      </button>
-                    </div>
-                    <div class="total-produto">
-                      <span>R$ 45,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-produto">
-                <img
-                  src="../images/icon-fechar-cinza.svg"
-                  alt=""
-                  class="tirar-produto"
-                />
-                <div class="produto">
-                  <div class="E-descricao">
-                    <img
-                      src="../images/image-teste.png"
-                      alt=""
-                      class="imagem-produto"
-                    />
-                    <div class="text-produto">
-                      <h2>BRIGADEIRO DO CHEF</h2>
-                      <p>
-                        Descrição do brigadeiro do chef super delicia de
-                        maravilha
-                      </p>
-                    </div>
-                  </div>
-                  <div class="D-descricao">
-                    <div class="quantidade">
-                      <button class="btn-quantidade menos">
-                        <img src="../images/icon-menos.svg" alt="" />
-                      </button>
-                      <span>1</span>
-                      <button class="btn-quantidade mais">
-                        <img src="../images/icon-mais.svg" alt="" />
-                      </button>
-                    </div>
-                    <div class="total-produto">
-                      <span>R$ 45,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-produto">
-                <img
-                  src="../images/icon-fechar-cinza.svg"
-                  alt=""
-                  class="tirar-produto"
-                />
-                <div class="produto">
-                  <div class="E-descricao">
-                    <img
-                      src="../images/image-teste.png"
-                      alt=""
-                      class="imagem-produto"
-                    />
-                    <div class="text-produto">
-                      <h2>BRIGADEIRO DO CHEF</h2>
-                      <p>
-                        Descrição do brigadeiro do chef super delicia de
-                        maravilha
-                      </p>
-                    </div>
-                  </div>
-                  <div class="D-descricao">
-                    <div class="quantidade">
-                      <button class="btn-quantidade menos">
-                        <img src="../images/icon-menos.svg" alt="" />
-                      </button>
-                      <span>1</span>
-                      <button class="btn-quantidade mais">
-                        <img src="../images/icon-mais.svg" alt="" />
-                      </button>
-                    </div>
-                    <div class="total-produto">
-                      <span>R$ 45,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-produto">
-                <img
-                  src="../images/icon-fechar-cinza.svg"
-                  alt=""
-                  class="tirar-produto"
-                />
-                <div class="produto">
-                  <div class="E-descricao">
-                    <img
-                      src="../images/image-teste.png"
-                      alt=""
-                      class="imagem-produto"
-                    />
-                    <div class="text-produto">
-                      <h2>BRIGADEIRO DO CHEF</h2>
-                      <p>
-                        Descrição do brigadeiro do chef super delicia de
-                        maravilha
-                      </p>
-                    </div>
-                  </div>
-                  <div class="D-descricao">
-                    <div class="quantidade">
-                      <button class="btn-quantidade menos">
-                        <img src="../images/icon-menos.svg" alt="" />
-                      </button>
-                      <span>1</span>
-                      <button class="btn-quantidade mais">
-                        <img src="../images/icon-mais.svg" alt="" />
-                      </button>
-                    </div>
-                    <div class="total-produto">
-                      <span>R$ 45,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-produto">
-                <img
-                  src="../images/icon-fechar-cinza.svg"
-                  alt=""
-                  class="tirar-produto"
-                />
-                <div class="produto">
-                  <div class="E-descricao">
-                    <img
-                      src="../images/image-teste.png"
-                      alt=""
-                      class="imagem-produto"
-                    />
-                    <div class="text-produto">
-                      <h2>BRIGADEIRO DO CHEF</h2>
-                      <p>
-                        Descrição do brigadeiro do chef super delicia de
-                        maravilha
-                      </p>
-                    </div>
-                  </div>
-                  <div class="D-descricao">
-                    <div class="quantidade">
-                      <button class="btn-quantidade menos">
-                        <img src="../images/icon-menos.svg" alt="" />
-                      </button>
-                      <span>1</span>
-                      <button class="btn-quantidade mais">
-                        <img src="../images/icon-mais.svg" alt="" />
-                      </button>
-                    </div>
-                    <div class="total-produto">
-                      <span>R$ 45,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-produto">
-                <img
-                  src="../images/icon-fechar-cinza.svg"
-                  alt=""
-                  class="tirar-produto"
-                />
-                <div class="produto">
-                  <div class="E-descricao">
-                    <img
-                      src="../images/image-teste.png"
-                      alt=""
-                      class="imagem-produto"
-                    />
-                    <div class="text-produto">
-                      <h2>BRIGADEIRO DO CHEF</h2>
-                      <p>
-                        Descrição do brigadeiro do chef super delicia de
-                        maravilha
-                      </p>
-                    </div>
-                  </div>
-                  <div class="D-descricao">
-                    <div class="quantidade">
-                      <button class="btn-quantidade menos">
-                        <img src="../images/icon-menos.svg" alt="" />
-                      </button>
-                      <span>1</span>
-                      <button class="btn-quantidade mais">
-                        <img src="../images/icon-mais.svg" alt="" />
-                      </button>
-                    </div>
-                    <div class="total-produto">
-                      <span>R$ 45,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-produto">
-                <img
-                  src="../images/icon-fechar-cinza.svg"
-                  alt=""
-                  class="tirar-produto"
-                />
-                <div class="produto">
-                  <div class="E-descricao">
-                    <img
-                      src="../images/image-teste.png"
-                      alt=""
-                      class="imagem-produto"
-                    />
-                    <div class="text-produto">
-                      <h2>BRIGADEIRO DO CHEF</h2>
-                      <p>
-                        Descrição do brigadeiro do chef super delicia de
-                        maravilha
-                      </p>
-                    </div>
-                  </div>
-                  <div class="D-descricao">
-                    <div class="quantidade">
-                      <button class="btn-quantidade menos">
-                        <img src="../images/icon-menos.svg" alt="" />
-                      </button>
-                      <span>1</span>
-                      <button class="btn-quantidade mais">
-                        <img src="../images/icon-mais.svg" alt="" />
-                      </button>
-                    </div>
-                    <div class="total-produto">
-                      <span>R$ 45,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-produto">
-                <img
-                  src="../images/icon-fechar-cinza.svg"
-                  alt=""
-                  class="tirar-produto"
-                />
-                <div class="produto">
-                  <div class="E-descricao">
-                    <img
-                      src="../images/image-teste.png"
-                      alt=""
-                      class="imagem-produto"
-                    />
-                    <div class="text-produto">
-                      <h2>BRIGADEIRO DO CHEF</h2>
-                      <p>
-                        Descrição do brigadeiro do chef super delicia de
-                        maravilha
-                      </p>
-                    </div>
-                  </div>
-                  <div class="D-descricao">
-                    <div class="quantidade">
-                      <button class="btn-quantidade menos">
-                        <img src="../images/icon-menos.svg" alt="" />
-                      </button>
-                      <span>1</span>
-                      <button class="btn-quantidade mais">
-                        <img src="../images/icon-mais.svg" alt="" />
-                      </button>
-                    </div>
-                    <div class="total-produto">
-                      <span>R$ 45,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-produto">
-                <img
-                  src="../images/icon-fechar-cinza.svg"
-                  alt=""
-                  class="tirar-produto"
-                />
-                <div class="produto">
-                  <div class="E-descricao">
-                    <img
-                      src="../images/image-teste.png"
-                      alt=""
-                      class="imagem-produto"
-                    />
-                    <div class="text-produto">
-                      <h2>BRIGADEIRO DO CHEF</h2>
-                      <p>
-                        Descrição do brigadeiro do chef super delicia de
-                        maravilha
-                      </p>
-                    </div>
-                  </div>
-                  <div class="D-descricao">
-                    <div class="quantidade">
-                      <button class="btn-quantidade menos">
-                        <img src="../images/icon-menos.svg" alt="" />
-                      </button>
-                      <span>1</span>
-                      <button class="btn-quantidade mais">
-                        <img src="../images/icon-mais.svg" alt="" />
-                      </button>
-                    </div>
-                    <div class="total-produto">
-                      <span>R$ 45,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card-produto">
-                <img
-                  src="../images/icon-fechar-cinza.svg"
-                  alt=""
-                  class="tirar-produto"
-                />
-                <div class="produto">
-                  <div class="E-descricao">
-                    <img
-                      src="../images/image-teste.png"
-                      alt=""
-                      class="imagem-produto"
-                    />
-                    <div class="text-produto">
-                      <h2>BRIGADEIRO DO CHEF</h2>
-                      <p>
-                        Descrição do brigadeiro do chef super delicia de
-                        maravilha
-                      </p>
-                    </div>
-                  </div>
-                  <div class="D-descricao">
-                    <div class="quantidade">
-                      <button class="btn-quantidade menos">
-                        <img src="../images/icon-menos.svg" alt="" />
-                      </button>
-                      <span>1</span>
-                      <button class="btn-quantidade mais">
-                        <img src="../images/icon-mais.svg" alt="" />
-                      </button>
-                    </div>
-                    <div class="total-produto">
-                      <span>R$ 45,90</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div class="scroll-produtos"></div>
           </div>
         </div>
         <div class="bot">
           <div class="fazer-pedido">
             <div class="total-pedido">
               <h2>Subtotal</h2>
-              <span>R$ 45,90</span>
+              <span>R$ 0,00</span>
             </div>
             <div class="enviar-pedido">
-              <button class="btn mais-pedido">ADICIONAR MAIS ITENS</button>
-              <button class="btn enviar">ENVIAR PEDIDO</button>
+              <button class="btn mais-pedido" onclick="closeCarrinho()">
+                ADICIONAR MAIS ITENS
+              </button>
+              <button class="btn enviar" id="enviar-pedidos-button">
+                ENVIAR PEDIDO
+              </button>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <!-- Off-canvas Carrinho -->
-    <div id="carrinho-offcanvas" class="offcanvas">
-      <div class="offcanvas-content">
-        <span class="close" onclick="closeCarrinho()">&times;</span>
-        <h2>Carrinho</h2>
-        <div id="carrinho-container"></div>
-        <button id="enviar-pedidos-button">Enviar pedidos</button>
-        <button onclick="closeCarrinho()">Adicionar mais itens</button>
       </div>
     </div>
 
