@@ -1,0 +1,119 @@
+.flex {
+  display: flex;
+  justify-content: space-between;
+  background-color: #ff6347;
+  border-radius: 8px 8px 0px 0px;
+  padding: 0px 12px;
+  align-items: center;
+
+  span {
+    font-size: 32px;
+    cursor: pointer;
+  }
+}
+
+.opcao {
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba(255, 99, 71, 0.19);
+    transform: scale(1.05);
+  }
+
+  &.op_ativa {
+    background-color: #ff6347;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+    animation: pulse 1.5s infinite;
+  }
+}
+
+.main-adm .esquerda .opocoes nav {
+  gap: 20px;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.esquerda {
+  width: 250px;
+  transition: width 0.15s ease;
+
+  &.minimizado {
+    width: 75px;
+    align-items: center;
+
+    .logo h1 {
+      display: none;
+    }
+
+    .logo {
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+    }
+
+    .sair h3 {
+      display: none;
+    }
+
+    .sair {
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+    }
+
+    .opcao h3 {
+      display: none;
+    }
+
+    .conteudo .opocoes {
+      padding: 0;
+    }
+
+    .opcao {
+      justify-content: center;
+      padding: 10px 15px;
+    }
+
+    .top {
+      flex-direction: column;
+      align-items: center;
+      padding: 0;
+    }
+
+    .minimizar {
+      display: none;
+    }
+  }
+}
+
+.minimizar {
+  cursor: pointer;
+  padding: 10px;
+  text-align: center;
+}
+
+.botao-expandir {
+  display: none;
+  cursor: pointer;
+  padding: 10px;
+  text-align: center;
+
+  .esquerda.minimizado & {
+    display: block;
+  }
+}

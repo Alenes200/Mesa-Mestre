@@ -15,6 +15,7 @@
   "lisence": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "chart.js": "^4.4.8",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -26,7 +27,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "eslint": "^9.22.0",
+    "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-prettier": "^5.2.3",
     "prettier": "^3.5.3"

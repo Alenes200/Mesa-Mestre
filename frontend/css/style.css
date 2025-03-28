@@ -1,3 +1,12 @@
+.flex {
+  display: flex;
+  justify-content: space-between;
+  background-color: #ff6347;
+  border-radius: 8px 8px 0px 0px;
+  padding: 0px 12px;
+  align-items: center;
+}
+
 .opcao {
   padding: 10px 15px;
   border-radius: 8px;
@@ -155,8 +164,19 @@
   flex-shrink: 0; /* Impede que o botão de fechar diminua */
 }
 
+.custom-modal-close2 {
+  font-size: 38px; /* Tamanho do "X" */
+  cursor: pointer;
+  color: #333;
+  flex-shrink: 0; /* Impede que o botão de fechar diminua */
+}
+
 .custom-modal-close:hover {
   color: #ff6347; /* Cor ao passar o mouse */
+}
+
+.custom-modal-close2:hover {
+  color: white; /* Cor ao passar o mouse */
 }
 
 /* Animação de entrada */
@@ -281,4 +301,248 @@
 
 .confirm-modal.fade-out {
   animation: fadeOut2 0.3s ease;
+}
+
+/* ====================================================================================== */
+/* Parte de funcionários */
+/* Estilo da tabela de funcionários */
+.funcionarios-table-container {
+  margin-top: 20px;
+  transition: margin-right 0.3s ease; /* Transição para o formulário */
+}
+
+.funcionarios-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.funcionarios-table th,
+.funcionarios-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.funcionarios-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.funcionarios-table tbody tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+/* Colunas específicas */
+.funcionarios-table .nome-column {
+  width: 25%;
+}
+
+.funcionarios-table .email-column {
+  width: 25%;
+}
+
+.funcionarios-table .telefone-column {
+  width: 15%;
+}
+
+.funcionarios-table .data-column {
+  width: 15%;
+}
+
+.funcionarios-table .funcao-column {
+  width: 15%;
+}
+
+.funcionarios-table .opcoes-column {
+  width: 5%;
+  text-align: center;
+}
+
+/* Formulário de adicionar funcionário */
+.funcionario-form-container {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.3s ease;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.funcionario-form-container.aberto {
+  width: 400px; /* Largura do formulário */
+}
+
+.funcionario-form-container .form-content {
+  padding: 20px;
+}
+
+.funcionario-form-container .form-group {
+  margin-bottom: 15px;
+}
+
+.funcionario-form-container .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.funcionario-form-container .form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.funcionario-form-container .form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.funcionario-form-container .btn-salvar,
+.funcionario-form-container .btn-cancelar {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.funcionario-form-container .btn-salvar {
+  background-color: #ff6347;
+  color: #fff;
+}
+
+.funcionario-form-container .btn-salvar:hover {
+  background-color: #e5533d;
+}
+
+.funcionario-form-container .btn-cancelar {
+  background-color: #ccc;
+  color: #333;
+}
+
+.funcionario-form-container .btn-cancelar:hover {
+  background-color: #bbb;
+}
+
+/* Estilo do modal de edição */
+#editar-funcionario-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 40%;
+  top: 15%;
+  /* width: 100%; */
+  /* height: 100%; */
+  /* background-color: rgba(0, 0, 0, 0.5); */
+  justify-content: center;
+  align-items: center;
+}
+
+#editar-funcionario-modal .custom-modal-content {
+  display: block;
+  background-color: #fff;
+  padding: 0px;
+  border-radius: 8px;
+  width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease;
+}
+
+#editar-funcionario-modal .custom-modal-content .form-content {
+  padding: 20px;
+}
+
+#editar-funcionario-modal .form-content {
+  margin-top: 20px;
+}
+
+#editar-funcionario-modal .form-group {
+  margin-bottom: 15px;
+}
+
+#editar-funcionario-modal .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+#editar-funcionario-modal .form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#editar-funcionario-modal .form-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+#editar-funcionario-modal .btn-salvar,
+#editar-funcionario-modal .btn-cancelar {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#editar-funcionario-modal .btn-salvar {
+  background-color: #ff6347;
+  color: #fff;
+}
+
+#editar-funcionario-modal .btn-salvar:hover {
+  background-color: #e5533d;
+}
+
+#editar-funcionario-modal .btn-cancelar {
+  background-color: #ccc;
+  color: #333;
+}
+
+#editar-funcionario-modal .btn-cancelar:hover {
+  background-color: #bbb;
+}
+
+.status-ativo {
+  color: green;
+  font-weight: bold;
+}
+
+.status-inativo {
+  color: red;
+  font-weight: bold;
+}
+
+.btn-adicionar-funcionario {
+  background-color: #ff6347;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-adicionar-funcionario:hover {
+  background-color: #e5533d;
+}
+
+.conteudo-funcionarios .esquerda-funcionarios .pesquisa {
+  justify-content: space-between;
+}
+
+.funcionario-form-container .form-title {
+  background-color: #ff6347;
+  padding: 12px;
+}
+
+#search-button-func {
+  cursor: pointer;
 }
