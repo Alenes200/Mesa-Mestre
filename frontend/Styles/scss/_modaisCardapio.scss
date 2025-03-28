@@ -236,3 +236,322 @@
     }
 
 }
+
+.modal-carrinho {
+    width: 100%;
+    height: 100%;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    display: flex;
+
+    .E-close {
+        width: 100%;
+        max-width: 154px;
+        height: 100%;
+        background: #0D0D0D;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        button {
+            margin-top: 34px;
+            width: 85px;
+            height: 85px;
+            background: #D91A1A;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img {
+                width: 45px;
+            }
+        }
+    }
+
+    .D-conteudo {
+        width: 100%;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .produtos {
+            margin-top: 34px;
+            padding-left: 21px;
+            padding-right: 34px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .titulo {
+            display: flex;
+            justify-content: center;
+
+            padding: 21px 0;
+            background: #D91A1A;
+
+            h1 {
+                font-style: normal;
+                font-weight: 700;
+                font-size: 25px;
+                line-height: 45px;
+
+                color: #FFFFFF;
+            }
+        }
+
+        .descricao {
+            margin-bottom: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-right: 55px;
+
+            p {
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 120%;
+                color: #4E4B59;
+            }
+
+            .valores {
+                display: flex;
+                align-items: center;
+                gap: 89px;
+            }
+        }
+
+        .scroll-produtos {
+            overflow-y: auto;
+            max-height: 525px;
+            height: 525px;
+            padding-right: 5px;
+            /* Espaço para a scrollbar não sobrepor conteúdo */
+
+            /* Firefox */
+            scrollbar-width: thin;
+            scrollbar-color: #D91A1A #ffffff;
+
+            /* Chrome, Edge, Safari e Brave (WebKit) */
+            &::-webkit-scrollbar {
+                -webkit-appearance: none;
+                width: 8px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+                margin: 5px 0;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 10px;
+                border: 2px solid transparent;
+                background-clip: padding-box;
+            }
+
+            /* Remover setas */
+            &::-webkit-scrollbar-button {
+                display: none;
+            }
+        }
+
+        .card-produto {
+            display: flex;
+            align-items: center;
+
+            .tirar-produto {
+                margin-left: 15px;
+            }
+
+            .imagem-produto {
+                width: 143px;
+                height: 143px;
+            }
+
+            .produto {
+                margin-top: 9px;
+                margin-left: 13px;
+                width: 100%;
+                height: 143px;
+                background: #F1F0F5;
+
+                padding-right: 34px;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .E-descricao {
+                display: flex;
+                align-items: center;
+            }
+
+            .text-produto {
+                width: 285px;
+                margin-left: 21px;
+
+                h2 {
+                    font-family: 'Inter';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 120%;
+                    color: #000000;
+                }
+
+                p {
+                    margin-top: 13px;
+                    font-family: 'Inter';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 14px;
+                    line-height: 120%;
+                    color: rgba(78, 75, 89, 0.8);
+                }
+            }
+
+            .D-descricao {
+                display: flex;
+                justify-content: center;
+                gap: 76px;
+
+                .quantidade {
+                    display: flex;
+                    align-items: center;
+
+                    .btn-quantidade {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 36px;
+                        height: 26px;
+
+                        background: #C6C5CE;
+
+                        &.menos {
+                            border-radius: 4px 0px 0px 4px;
+                        }
+
+                        &.mais {
+                            border-radius: 0px 4px 4px 0px;
+                        }
+
+                        img {
+                            width: 10px;
+                        }
+
+                    }
+
+                    span {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 36px;
+                        height: 26px;
+                        background: #F1F0F5;
+                        border: 0.8px solid #C6C5CE;
+
+                        font-family: 'Inter';
+                        font-style: normal;
+                        font-weight: 600;
+                        font-size: 14px;
+                        line-height: 120%;
+                        color: rgba(78, 75, 89, 0.8);
+                    }
+                }
+
+                .total-produto {
+                    span {
+                        font-family: 'Inter';
+                        font-style: normal;
+                        font-weight: 600;
+                        font-size: 16px;
+                        line-height: 120%;
+                        color: rgba(78, 75, 89, 0.8);
+                    }
+                }
+            }
+        }
+
+        .fazer-pedido {
+            background: #FFFFFF;
+            box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 34px;
+            padding-top: 21px;
+            padding-bottom: 34px;
+
+            .total-pedido {
+                width: 100%;
+                max-width: 125px;
+
+                h2 {
+                    margin-bottom: 13px;
+                    font-family: 'Inter';
+                    font-style: normal;
+                    font-weight: 400;
+                    font-size: 16px;
+                    line-height: 120%;
+                    color: #4E4B59;
+                }
+
+                span {
+                    font-family: 'Inter';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 28px;
+                    line-height: 120%;
+                    color: rgba(78, 75, 89, 0.8);
+                }
+            }
+
+            .enviar-pedido {
+                width: 100%;
+
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 55px;
+
+                .btn {
+                    width: 100%;
+                    max-width: 332px;
+                    padding: 13px 0;
+                    border-radius: 3px;
+
+
+                    font-family: 'Inter';
+                    font-style: normal;
+                    font-weight: 600;
+                    font-size: 21px;
+                    line-height: 120%;
+                    color: #FFFFFF;
+
+                    &.enviar {
+                        background-color: #27AE06;
+                    }
+
+                    &.mais-pedido {
+                        background-color: #D91A1A;
+                    }
+                }
+            }
+        }
+    }
+
+}
