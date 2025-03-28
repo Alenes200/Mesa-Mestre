@@ -1,6 +1,7 @@
 let allProdutos = [];
 let carrinho = [];
 let mesaId; // Defina o ID da mesa dinamicamente
+let comandaAtivaId = null;
 
 // Função para buscar os produtos do backend
 async function fetchProdutos() {
@@ -153,78 +154,110 @@ function closeCarrinho() {
   carrinhoOffcanvas.classList.remove('open');
 }
 
+function showToast(message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <div class="toast-content">
+      <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+      <div class="message">${message}</div>
+    </div>
+  `;
+  document.body.appendChild(toast);
+
+  // Remove o toast após 3 segundos
+  setTimeout(() => {
+    toast.classList.add('hide');
+    setTimeout(() => toast.remove(), 500);
+  }, 3000);
+}
+
 // Função para enviar os pedidos
 async function enviarPedidos() {
   try {
-    // Verifica se há itens no carrinho
     if (carrinho.length === 0) {
-      alert('O carrinho está vazio!');
+      showToast('O carrinho está vazio!', 'error');
       return;
     }
 
-    // Obtenha o ID da mesa dinamicamente
     mesaId = obterMesaId();
     console.log('Mesa ID obtido:', mesaId);
 
-    const comandaId = await verificarOuCriarComanda();
-    console.log('Comanda ID obtido:', comandaId);
+    // Usa a comanda ativa existente ou cria uma nova
+    comandaAtivaId = comandaAtivaId || (await verificarOuCriarComanda());
+    console.log('Usando comanda ID:', comandaAtivaId);
 
-    const pedidoId = await criarPedido(comandaId);
+    const pedidoId = await criarPedido(comandaAtivaId);
     console.log('Pedido ID criado:', pedidoId);
 
     await adicionarProdutosAoPedido(pedidoId);
-    console.log('Produtos adicionados ao pedido');
-
     await atualizarPedidoComPrecoTotal(pedidoId);
-    console.log('Preço total atualizado');
 
-    alert('Pedido enviado com sucesso!');
+    showToast('Pedido enviado com sucesso!');
     carrinho = [];
     closeCarrinho();
   } catch (error) {
     console.error('Erro detalhado ao enviar pedidos:', error);
-    alert(`Erro ao enviar pedidos: ${error.message}`);
+    showToast(`Erro ao enviar pedidos: ${error.message}`, 'error');
   }
 }
 
 async function verificarOuCriarComanda() {
-  // Busca todas as comandas ativas
-  const responseComandas = await fetch('/api/comandas/active', {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-  });
+  try {
+    console.log('Verificando comandas ativas para a mesa:', mesaId);
 
-  if (!responseComandas.ok) {
-    throw new Error('Erro ao buscar comandas ativas.');
-  }
+    const responseComandas = await fetch('/api/comandas/active');
+    if (!responseComandas.ok) {
+      throw new Error('Erro ao buscar comandas ativas.');
+    }
 
-  const comandas = await responseComandas.json();
-  let comanda = comandas.find((comanda) => comanda.mes_id === mesaId);
+    const comandas = await responseComandas.json();
+    console.log('Comandas ativas encontradas:', comandas);
 
-  if (!comanda) {
-    // Cria uma nova comanda se não existir
-    console.log('Criando nova comanda para mesaId:', mesaId);
+    // Filtra comandas da mesa atual e ordena por data de início (mais recente primeiro)
+    const comandasAtivas = comandas
+      .filter(
+        (comanda) =>
+          parseInt(comanda.mes_id) === parseInt(mesaId) &&
+          comanda.com_status === 1 &&
+          !comanda.com_data_fim
+      )
+      .sort(
+        (a, b) => new Date(b.com_data_inicio) - new Date(a.com_data_inicio)
+      );
+
+    if (comandasAtivas.length > 0) {
+      const comandaMaisRecente = comandasAtivas[0];
+      console.log('Comanda mais recente encontrada:', comandaMaisRecente);
+      return parseInt(comandaMaisRecente.com_id);
+    }
+
+    // Se não encontrar comanda ativa, cria uma nova
+    console.log('Nenhuma comanda ativa encontrada. Criando nova comanda...');
     const responseNovaComanda = await fetch('/api/comandas', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        mes_id: mesaId,
-        com_data_inicio: new Date().toISOString(), // Adiciona a data de início
+        mes_id: parseInt(mesaId),
+        com_data_inicio: new Date().toISOString(),
         com_status: 1,
       }),
     });
 
     if (!responseNovaComanda.ok) {
-      const errorText = await responseNovaComanda.text();
-      console.error('Erro ao criar comanda:', errorText);
-      throw new Error('Erro ao criar comanda.');
+      const error = await responseNovaComanda.json();
+      throw new Error(
+        `Erro ao criar comanda: ${error.message || 'Erro desconhecido'}`
+      );
     }
 
-    comanda = await responseNovaComanda.json();
+    const novaComanda = await responseNovaComanda.json();
+    console.log('Nova comanda criada com sucesso:', novaComanda);
+    return parseInt(novaComanda.com_id);
+  } catch (error) {
+    console.error('Erro ao verificar/criar comanda:', error);
+    throw new Error(`Erro ao gerenciar comanda: ${error.message}`);
   }
-
-  console.log('Comanda encontrada/criada:', comanda);
-  return comanda.com_id;
 }
 
 async function criarPedido(comandaId) {
