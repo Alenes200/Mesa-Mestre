@@ -53,23 +53,33 @@ function displayProdutosPorTipo(tipo) {
   const produtosContainer = document.getElementById('produtos-container');
   produtosContainer.innerHTML = '';
 
-  const tipoProdutos = allProdutos.filter(
-    (produto) => produto.pro_tipo === tipo
-  );
+  const produtos = allProdutos.filter((produto) => produto.pro_tipo === tipo);
 
-  tipoProdutos.forEach((produto) => {
+  produtos.forEach((produto) => {
     const produtoElement = document.createElement('div');
     produtoElement.className = 'card-produto';
-    const preco =
-      typeof produto.pro_preco === 'number'
-        ? `R$ ${produto.pro_preco}`
-        : 'Preço indisponível';
+
+    const preco = `R$ ${produto.pro_preco}`;
+
+    const imagemSrc = (document.getElementById('modal-imagem').src =
+      `/uploads/${produto.pro_imagem}`);
+
     produtoElement.innerHTML = `
-              <h3>${produto.pro_nome}</h3>
-              <p>${produto.pro_descricao}</p>
-              <p>${preco}</p>
-          `;
-    produtoElement.addEventListener('click', () => openModal(produto));
+      <div class="descricao">
+        <h2>${produto.pro_nome} <span>${preco}</span></h2>
+        <p>${produto.pro_descricao}</p>
+        <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
+      </div>
+      <div class="imagem-produto">
+        <img src="${imagemSrc}" alt="Imagem de ${produto.pro_nome}" />
+      </div>
+    `;
+
+    // Adiciona evento para abrir o modal ao clicar no botão "Adicionar ao carrinho"
+    produtoElement
+      .querySelector('.adicionar-carrinho')
+      .addEventListener('click', () => openModal(produto));
+
     produtosContainer.appendChild(produtoElement);
   });
 }
