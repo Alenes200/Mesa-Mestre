@@ -241,3 +241,52 @@
     }
   }
 }
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  border-left: 6px solid;
+  overflow: hidden;
+  transform: translateX(calc(100% + 30px));
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+  z-index: 9999;
+
+  &.success {
+    border-color: #28a745;
+
+    .fas {
+      color: #28a745;
+    }
+  }
+
+  &.error {
+    border-color: #dc3545;
+
+    .fas {
+      color: #dc3545;
+    }
+  }
+
+  .toast-content {
+    display: flex;
+    align-items: center;
+
+    .fas {
+      font-size: 1.4em;
+      margin-right: 12px;
+    }
+
+    .message {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      color: #333;
+    }
+  }
+}
