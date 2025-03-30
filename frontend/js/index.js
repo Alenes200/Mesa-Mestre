@@ -11,14 +11,15 @@ import {
 import { listarFuncionarios, buscarFuncionarios } from './funcionario.js';
 import { carregarGraficoComandas, destruirGrafico } from './grafico.js';
 
+const token = localStorage.getItem('token');
+
+let userData;
+let userId;
+
 document.addEventListener('DOMContentLoaded', async () => {
   carregarLocais();
   carregarMesasModal(carregarMesas, 'Externa');
 
-  const token = localStorage.getItem('token');
-
-  let userData;
-  let userId;
   if (!token) {
     window.location.href = '../pages/login_adm.html';
     return;
