@@ -1,6 +1,6 @@
 .modal-produto {
     position: absolute;
-    top: 0;
+    top: 155px;
     left: 0;
     width: 100%;
     height: 100%;
@@ -9,6 +9,18 @@
     justify-content: center;
     align-items: center;
     padding: 34px;
+
+    transition: all 0.3s;
+    opacity: 0%;
+    pointer-events: none;
+    z-index: -1;
+
+    &.modal-produto-ativo {
+        top: 0;
+        opacity: 100%;
+        pointer-events: all;
+        z-index: 1;
+    }
 
     .conteudo {
         display: flex;
@@ -238,15 +250,19 @@
 }
 
 .modal-carrinho {
+    transition: all 0.3s;
     width: 100%;
     height: 100%;
-
     position: fixed;
     top: 0;
-    left: 0;
-
+    left: 100%; // Estado inicial (fora da tela)
     display: flex;
     flex-direction: row;
+
+    &.aberto {
+        transition: all 0.3s;
+        left: 0; // Estado final (visível)
+    }
 
     .E-close {
         width: 100%;
@@ -326,7 +342,7 @@
             .valores {
                 display: flex;
                 align-items: center;
-                gap: 89px;
+                gap: 100px;
             }
         }
 
@@ -377,6 +393,7 @@
             .imagem-produto {
                 width: 143px;
                 height: 143px;
+                object-fit: cover;
             }
 
             .produto {
@@ -473,7 +490,10 @@
                 }
 
                 .total-produto {
+                    width: 92.25px;
+
                     span {
+                        text-align: end;
                         font-family: 'Inter';
                         font-style: normal;
                         font-weight: 600;
@@ -494,12 +514,12 @@
             justify-content: space-between;
 
             padding: 0 34px;
-            padding-top: 21px;
+            padding-top: 34px;
             padding-bottom: 34px;
 
             .total-pedido {
                 width: 100%;
-                max-width: 125px;
+                max-width: 175px;
 
                 h2 {
                     margin-bottom: 13px;

@@ -29,16 +29,19 @@ function displayProdutos(produtos) {
 
     const preco = `R$ ${produto.pro_preco}`;
 
+    const imagemSrc = (document.getElementById('modal-imagem').src =
+      `/uploads/${produto.pro_imagem}`);
+
     produtoElement.innerHTML = `
-      <div class="descricao">
-        <h2>${produto.pro_nome} <span>${preco}</span></h2>
-        <p>${produto.pro_descricao}</p>
-        <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
-      </div>
-      <div class="imagem-produto">
-        <img src="../images/${produto.pro_imagem}" alt="Imagem de ${produto.pro_nome}" />
-      </div>
-    `;
+    <div class="descricao">
+      <h2>${produto.pro_nome} <span>${preco}</span></h2>
+      <p>${produto.pro_descricao}</p>
+      <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
+    </div>
+    <div class="imagem-produto">
+      <img src="${imagemSrc}" alt="Imagem de ${produto.pro_nome}" />
+    </div>
+  `;
 
     // Adiciona evento para abrir o modal ao clicar no botão "Adicionar ao carrinho"
     produtoElement
@@ -93,13 +96,13 @@ function openModal(produto) {
 
   document.getElementById('modal-nome').innerText = produto.pro_nome;
   document.getElementById('modal-imagem').src =
-    `../images/${produto.pro_imagem}`;
+    `/uploads/${produto.pro_imagem}`;
   document.getElementById('modal-descricao').innerText = produto.pro_descricao;
   precoElement.innerText = `R$ ${produto.pro_preco}`;
   quantidadeSpan.innerText = '1';
   numeroElement.innerText = '1'; // Inicializa a quantidade no elemento com class="numero"
 
-  modal.style.display = 'block';
+  modal.classList.add('modal-produto-ativo');
 
   // Event listeners para os botões de aumentar e diminuir
   document.getElementById('mais-produto').onclick = () => {
@@ -131,7 +134,7 @@ function openModal(produto) {
 // Função para fechar o modal do produto
 function closeModal() {
   const modal = document.getElementById('modal');
-  modal.style.display = 'none';
+  modal.classList.remove('modal-produto-ativo');
   document.getElementById('quantidade').value = 1; // Redefine a quantidade para 1
 }
 
@@ -173,7 +176,7 @@ function openCarrinho() {
       <div class="produto">
         <div class="E-descricao">
           <img
-            src="../images/${item.pro_imagem}"
+            src="/uploads/${item.pro_imagem}"
             alt="${item.pro_nome}"
             class="imagem-produto"
           />
@@ -207,7 +210,7 @@ function openCarrinho() {
   totalElement.innerText = `R$ ${total.toFixed(2)}`;
 
   // Exibe o modal do carrinho
-  carrinhoOffcanvas.style.display = 'flex';
+  carrinhoOffcanvas.classList.add('aberto');
 
   // Adiciona eventos para os botões de quantidade e remover
   document.querySelectorAll('.btn-quantidade.menos').forEach((button) => {
@@ -254,7 +257,7 @@ function removerProduto(index) {
 // Função para fechar o modal do carrinho
 function closeCarrinho() {
   const carrinhoOffcanvas = document.getElementById('carrinho-offcanvas');
-  carrinhoOffcanvas.style.display = 'none';
+  carrinhoOffcanvas.classList.remove('aberto');
 }
 
 function showToast(message, type = 'success') {
@@ -485,8 +488,6 @@ async function atualizarPedidoComPrecoTotal(pedidoId) {
 
 // Adiciona um event listener para carregar os produtos quando a página for carregada
 document.addEventListener('DOMContentLoaded', () => {
-  const modal = document.getElementById('modal');
-  modal.style.display = 'none';
   fetchProdutos();
 });
 
