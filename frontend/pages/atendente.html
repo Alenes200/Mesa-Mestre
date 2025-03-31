@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesa Mestre</title>
+    <link rel="stylesheet" href="../Styles/main.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo-container">
+            <img src="../images/Logo.png" alt="Logo Mesa Mestre" class="logo" />
+            <div class="company-name">Mesa Mestre</div>
+        </div>
+        <button class="menu-btn">
+            <img src="../images/icone-menu-sanduiche.svg"></img>
+        </button>
+    </header>
+
+    <div class="main-content">
+            <!-- Área de Pesquisa -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="Pesquisar mesa por local...">
+            </div>
+        </div>
+
+        <!-- Mesas Ocupadas -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Mesas Ocupadas</h2>
+                <div class="section-count occupied" id="occupiedCount">0</div>
+            </div>
+            <div class="tables-grid" id="occupiedTables">
+                <!-- Mesas serão inseridas aqui via JavaScript -->
+                <div class="loading">Carregando mesas ocupadas...</div>
+            </div>
+        </div>
+
+        <!-- Mesas Livres -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Mesas Livres</h2>
+                <div class="section-count free" id="freeCount">0</div>
+            </div>
+            <div class="tables-grid" id="freeTables">
+                <!-- Mesas serão inseridas aqui via JavaScript -->
+                <div class="loading">Carregando mesas livres...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Sistema de Atendimento &copy; 2025</p>
+    </footer>
+
+    <script type="module" src="../js/atendente.js"></script>
+</body>
+</html>
