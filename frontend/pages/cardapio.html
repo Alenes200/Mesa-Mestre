@@ -22,7 +22,7 @@
         <h1>MESA</h1>
       </div>
       <nav>
-        <div class="pedidos">
+        <div class="pedidos" onclick="openModalPedidos()">
           <h2>Pedidos</h2>
         </div>
         <img src="../images/svg linha header.svg" alt="linha branca" />
@@ -177,6 +177,58 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="modal-pedidos">
+      <div class="conteudo">
+        <div class="E-conta">
+          <div class="top">
+            <div class="titulo">
+              <h1>MINHA CONTA</h1>
+            </div>
+            <div class="info">
+              <div class="descricao">
+                <div class="esquerda">
+                  <h3>Hora</h3>
+                  <h3>Qtde</h3>
+                  <h3>Item</h3>
+                </div>
+                <div class="direita">
+                  <h3>Unidade</h3>
+                  <h3>Valor</h3>
+                </div>
+              </div>
+              <div class="itens" id="itens-pedidos"></div>
+            </div>
+          </div>
+          <div class="bot">
+            <h3>Subtotal</h3>
+            <h1 id="total-pedidos">R$ 0,00</h1>
+          </div>
+        </div>
+        <div class="D-divisao">
+          <div class="top">
+            <h1>Vai dividir a conta?</h1>
+            <div class="selecao-produto">
+              <button class="menos-produto" id="menos-divisao">
+                <img src="../images/icon-menos.svg" alt="" />
+              </button>
+              <span class="numero-de-itens" id="pessoas-divisao">1</span>
+              <button class="mais-produto" id="mais-divisao">
+                <img src="../images/icon-mais.svg" alt="" />
+              </button>
+            </div>
+            <h3>Valor por pessoa</h3>
+            <h1 id="resultado-pessoa">R$ 0,00</h1>
+          </div>
+          <div class="bot">
+            <button class="pedir-conta" id="pedir-conta">PEDIR A CONTA</button>
+          </div>
+        </div>
+      </div>
+      <button class="fechar-modal close">
+        <img src="../images/icon-fechar.svg" alt="" />
+      </button>
     </div>
 
     <script src="../js/cardapio.js"></script>

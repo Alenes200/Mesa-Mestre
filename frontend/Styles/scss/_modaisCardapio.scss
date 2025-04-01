@@ -26,7 +26,6 @@
         display: flex;
         width: 100%;
         height: 100%;
-        background-color: rgb(255, 255, 255);
     }
 
     .E-produto {
@@ -151,6 +150,7 @@
         padding: 0 34px;
         display: flex;
         flex-direction: column;
+        background-color: white;
 
 
         h1 {
@@ -160,37 +160,6 @@
             font-size: 20px;
             line-height: 120%;
             color: #000000;
-        }
-
-        .selecao-produto {
-            margin-top: 55px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 21px;
-        }
-
-        .menos-produto {
-            width: 70px;
-            height: 70px;
-
-            background: #C6C5CE;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mais-produto {
-            width: 70px;
-            height: 70px;
-
-            background: #C6C5CE;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .numero-de-itens {
@@ -575,4 +544,259 @@
         }
     }
 
+}
+
+.modal-pedidos {
+    position: absolute;
+    top: 155px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 89px;
+
+    transition: all 0.3s;
+    opacity: 0%;
+    pointer-events: none;
+    z-index: -1;
+
+    &.ativo {
+        opacity: 100%;
+        pointer-events: all;
+        z-index: 1;
+        top: 0;
+    }
+
+    .conteudo {
+        display: flex;
+        width: 100%;
+        height: 100%;
+
+        background-color: white;
+
+        h1 {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 20px;
+            line-height: 120%;
+            color: #4E4B59;
+        }
+
+        h3 {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 120%;
+            color: #4E4B59;
+        }
+
+        p {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 500;
+            font-size: 18px;
+            line-height: 120%;
+            color: #4E4B59;
+        }
+    }
+
+    .E-conta {
+        width: 100%;
+        padding-top: 55px;
+        padding-left: 55px;
+        padding-right: 34px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        background-color: white;
+
+        .info {
+            margin-top: 40px;
+
+            .descricao {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .esquerda {
+                    display: flex;
+                    align-items: center;
+                    gap: 34px;
+                }
+
+                .direita {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 89px;
+                }
+            }
+        }
+
+        .itens {
+            display: flex;
+            flex-direction: column;
+            gap: 21px;
+            margin-top: 21px;
+            padding-top: 13px;
+            border-top: 1px solid rgba(0, 0, 0, 0.23);
+
+            .card-iten {
+                display: flex;
+                align-items: center;
+                gap: 34px;
+
+                .esquerda {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    gap: 34px;
+
+                    .item {
+                        width: 100%;
+                        max-width: 306px;
+                    }
+                }
+
+                .direita {
+                    width: 50%;
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 55px;
+                }
+            }
+        }
+
+        .bot {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+            padding-bottom: 21px;
+
+            h1 {
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 600;
+                font-size: 28px;
+                line-height: 120%;
+                color: #D91A1A;
+            }
+        }
+    }
+
+    .D-divisao {
+        padding: 55px 13px 21px 13px;
+        width: 100%;
+        max-width: 336px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        background-color: rgba(243, 243, 243, 0.63);
+
+        .top {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+
+            .selecao-produto {
+                margin-top: 34px;
+            }
+
+            h3 {
+                margin-top: 34px;
+            }
+
+            h1 {
+                margin-top: 21px;
+            }
+        }
+
+        .bot {
+            button {
+                width: 100%;
+                padding: 13px 0;
+                border-radius: 3px;
+                background: #27AE06;
+
+                font-family: 'Inter';
+                font-style: normal;
+                font-weight: 500;
+                font-size: 24px;
+                line-height: 120%;
+                color: #FFFFFF;
+            }
+        }
+    }
+
+    .fechar-modal {
+        position: absolute;
+        top: 34px;
+        right: 34px;
+
+        width: 55px;
+        height: 55px;
+
+        background: #D91A1A;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.selecao-produto {
+    margin-top: 55px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 21px;
+    position: relative;
+
+    .menos-produto {
+        width: 70px;
+        height: 70px;
+
+        background: #C6C5CE;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mais-produto {
+        width: 70px;
+        height: 70px;
+
+        background: #C6C5CE;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .numero-de-itens {
+        width: 89px;
+        height: 89px;
+        background: #D91A1A;
+        border-radius: 50%;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 40px;
+        line-height: 120%;
+        color: #FFFFFF;
+    }
 }

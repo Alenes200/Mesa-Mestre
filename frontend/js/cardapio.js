@@ -312,8 +312,14 @@ async function enviarPedidos() {
     await atualizarPedidoComPrecoTotal(pedidoId);
 
     showToast('Pedido enviado com sucesso!');
-    carrinho = [];
-    closeCarrinho();
+
+    // Antes de limpar o carrinho, armazena os itens no array "pedidos"
+    pedidos = [...carrinho];
+
+    carrinho = []; // Limpa o carrinho
+    closeCarrinho(); // Fecha o modal do carrinho
+    openModalPedidos(); // Abre o modal de pedidos
+    exibirPedidosNoModal(); // Exibe os pedidos no modal
   } catch (error) {
     console.error('Erro detalhado ao enviar pedidos:', error);
     showToast(`Erro ao enviar pedidos: ${error.message}`, 'error');
@@ -525,3 +531,159 @@ function obterMesaId() {
   // Implemente a lógica para obter o ID da mesa dinamicamente
   return 1; // Exemplo estático, substitua pela lógica real
 }
+
+function openModalPedidos() {
+  const modalPedidos = document.querySelector('.modal-pedidos');
+  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+
+  // Redefine o número de pessoas para 1 ao abrir o modal
+  numeroPessoasElement.innerText = '1';
+
+  // Atualiza a divisão da conta com o valor inicial
+  atualizarDivisaoConta();
+
+  modalPedidos.classList.add('ativo'); // Adiciona a classe ativo para abrir o modal
+}
+
+function closeModalPedidos() {
+  const modalPedidos = document.querySelector('.modal-pedidos');
+  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+
+  // Redefine o número de pessoas para 1 ao fechar o modal
+  numeroPessoasElement.innerText = '1';
+
+  modalPedidos.classList.remove('ativo'); // Remove a classe ativo para fechar o modal
+}
+
+// Função para exibir os pedidos no modal
+function exibirPedidosNoModal() {
+  const pedidosContainer = document.getElementById('itens-pedidos');
+  const resultadoPessoaElement = document.getElementById('resultado-pessoa');
+  pedidosContainer.innerHTML = ''; // Limpa o container antes de adicionar os pedidos
+
+  let total = 0;
+
+  pedidos.forEach((item) => {
+    const subtotal = item.pro_preco * item.quantidade;
+    total += subtotal;
+
+    const pedidoElement = document.createElement('div');
+    pedidoElement.className = 'card-iten';
+    pedidoElement.innerHTML = `
+    <div class="esquerda">
+      <div class="hora">
+        <p>${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+      </div>
+      <div class="qtde">
+        <p>${item.quantidade}x</p>
+      </div>
+      <div class="item">
+        <p>${item.pro_nome}</p>
+      </div>
+    </div>
+    <div class="direita">
+      <div class="unidade">
+        <p>R$ ${item.pro_preco}</p>
+      </div>
+      <div class="valor">
+        <p>R$ ${subtotal.toFixed(2)}</p>
+      </div>
+    </div>
+  `;
+
+    pedidosContainer.appendChild(pedidoElement);
+  });
+
+  // Atualiza o total no modal
+  const totalElement = document.getElementById('total-pedidos');
+
+  resultadoPessoaElement.innerText = `R$ ${total.toFixed(2)}`;
+  totalElement.innerText = `R$ ${total.toFixed(2)}`;
+}
+
+// Adiciona o evento para fechar o modal ao clicar no botão de fechar
+document
+  .querySelector('.modal-pedidos .fechar-modal')
+  .addEventListener('click', closeModalPedidos);
+
+// Função para calcular e atualizar o valor por pessoa
+function atualizarDivisaoConta() {
+  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+  const resultadoPessoaElement = document.getElementById('resultado-pessoa');
+  const totalElement = document.getElementById('total-pedidos');
+
+  // Obtém o número de pessoas e o total
+  const numeroPessoas = parseInt(numeroPessoasElement.innerText, 10);
+  const total = parseFloat(
+    totalElement.innerText.replace('R$', '').replace(',', '.')
+  );
+
+  // Calcula o valor por pessoa
+  const valorPorPessoa = total / numeroPessoas;
+
+  // Atualiza o valor no elemento resultado-pessoa
+  resultadoPessoaElement.innerText = `R$ ${valorPorPessoa.toFixed(2)}`;
+}
+
+// Adiciona eventos para os botões de aumentar e diminuir o número de pessoas
+document.getElementById('mais-divisao').addEventListener('click', () => {
+  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+  let numeroPessoas = parseInt(numeroPessoasElement.innerText, 10);
+
+  // Incrementa o número de pessoas
+  numeroPessoas += 1;
+  numeroPessoasElement.innerText = numeroPessoas;
+
+  // Atualiza a divisão da conta
+  atualizarDivisaoConta();
+});
+
+document.getElementById('menos-divisao').addEventListener('click', () => {
+  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+  let numeroPessoas = parseInt(numeroPessoasElement.innerText, 10);
+
+  // Garante que o número de pessoas não seja menor que 1
+  if (numeroPessoas > 1) {
+    numeroPessoas -= 1;
+    numeroPessoasElement.innerText = numeroPessoas;
+
+    // Atualiza a divisão da conta
+    atualizarDivisaoConta();
+  }
+});
+
+// Função para atualizar o status da mesa para 2
+async function pedirConta() {
+  try {
+    // if (!mesaId) {
+    //   console.error('ID da mesa não definido.');
+    //   showToast('Erro: ID da mesa não definido.', 'error');
+    //   return;
+    // }
+
+    const response = await fetch(`/api/mesas/1`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status: 2 }), // Atualiza o status da mesa para 2
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao atualizar o status da mesa.');
+    }
+
+    const data = await response.json();
+    console.log('Status da mesa atualizado com sucesso:', data);
+    showToast('Conta solicitada com sucesso!', 'success');
+
+    // Fecha o modal de pedidos
+    closeModalPedidos();
+  } catch (error) {
+    console.error('Erro ao solicitar a conta:', error);
+    showToast('Erro ao solicitar a conta.', 'error');
+  }
+}
+
+// Adiciona o evento ao botão "Pedir a Conta"
+document.getElementById('pedir-conta').addEventListener('click', pedirConta);
