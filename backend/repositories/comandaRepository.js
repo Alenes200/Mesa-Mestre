@@ -93,6 +93,41 @@ const comandaRepository = {
       throw error;
     }
   },
+
+  getProdutosByMesaId: async (mesaId) => {
+    try {
+      const query = `
+        SELECT 
+          p.pro_id as id,
+          p.pro_nome as nome,
+          p.pro_preco as preco_unitario,
+          pp.ppr_quantidade as quantidade,
+          (p.pro_preco * pp.ppr_quantidade) as total,
+          ped.ped_id as pedido_id
+        FROM 
+          tbl_pedido_produto pp
+        JOIN 
+          tbl_produto p ON pp.pro_id = p.pro_id
+        JOIN 
+          tbl_pedido ped ON pp.ped_id = ped.ped_id
+        JOIN 
+          tbl_comanda com ON ped.com_id = com.com_id
+        WHERE 
+          com.mes_id = $1 
+          AND com.com_status >= 0
+          AND ped.ped_status >= 0
+          AND p.pro_status >= 0
+        ORDER BY 
+          pp.ped_id
+      `;
+      
+      const result = await client.query(query, [mesaId]);
+      return result.rows;
+    } catch (error) {
+      console.error('Erro ao buscar produtos da mesa:', error);
+      throw error;
+    }
+  }
 };
 
 module.exports = comandaRepository;

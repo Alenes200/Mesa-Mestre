@@ -19,37 +19,105 @@
     </header>
 
     <div class="main-content">
+        <div id="mainView">
             <!-- Área de Pesquisa -->
-        <div class="search-container">
-            <div class="search-box">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="searchInput" placeholder="Pesquisar mesa por local...">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Pesquisar mesa por local...">
+                </div>
+            </div>
+
+            <!-- Mesas Ocupadas -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Mesas Ocupadas</h2>
+                    <div class="section-count occupied" id="occupiedCount">0</div>
+                </div>
+                <div class="tables-grid" id="occupiedTables">
+                    <!-- Mesas serão inseridas aqui via JavaScript -->
+                    <div class="loading">Carregando mesas ocupadas...</div>
+                </div>
+            </div>
+
+            <!-- Mesas Livres -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Mesas Livres</h2>
+                    <div class="section-count free" id="freeCount">0</div>
+                </div>
+                <div class="tables-grid" id="freeTables">
+                    <!-- Mesas serão inseridas aqui via JavaScript -->
+                    <div class="loading">Carregando mesas livres...</div>
+                </div>
             </div>
         </div>
 
-        <!-- Mesas Ocupadas -->
-        <div class="section">
-            <div class="section-header">
-                <h2 class="section-title">Mesas Ocupadas</h2>
-                <div class="section-count occupied" id="occupiedCount">0</div>
+        <!-- Tela de detalhes da mesa (inicialmente oculta) -->
+        <div id="mesaDetailView" class="hidden">
+            <div class="mesa-header">
+                <h2 id="mesaTitle">Mesa 03 - Comanda</h2>
+                <div class="mesa-tabs">
+                    <button class="tab-button active" onclick="toggleTab('resumo')" id="resumoBtn">Resumo da Mesa</button>
+                    <button class="tab-button" onclick="toggleTab('historico')" id="historicoBtn">Histórico da Mesa</button>
+                </div>
             </div>
-            <div class="tables-grid" id="occupiedTables">
-                <!-- Mesas serão inseridas aqui via JavaScript -->
-                <div class="loading">Carregando mesas ocupadas...</div>
-            </div>
-        </div>
 
-        <!-- Mesas Livres -->
-        <div class="section">
-            <div class="section-header">
-                <h2 class="section-title">Mesas Livres</h2>
-                <div class="section-count free" id="freeCount">0</div>
+            <div class="mesa-content-container">
+                <div class="list-header">
+                    <span>Nome Produto</span>
+                    <span>Quantidade</span>
+                    <span>Total</span>
+                </div>
+                
+                <div class="produtos-scroll-container">
+                    <div id="produtosContainer">
+                        <!-- Produtos serão inseridos aqui via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="list-footer">
+                    <span id="totalProdutos">Produtos (0)</span>
+                    <span id="totalQuantidade">Quantidade (0)</span>
+                    <span id="totalValor">R$ 0,00</span>
+                </div>
             </div>
-            <div class="tables-grid" id="freeTables">
-                <!-- Mesas serão inseridas aqui via JavaScript -->
-                <div class="loading">Carregando mesas livres...</div>
+
+            <div class="mesa-content-container" id="historicoContainer" style="display: none;">
+                <div class="list-header">
+                    <span>Data/Hora</span>
+                    <span>Pedido</span>
+                    <span>Total</span>
+                </div>
+                
+                <div class="produtos-scroll-container">
+                    <div id="historicoPedidosContainer">
+                        <!-- Histórico de pedidos será inserido aqui via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="list-footer">
+                    <span id="totalPedidos">Pedidos (0)</span>
+                    <span id="periodoHistorico">Últimos 30 dias</span>
+                    <span id="totalGeralHistorico">Total: R$ 0,00</span>
+                </div>
+            </div>
+
+            <div class="mesa-actions">
+                <div class="mesa-actions-flex">
+                    <button class="action-button back-button" id="voltarBtn">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </button>
+                    <button class="action-button add-button" id="addProdutoBtn">
+                        <i class="fas fa-plus"></i> Add. Produto
+                    </button>
+                    <button class="action-button pay-button" id="pagarBtn">
+                        <i class="fas fa-credit-card"></i> Fazer Pagamento
+                    </button>
+                </div>
             </div>
         </div>
+        
     </div>
 
     <!-- Footer -->

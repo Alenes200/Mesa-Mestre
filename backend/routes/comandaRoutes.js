@@ -21,4 +21,7 @@ router.put('/:id', comandaController.update);
 // Rota para deletar uma comanda (delete lógico)
 router.delete('/:id', comandaController.delete);
 
+// GET /api/comandas/mesa/:mesaId/produtos
+router.get('/mesa/:mesaId/produtos', comandaController.getProdutosByMesaId);
+
 module.exports = router;
