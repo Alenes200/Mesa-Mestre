@@ -282,9 +282,7 @@ export function funcoesModal() {
 
 async function buscarDescricaoLocal(locId) {
   try {
-    const response = await fetch(
-      `/api/mesas/local/${locId}`
-    );
+    const response = await fetch(`/api/mesas/local/${locId}`);
     if (!response.ok) throw new Error('Erro ao buscar descrição do local');
 
     const local = await response.json();
@@ -300,9 +298,7 @@ export async function buscarDadosMesa(mesaId) {
     const response = await fetch(`/api/mesas/${mesaId}`);
     if (!response.ok) throw new Error('Erro ao buscar dados da mesa');
 
-    const locais = await fetch(
-      `/api/mesas/local/locais/Restritos`
-    );
+    const locais = await fetch(`/api/mesas/local/locais/Restritos`);
     if (!locais.ok) throw new Error('Erro ao buscar dados dos locais');
 
     const locaisSelect = await locais.json();
@@ -378,58 +374,146 @@ export async function carregarMesasPesquisa(id, descricao, local) {
 export async function carregarMesas(local) {
   console.log(local);
   try {
-    const response = await fetch(
-      `/api/mesas/local/descricao/${local}`
-    ); // Corrigido: URL para buscar todas as mesas
-    // if (!response.ok) throw new Error('Erro ao carregar as mesas');
-
+    const response = await fetch(`/api/mesas/local/descricao/${local}`);
     const mesas = await response.json();
-    containerMesas.innerHTML = ''; // Limpa as mesas antes de renderizar
+
+    containerMesas.innerHTML = `
+    <h2>Disponíveis</h2>
+    <div class="mesas-container" id="mesas-disponiveis"></div>
+
+    <h2>Ocupadas</h2>
+    <div class="mesas-container" id="mesas-ocupadas"></div>
+
+    <h2>Aguardando Pagamento</h2>
+    <div class="mesas-container" id="mesas-aguardando"></div>
+    `;
+
+    // Selecionando os contêineres
+    const containerDisponiveis = document.querySelector('#mesas-disponiveis');
+    const containerOcupadas = document.querySelector('#mesas-ocupadas');
+    const containerAguardando = document.querySelector('#mesas-aguardando');
+
+    // Limpando as seções antes de renderizar
+    containerDisponiveis.innerHTML = '';
+    containerOcupadas.innerHTML = '';
+    containerAguardando.innerHTML = '';
 
     if (mesas.length === 0) {
-      // Caso não haja mesas, apenas limpa e deixa vazio
-      return;
+      return; // Se não há mesas, não faz nada
     }
 
     mesas.forEach((mesa) => {
       const divMesa = document.createElement('div');
       divMesa.classList.add('card-mesa');
       divMesa.dataset.id = mesa.mes_id;
-      divMesa.innerHTML = `<p>Mesa ${mesa.mes_id}</p>`;
-      containerMesas.appendChild(divMesa);
+      divMesa.innerHTML = `<p>${mesa.mes_nome}</p>`;
+
+      // Distribuir a mesa conforme o status
+      switch (mesa.mes_status) {
+        case 'disponível':
+          containerDisponiveis.appendChild(divMesa);
+          break;
+        case 'ocupada':
+          containerOcupadas.appendChild(divMesa);
+          break;
+        case 'aguardando pagamento':
+          containerAguardando.appendChild(divMesa);
+          break;
+        default:
+          console.warn(`Status desconhecido: ${mesa.mes_status}`);
+      }
     });
   } catch (error) {
     console.error(error);
-    containerMesas.innerHTML = '';
+    containerMesas.innerHTML = `
+
+    <h2>Disponíveis</h2>
+    <div class="mesas-container" id="mesas-disponiveis"></div>
+
+    <h2>Ocupadas</h2>
+    <div class="mesas-container" id="mesas-ocupadas"></div>
+
+    <h2>Aguardando Pagamento</h2>
+    <div class="mesas-container" id="mesas-aguardando"></div>
+    `;
   }
 }
 
 export async function carregarTodasMesasAtivas() {
   try {
-    const response = await fetch('/api/mesas');
-    // if (!response.ok) throw new Error('Erro ao buscar mesas');
-
+    const response = await fetch(`/api/mesas`);
     const mesas = await response.json();
 
-    containerMesas.innerHTML = ''; // Limpa as mesas antes de renderizar
+    containerMesas.innerHTML = `
+    <div class="mesas-container">
+        <div class="card-mesa adicionar-mesa">
+            <p>+</p>
+        </div>
+    </div>
+
+    <h2>Disponíveis</h2>
+    <div class="mesas-container" id="mesas-disponiveis"></div>
+
+    <h2>Ocupadas</h2>
+    <div class="mesas-container" id="mesas-ocupadas"></div>
+
+    <h2>Aguardando Pagamento</h2>
+    <div class="mesas-container" id="mesas-aguardando"></div>
+    `;
+
+    // Selecionando os contêineres
+    const containerDisponiveis = document.querySelector('#mesas-disponiveis');
+    const containerOcupadas = document.querySelector('#mesas-ocupadas');
+    const containerAguardando = document.querySelector('#mesas-aguardando');
+
+    // Limpando as seções antes de renderizar
+    containerDisponiveis.innerHTML = '';
+    containerOcupadas.innerHTML = '';
+    containerAguardando.innerHTML = '';
 
     if (mesas.length === 0) {
-      // Caso não haja mesas, apenas limpa e deixa vazio
-      return;
+      return; // Se não há mesas, não faz nada
     }
 
     mesas.forEach((mesa) => {
       const divMesa = document.createElement('div');
       divMesa.classList.add('card-mesa');
       divMesa.dataset.id = mesa.mes_id;
-      divMesa.innerHTML = `<p>Mesa ${mesa.mes_id}</p>`;
-      containerMesas.appendChild(divMesa);
-    });
+      divMesa.innerHTML = `<p>${mesa.mes_nome}</p>`;
 
-    containerMesas.appendChild(btnAdicionarMesa);
+      // Distribuir a mesa conforme o status
+      switch (mesa.mes_status) {
+        case 'disponível':
+          containerDisponiveis.appendChild(divMesa);
+          break;
+        case 'ocupada':
+          containerOcupadas.appendChild(divMesa);
+          break;
+        case 'aguardando pagamento':
+          containerAguardando.appendChild(divMesa);
+          break;
+        default:
+          console.warn(`Status desconhecido: ${mesa.mes_status}`);
+      }
+    });
   } catch (error) {
     console.error(error);
-    containerMesas.innerHTML = '';
+    containerMesas.innerHTML = `
+    <div class="mesas-container" class="adicionar-mesa">
+        <div class="card-mesa">
+            <p>+</p>
+        </div>
+    </div>
+
+    <h2>Disponíveis</h2>
+    <div class="mesas-container" id="mesas-disponiveis"></div>
+
+    <h2>Ocupadas</h2>
+    <div class="mesas-container" id="mesas-ocupadas"></div>
+
+    <h2>Aguardando Pagamento</h2>
+    <div class="mesas-container" id="mesas-aguardando"></div>
+    `;
   }
 }
 
@@ -440,7 +524,10 @@ export async function carregarTodasMesasInativas() {
 
     const mesas = await response.json();
 
-    containerMesas.innerHTML = ''; // Limpa as mesas antes de renderizar
+    containerMesas.innerHTML =
+      '<div class="mesas-container" id="mesas-inativas"></div>';
+
+    const containerInativas = document.querySelector('#mesas-inativas');
 
     if (mesas.length === 0) {
       // Caso não haja mesas, apenas limpa e deixa vazio
@@ -452,19 +539,26 @@ export async function carregarTodasMesasInativas() {
       divMesa.classList.add('card-mesa');
       divMesa.dataset.id = mesa.mes_id;
       divMesa.innerHTML = `<p>Mesa ${mesa.mes_id}</p>`;
-      containerMesas.appendChild(divMesa);
+      containerInativas.appendChild(divMesa);
     });
   } catch (error) {
     console.error(error);
-    containerMesas.innerHTML = '';
+    containerMesas.innerHTML = `
+    <h2>Disponíveis</h2>
+    <div class="mesas-container" id="mesas-disponiveis"></div>
+
+    <h2>Ocupadas</h2>
+    <div class="mesas-container" id="mesas-ocupadas"></div>
+
+    <h2>Aguardando Pagamento</h2>
+    <div class="mesas-container" id="mesas-aguardando"></div>
+    `;
   }
 }
 
 export async function carregarLocais() {
   try {
-    const response = await fetch(
-      '/api/mesas/local/locais/Todos'
-    );
+    const response = await fetch('/api/mesas/local/locais/Todos');
     // if (!response.ok) throw new Error('Erro ao buscar locais distintos');
 
     const locais = await response.json();
@@ -512,4 +606,8 @@ export async function carregarLocais() {
     console.error(error);
     containerMesas.innerHTML = '';
   }
+}
+
+export async function CarregarOcupadas(params) {
+  containerMesas;
 }

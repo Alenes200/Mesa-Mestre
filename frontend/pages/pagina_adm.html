@@ -98,9 +98,20 @@
             <div class="card-mesa">
               <p>mesa 02</p>
             </div> -->
-            <div class="card-mesa adicionar-mesa">
-              <p>+</p>
+            <div class="mesas-container" class="mesas-adicionar">
+              <div class="card-mesa adicionar-mesa">
+                <p>+</p>
+              </div>
             </div>
+
+            <h2>Disponíveis</h2>
+            <div class="mesas-container" id="mesas-disponiveis"></div>
+
+            <h2>Ocupadas</h2>
+            <div class="mesas-container" id="mesas-ocupadas"></div>
+
+            <h2>Aguardando Pagamento</h2>
+            <div class="mesas-container" id="mesas-aguardando"></div>
           </div>
           <div class="modal-mesa" style="display: none">
             <div class="overlay"></div>
@@ -113,6 +124,12 @@
                   id="fechar-modal-mesas"
                 />
               </div>
+
+              <div class="text">
+                <h2>Nome</h2>
+                <input type="text" id="nomeMesa" />
+              </div>
+
               <div class="text">
                 <h2>Descrição</h2>
                 <textarea name="descricao" id="descricao"></textarea>
@@ -138,12 +155,20 @@
                     <h2>Status</h2>
                     <input type="text" id="statusInput" />
                   </div>
+                  <div class="codigo">
+                    <h2>Código</h2>
+                    <input type="text" id="statusInput" />
+                  </div>
                 </div>
 
                 <!-- Adicionar -->
                 <div class="bot" id="adicionarStatus">
                   <div class="codigo">
                     <h2>Status</h2>
+                    <p id="statusText"></p>
+                  </div>
+                  <div class="codigo">
+                    <h2>Código</h2>
                     <p id="statusText"></p>
                   </div>
                 </div>

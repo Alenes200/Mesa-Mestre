@@ -170,9 +170,7 @@
       .mesas {
         margin-top: 55px;
         display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 34px;
+        flex-direction: column;
 
         .card-mesa {
           cursor: pointer;
@@ -192,6 +190,35 @@
             font-size: 16px;
             line-height: 120%;
             color: #FFFFFF;
+          }
+        }
+
+        .mesas-container {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 34px;
+
+          .card-mesa {
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+
+            background: tomato;
+            border-radius: 50%;
+
+            p {
+              font-family: 'Inter';
+              font-style: normal;
+              font-weight: 700;
+              font-size: 16px;
+              line-height: 120%;
+              color: #FFFFFF;
+            }
           }
         }
       }

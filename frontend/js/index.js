@@ -20,48 +20,48 @@ document.addEventListener('DOMContentLoaded', async () => {
   carregarLocais();
   carregarMesasModal(carregarMesas, 'Externa');
 
-  if (!token) {
-    window.location.href = '../pages/login_adm.html';
-    return;
-  }
-  try {
-    const userResponse = await fetch('/api/auth', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!userResponse.ok) {
-      throw new Error('Erro ao obter dados do usuário.');
-    }
-    userData = await userResponse.json();
-    userId = userData.id;
+  // if (!token) {
+  //   window.location.href = '../pages/login_adm.html';
+  //   return;
+  // }
+  // try {
+  //   const userResponse = await fetch('/api/auth', {
+  //     method: 'GET',
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   });
+  //   if (!userResponse.ok) {
+  //     throw new Error('Erro ao obter dados do usuário.');
+  //   }
+  //   userData = await userResponse.json();
+  //   userId = userData.id;
 
-    // Configuração do evento de pesquisa
-    document
-      .getElementById('search-button-func')
-      .addEventListener('click', () => {
-        buscarFuncionarios(token, userId);
-      });
-  } catch (error) {
-    console.error('Erro ao carregar dados do usuário:', error);
-    showModal(
-      'Erro ao carregar dados do usuário. Tente novamente mais tarde.',
-      'error'
-    );
-  }
+  //   // Configuração do evento de pesquisa
+  //   document
+  //     .getElementById('search-button-func')
+  //     .addEventListener('click', () => {
+  //       buscarFuncionarios(token, userId);
+  //     });
+  // } catch (error) {
+  //   console.error('Erro ao carregar dados do usuário:', error);
+  //   showModal(
+  //     'Erro ao carregar dados do usuário. Tente novamente mais tarde.',
+  //     'error'
+  //   );
+  // }
 
   // Modal functionality remains the same
-  const cardMesas = document.querySelectorAll('.card-mesa');
-  const modal = document.querySelector('.modal-mesa');
-  const closeIcon = document.querySelector('#fechar-modal-mesas');
-  const overlay = document.querySelector('.overlay');
+  // const cardMesas = document.querySelectorAll('.card-mesa');
+  // const modal = document.querySelector('.modal-mesa');
+  // const closeIcon = document.querySelector('#fechar-modal-mesas');
+  // const overlay = document.querySelector('.overlay');
 
-  cardMesas.forEach((card) => {
-    card.addEventListener('click', () => {
-      modal.style.display = 'flex';
-    });
-  });
+  // cardMesas.forEach((card) => {
+  //   card.addEventListener('click', () => {
+  //     modal.style.display = 'flex';
+  //   });
+  // });
 
   const botaoSalvar = document.getElementById('salvar-alteracoes');
 
