@@ -105,7 +105,7 @@ $breakpoints: (
       flex: 1;
       text-align: center;
     }
-    
+
     &:last-child {
       flex: 1;
       text-align: right;
@@ -117,7 +117,7 @@ $breakpoints: (
   flex: 1;
   overflow-y: auto;
   padding: 0 map-get($spacing, medium);
-  
+
   #produtosContainer {
     min-height: min-content;
   }
@@ -130,7 +130,7 @@ $breakpoints: (
 
   span {
     flex: 2;
-    
+
     &:nth-child(2) {
       flex: 1;
       text-align: center;
@@ -160,7 +160,7 @@ $breakpoints: (
       flex: 2;
       text-align: center;
     }
-    
+
     &:last-child {
       // flex: 2;
       text-align: right;
@@ -180,7 +180,7 @@ $breakpoints: (
   right: 0;
   z-index: 10;
 
-  .mesa-actions-flex{
+  .mesa-actions-flex {
     display: flex;
 
     .action-button {
@@ -188,7 +188,7 @@ $breakpoints: (
       padding: map-get($spacing, small);
       margin: 0 5px;
       @include flex-center;
-  
+
       i {
         margin-right: 5px;
       }
@@ -213,24 +213,25 @@ $breakpoints: (
   text-align: center;
   padding: 20px;
   color: map-get($colors, primary);
-  
+
   i {
     font-size: 2rem;
     margin-bottom: 10px;
   }
 }
 
-.no-products, .error-message {
+.no-products,
+.error-message {
   text-align: center;
   padding: 30px;
   color: map-get($colors, dark-gray);
-  
+
   i {
     font-size: 2rem;
     margin-bottom: 15px;
     color: map-get($colors, primary);
   }
-  
+
   p {
     margin-top: 10px;
   }
@@ -240,68 +241,207 @@ $breakpoints: (
   color: map-get($colors, danger);
 }
 
-// /* Estilos para o container do histórico */
-// #historicoContainer {
-//   .list-header {
-//     span {
-//       &:nth-child(1) { flex: 1; text-align: left; }  /* Data/Hora */
-//       &:nth-child(2) { flex: 2; text-align: left; }  /* Pedido */
-//       &:nth-child(3) { flex: 1; text-align: right; } /* Total */
-//     }
-//   }
+/* Estilos para o histórico */
+/* Container principal do histórico */
+#historicoContainer {
+  .list-header {
+    span {
+      &:nth-child(1) {
+        flex: 1.5;
+        text-align: left;
+        padding-left: 15px;
+      }
+      &:nth-child(2) {
+        flex: 2;
+        text-align: center;
+      }
+      &:nth-child(3) {
+        flex: 1;
+        text-align: right;
+        padding-right: 15px;
+      }
+    }
+  }
 
-//   .pedido-item {
-//     @include flex-center(flex-start);
-//     padding: map-get($spacing, small) 0;
-//     border-bottom: 1px solid lighten(map-get($colors, border), 5%);
+  /* Item do pedido */
+  .pedido-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid lighten(map-get($colors, border), 8%);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
 
-//     span {
-//       &:nth-child(1) { 
-//         flex: 1;
-//         color: map-get($colors, text-secondary);
-//         font-size: 0.9em;
-//       }
-//       &:nth-child(2) { flex: 2; }
-//       &:nth-child(3) { 
-//         flex: 1;
-//         text-align: right;
-//         font-weight: bold;
-//       }
-//     }
+    &:hover {
+      background-color: lighten(map-get($colors, light-gray), 3%);
+    }
 
-//     .detalhes-pedido {
-//       display: none;
-//       width: 100%;
-//       padding: map-get($spacing, small);
-//       background: white;
-//       border-radius: 4px;
-//       margin-top: map-get($spacing, small);
+    .pedido-header {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
 
-//       .produto-historico {
-//         display: flex;
-//         justify-content: space-between;
-//         padding: 2px 0;
+    /* Quando expandido */
+    &.expandido {
+      background-color: lighten(map-get($colors, light-gray), 2%);
+      margin-bottom: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 
-//         span:first-child {
-//           &::before {
-//             content: "• ";
-//             color: map-get($colors, primary);
-//           }
-//         }
-//       }
-//     }
+      .detalhes-pedido {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
 
-//     &.expandido .detalhes-pedido {
-//       display: block;
-//     }
-//   }
-// }
+      &::after {
+        // content: "▼";
+        position: absolute;
+        right: 15px;
+        top: 12px;
+        font-size: 0.8rem;
+        color: map-get($colors, primary);
+      }
+    }
+
+    /* Ícone quando não expandido */
+    &:not(.expandido)::after {
+      // content: "▶";
+      position: absolute;
+      right: 15px;
+      top: 12px;
+      font-size: 0.8rem;
+      color: map-get($colors, text-secondary);
+    }
+
+    span {
+      &:nth-child(1) { /* Data/Hora */
+        flex: 3;
+        font-size: 0.85rem;
+        color: map-get($colors, text-secondary);
+      }
+      &:nth-child(2) { /* Número do Pedido */
+        flex: 2;
+        font-weight: 600;
+        color: map-get($colors, primary);
+      }
+      &:nth-child(3) { /* Valor Total */
+        flex: 2;
+        text-align: right;
+        font-weight: 700;
+      }
+    }
+  }
+
+  /* Área de detalhes expandidos */
+  .detalhes-pedido {
+    display: none;
+    width: calc(100% - 30px);
+    margin: 10px auto 0;
+    padding: map-get($spacing, small);
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    
+    /* Cabeçalho dos detalhes */
+    &::before {
+      content: "Itens do Pedido";
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: map-get($colors, text-secondary);
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed map-get($colors, border);
+    }
+  }
+
+  /* Itens individuais do pedido */
+  .produto-historico {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 0.9em;
+    border-bottom: 1px solid lighten(map-get($colors, border), 10%);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    span:first-child {
+      &::before {
+        content: "•";
+        color: map-get($colors, primary);
+        margin-right: 8px;
+      }
+    }
+
+    span:last-child {
+      font-weight: 600;
+      color: map-get($colors, dark-gray);
+    }
+  }
+
+  /* Rodapé */
+  .list-footer {
+    background-color: lighten(map-get($colors, light-gray), 2%);
+    padding: 5px 15px;
+    border-top: 2px solid map-get($colors, border);
+    
+    span {
+      font-weight: 600;
+      
+      &:nth-child(1) { /* Total de Pedidos */
+        flex: 1;
+        text-align: left;
+        color: map-get($colors, text);
+      }
+      &:nth-child(2) { /* Espaço vazio */
+        flex: 2;
+        display: none;
+      }
+      &:nth-child(3) { /* Valor Total */
+        flex: 1;
+        text-align: right;
+        color: map-get($colors, primary);
+      }
+    }
+  }
+
+  /* Animações */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mensagens de estado */
+  .no-results, .error-message {
+    text-align: center;
+    padding: 30px;
+    color: map-get($colors, dark-gray);
+
+    i {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: map-get($colors, primary);
+    }
+
+    p {
+      margin-top: 10px;
+    }
+  }
+
+  .error-message i {
+    color: map-get($colors, danger);
+  }
+}
 
 // Responsividade
 @media (max-width: map-get($breakpoints, mobile)) {
   .mesa-header {
     padding: map-get($spacing, small);
-    
+
     h2 {
       font-size: 1.1rem;
     }

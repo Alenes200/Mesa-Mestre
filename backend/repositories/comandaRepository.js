@@ -127,6 +127,65 @@ const comandaRepository = {
       console.error('Erro ao buscar produtos da mesa:', error);
       throw error;
     }
+  },
+
+  // Adicione este método ao seu comandaRepository
+  getPedidosByComandaAtiva: async (mesaId) => {
+    // Defina a query fora do bloco try para poder usá-la no catch
+    const queryText = `
+        SELECT 
+            p.ped_id as pedido_id,
+            p.ped_created_at as data_pedido,
+            json_agg(
+                json_build_object(
+                    'nome', prod.pro_nome,
+                    'quantidade', pp.ppr_quantidade,
+                    'preco_unitario', prod.pro_preco
+                )
+            ) as itens,
+            SUM(prod.pro_preco * pp.ppr_quantidade)::float as total
+        FROM 
+            tbl_comanda c
+        JOIN 
+            tbl_pedido p ON c.com_id = p.com_id
+        JOIN 
+            tbl_pedido_produto pp ON p.ped_id = pp.ped_id
+        JOIN 
+            tbl_produto prod ON pp.pro_id = prod.pro_id
+        WHERE 
+            c.mes_id = $1
+            AND c.com_status >= 0
+            AND p.ped_status >= 0
+            AND prod.pro_status >= 0
+        GROUP BY 
+            p.ped_id, p.ped_created_at
+        ORDER BY 
+            p.ped_created_at DESC
+    `;
+
+    try {
+        if (!mesaId || isNaN(mesaId)) {
+            throw new Error('ID da mesa inválido');
+        }
+
+        const result = await client.query(queryText, [parseInt(mesaId)]);
+        
+        return result.rows.map(row => ({
+            pedido_id: row.pedido_id,
+            data: row.data_pedido,
+            total: row.total,
+            itens: row.itens
+        }));
+        
+    } catch (error) {
+        console.error('Erro detalhado ao buscar pedidos:', {
+            message: error.message,
+            stack: error.stack,
+            query: queryText,  // Agora queryText está definida
+            params: [mesaId]
+        });
+        throw new Error(`Falha ao buscar pedidos: ${error.message}`);
+    }
   }
 };
 

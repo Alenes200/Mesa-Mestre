@@ -120,6 +120,34 @@ const comandaController = {
       console.error('Erro no controller ao buscar produtos:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
     }
+  },
+
+  getPedidosComandaAtiva: async (req, res) => {
+    const { mesaId } = req.params;
+    
+    if (!mesaId || isNaN(mesaId)) {
+        return res.status(400).json({
+            success: false,
+            message: 'ID da mesa inválido'
+        });
+    }
+
+    try {
+        const pedidos = await comandaRepository.getPedidosByComandaAtiva(mesaId);
+        
+        return res.json({
+            success: true,
+            data: pedidos,
+            message: 'Pedidos obtidos com sucesso'
+        });
+        
+    } catch (error) {
+        console.error('Erro no controller:', error.message);
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
   }
 };
 

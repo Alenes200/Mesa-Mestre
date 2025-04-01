@@ -18,6 +18,163 @@ document.addEventListener('DOMContentLoaded', function() {
     const addProdutoBtn = document.getElementById('addProdutoBtn');
     const pagarBtn = document.getElementById('pagarBtn');
 
+    // Adicione estas variáveis no início do seu código, com os outros seletores
+    const resumoBtn = document.getElementById('resumoBtn');
+    const historicoBtn = document.getElementById('historicoBtn');
+    const resumoContainer = document.querySelector('.mesa-content-container');
+    const historicoContainer = document.getElementById('historicoContainer');
+
+    // Função para alternar entre tabs
+    function toggleTab(tab) {
+        if (tab === 'resumo') {
+            // Ativa a tab de resumo
+            resumoBtn.classList.add('active');
+            historicoBtn.classList.remove('active');
+            resumoContainer.style.display = 'flex';
+            historicoContainer.style.display = 'none';
+        } else if (tab === 'historico') {
+            // Ativa a tab de histórico
+            resumoBtn.classList.remove('active');
+            historicoBtn.classList.add('active');
+            resumoContainer.style.display = 'none';
+            historicoContainer.style.display = 'flex';
+            carregarPedidosComandaAtiva();
+        }
+    }
+
+    // Torna a função acessível globalmente para o HTML
+    window.toggleTab = toggleTab;
+
+    // Na função showMesaDetail, adicione no início para resetar para a tab de resumo
+    async function showMesaDetail(mesaId) {
+        // Sempre mostra o resumo primeiro
+        toggleTab('resumo');
+        
+        // Resto da sua implementação existente...
+        try {
+            // Resetar totais antes de carregar
+            totalProdutos.textContent = `Produtos (0)`;
+            totalQuantidade.textContent = `Quantidade (0)`;
+            totalValor.textContent = `R$ 0,00`;
+
+            // Mostra loading enquanto busca os dados
+            mesaDetailView.classList.remove('hidden');
+            produtosContainer.innerHTML = '<div class="loading">Carregando produtos...</div>';
+            mainView.classList.add('hidden');
+            
+            // Busca os produtos da comanda
+            const produtos = await fetchProdutosComanda(mesaId);
+            
+            if (produtos.length === 0) {
+                // Se não houver produtos, mostra mensagem amigável
+                produtosContainer.innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Nenhum produto encontrado para esta comanda</p>
+                    </div>
+                `;
+            } else {
+                // Atualiza a UI com os produtos
+                renderProdutos(produtos);
+            }
+            
+            // Atualiza o título
+            mesaTitle.textContent = `Mesa ${mesaId} - Comanda`;
+            
+        } catch (error) {
+            console.error('Erro ao carregar detalhes da mesa:', error);
+            
+            // Mensagem de erro amigável
+            produtosContainer.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Erro ao carregar produtos: ${error.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    // Função para carregar o histórico de pedidos
+    async function carregarPedidosComandaAtiva() {
+        try {
+            const mesaId = mesaTitle.textContent.match(/Mesa (\d+)/)?.[1];
+            
+            if (!mesaId) {
+                console.error('Não foi possível identificar o ID da mesa');
+                return;
+            }
+    
+            const container = document.getElementById('historicoPedidosContainer');
+            container.innerHTML = '<div class="loading">Carregando pedidos...</div>';
+    
+            const response = await fetch(`/api/comandas/mesas/${mesaId}/pedidos-ativos`);
+            if (!response.ok) {
+                throw new Error('Erro ao carregar pedidos');
+            }
+    
+            const { data: pedidos } = await response.json();
+    
+            // Limpa o container
+            container.innerHTML = '';
+    
+            if (pedidos.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Nenhum pedido encontrado para esta comanda</p>
+                    </div>
+                `;
+                return;
+            }
+    
+            // Atualiza contadores
+            document.getElementById('totalPedidos').textContent = `Pedidos (${pedidos.length})`;
+            document.getElementById('totalGeralHistorico').textContent = `Total: R$ ${
+                pedidos.reduce((sum, pedido) => sum + pedido.total, 0).toFixed(2)
+            }`;
+    
+            // Preenche os pedidos
+            pedidos.forEach(pedido => {
+                const pedidoElement = document.createElement('div');
+                pedidoElement.className = 'pedido-item';
+                pedidoElement.innerHTML = `
+                    <div class="pedido-header">
+                    <span class="pedido-data">${new Date(pedido.data).toLocaleString('pt-BR')}</span>
+                    <span class="pedido-numero">Pedido #${pedido.pedido_id}</span>
+                    <span class="pedido-total">R$ ${pedido.total.toFixed(2)}</span>
+                </div>
+                <div class="detalhes-pedido">
+                    ${pedido.itens.map(item => `
+                    <div class="produto-historico">
+                        <span>${item.nome} x${item.quantidade}</span>
+                        <span>R$ ${(item.preco_unitario * item.quantidade).toFixed(2)}</span>
+                    </div>
+                    `).join('')}
+                </div>
+                `;
+                
+                // Adiciona evento de clique para expandir/detalhar
+                pedidoElement.addEventListener('click', function(e) {
+                    if (!e.target.closest('.detalhes-pedido')) {
+                        this.classList.toggle('expandido');
+                    }
+                });
+                
+                container.appendChild(pedidoElement);
+            });
+    
+        } catch (error) {
+            console.error('Erro ao carregar pedidos:', error);
+            const container = document.getElementById('historicoPedidosContainer');
+            container.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Erro ao carregar pedidos: ${error.message}</p>
+                </div>
+            `;
+        }
+    }
+
     // Função para buscar mesas da API
     async function fetchMesas() {
         try {
@@ -145,6 +302,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função para voltar à view principal
     function backToMainView() {
+        toggleTab('resumo');
+
         mainView.classList.remove('hidden');
         mesaDetailView.classList.add('hidden');
     }

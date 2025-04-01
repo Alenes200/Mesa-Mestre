@@ -24,4 +24,7 @@ router.delete('/:id', comandaController.delete);
 // GET /api/comandas/mesa/:mesaId/produtos
 router.get('/mesa/:mesaId/produtos', comandaController.getProdutosByMesaId);
 
+// Pedidos da comanda ativa por mesa
+router.get('/mesas/:mesaId/pedidos-ativos', comandaController.getPedidosComandaAtiva);
+
 module.exports = router;
