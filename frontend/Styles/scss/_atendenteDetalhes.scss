@@ -241,6 +241,17 @@ $breakpoints: (
   color: map-get($colors, danger);
 }
 
+#pagarBtn {
+  display: none; /* Inicia escondido */
+  /* Use flex para manter consistência com outros botões */
+  @include button-style(map-get($colors, secondary));
+  
+  /* Quando visível */
+  &.visible, &[style*="display: flex"] {
+      display: flex !important;
+  }
+}
+
 /* Estilos para o histórico */
 /* Container principal do histórico */
 #historicoContainer {

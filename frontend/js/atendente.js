@@ -1,3 +1,5 @@
+let mesaStatusAtual = 0;
+
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const occupiedTablesContainer = document.getElementById('occupiedTables');
@@ -49,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function showMesaDetail(mesaId) {
         // Sempre mostra o resumo primeiro
         toggleTab('resumo');
+        atualizarBotaoPagamento(); 
         
         // Resto da sua implementação existente...
         try {
@@ -80,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Atualiza o título
             mesaTitle.textContent = `Mesa ${mesaId} - Comanda`;
+            atualizarBotaoPagamento();
             
         } catch (error) {
             console.error('Erro ao carregar detalhes da mesa:', error);
@@ -139,18 +143,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 pedidoElement.className = 'pedido-item';
                 pedidoElement.innerHTML = `
                     <div class="pedido-header">
-                    <span class="pedido-data">${new Date(pedido.data).toLocaleString('pt-BR')}</span>
-                    <span class="pedido-numero">Pedido #${pedido.pedido_id}</span>
-                    <span class="pedido-total">R$ ${pedido.total.toFixed(2)}</span>
-                </div>
-                <div class="detalhes-pedido">
-                    ${pedido.itens.map(item => `
-                    <div class="produto-historico">
-                        <span>${item.nome} x${item.quantidade}</span>
-                        <span>R$ ${(item.preco_unitario * item.quantidade).toFixed(2)}</span>
+                        <span class="pedido-data">${new Date(pedido.data).toLocaleString('pt-BR')}</span>
+                        <span class="pedido-numero">Pedido #${pedido.pedido_id}</span>
+                        <span class="pedido-total">R$ ${pedido.total.toFixed(2)}</span>
                     </div>
-                    `).join('')}
-                </div>
+                    <div class="detalhes-pedido">
+                        ${pedido.itens.map(item => `
+                        <div class="produto-historico">
+                            <span>${item.nome} x${item.quantidade}</span>
+                            <span>R$ ${(item.preco_unitario * item.quantidade).toFixed(2)}</span>
+                        </div>
+                        `).join('')}
+                    </div>
                 `;
                 
                 // Adiciona evento de clique para expandir/detalhar
@@ -302,15 +306,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função para voltar à view principal
     function backToMainView() {
+        mesaStatusAtual = 0;
+        pagarBtn.style.display = 'none';
         toggleTab('resumo');
 
         mainView.classList.remove('hidden');
         mesaDetailView.classList.add('hidden');
     }
 
+    // Função para atualizar o botão de pagamento
+    function atualizarBotaoPagamento() {
+        pagarBtn.style.display = mesaStatusAtual === 2 ? 'flex' : 'none';
+    }
+
     // Função para lidar com clique na mesa
-    window.handleTableClick = function(tableId) {
+    window.handleTableClick = function(tableId, status) {
+        mesaStatusAtual = status;
         showMesaDetail(tableId);
+        atualizarBotaoPagamento(); 
     };
 
     // Função para buscar mesas por local
@@ -393,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         return `
-            <div class="table-card status-${table.status}" onclick="handleTableClick(${table.id})">
+            <div class="table-card status-${table.status}" onclick="handleTableClick(${table.id}, ${table.status})">
                 ${statusText}
                 <span class="table-location">${table.location}</span>
                 ${table.number}
