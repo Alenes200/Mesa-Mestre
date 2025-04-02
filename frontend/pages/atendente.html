@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mesa Mestre</title>
     <link rel="stylesheet" href="../Styles/main.css">
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
@@ -58,8 +60,10 @@
             <div class="mesa-header">
                 <h2 id="mesaTitle">Mesa 03 - Comanda</h2>
                 <div class="mesa-tabs">
-                    <button class="tab-button active" onclick="toggleTab('resumo')" id="resumoBtn">Resumo da Mesa</button>
-                    <button class="tab-button" onclick="toggleTab('historico')" id="historicoBtn">Histórico da Mesa</button>
+                    <button class="tab-button active" onclick="toggleTab('resumo')" id="resumoBtn">Resumo da
+                        Mesa</button>
+                    <button class="tab-button" onclick="toggleTab('historico')" id="historicoBtn">Histórico da
+                        Mesa</button>
                 </div>
             </div>
 
@@ -69,13 +73,13 @@
                     <span>Quantidade</span>
                     <span>Total</span>
                 </div>
-                
+
                 <div class="produtos-scroll-container">
                     <div id="produtosContainer">
                         <!-- Produtos serão inseridos aqui via JavaScript -->
                     </div>
                 </div>
-                
+
                 <div class="list-footer">
                     <span id="totalProdutos">Produtos (0)</span>
                     <span id="totalQuantidade">Quantidade (0)</span>
@@ -89,13 +93,13 @@
                     <span>Pedido</span>
                     <span>Total</span>
                 </div>
-                
+
                 <div class="produtos-scroll-container">
                     <div id="historicoPedidosContainer">
                         <!-- Histórico de pedidos será inserido aqui via JavaScript -->
                     </div>
                 </div>
-                
+
                 <div class="list-footer">
                     <span id="totalPedidos">Pedidos (0)</span>
                     <span id="totalGeralHistorico">Total: R$ 0,00</span>
@@ -116,7 +120,58 @@
                 </div>
             </div>
         </div>
-        
+
+        <!-- Tela de pagamento (inicialmente oculta) -->
+        <div id="paymentView" class="hidden">
+            <div class="payment-header">
+                <h2 id="paymentTitle">Mesa 03 - Pagamento da Comanda</h2>
+            </div>
+
+            <div class="payment-content">
+                <div class="payment-input-group">
+                    <label for="valorRecebido">Informe o valor recebido:</label>
+                    <div class="payment-input-container">
+                        <span>R$</span>
+                        <input type="number" id="valorRecebido" placeholder="0,00" step="0.01" min="0">
+                    </div>
+                    <div id="valorFaltante" class="payment-info">Faltam: R$ 13,50</div>
+                </div>
+
+                <div class="payment-info-group">
+                    <div class="payment-info">
+                        <span>Valor Total:</span>
+                        <span id="valorTotal">R$ 13,50</span>
+                    </div>
+
+                    <div class="payment-info">
+                        <span>Dividir por:</span>
+                        <div class="payment-divide">
+                            <button id="decreaseDivide">-</button>
+                            <span id="divideBy">2</span>
+                            <button id="increaseDivide">+</button>
+                        </div>
+                    </div>
+
+                    <div class="payment-info">
+                        <span>Subtotal:</span>
+                        <span id="subtotal">R$ 6,75 (2)</span>
+                    </div>
+                </div>
+
+                <div class="payment-methods">
+                    <h3>Forma de Pagamento:</h3>
+                    <div class="payment-methods-grid">
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-actions">
+                <button id="voltarPagamentoBtn" class="payment-action-button back-button">Voltar</button>
+                <button id="addProdutoPagamentoBtn" class="payment-action-button add-button">Add. Produto</button>
+                <button id="adicionarPagamentoBtn" class="payment-action-button pay-button">Adicionar Pagamento</button>
+            </div>
+        </div>
+
     </div>
 
     <!-- Footer -->
@@ -124,6 +179,27 @@
         <p>Sistema de Atendimento &copy; 2025</p>
     </footer>
 
-    <script type="module" src="../js/atendente.js"></script>
+    <!-- Modal de Alerta -->
+    <div id="alertModal" class="modal">
+        <div class="modal__content">
+            <p class="modal__message" id="alertMessage"></p>
+            <button class="modal__button modal__button--confirm">OK</button>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div id="confirmModal" class="modal">
+        <div class="modal__content">
+            <p class="modal__message" id="confirmMessage"></p>
+            <div class="modal__buttons">
+                <button class="modal__button modal__button--cancel">Cancelar</button>
+                <button class="modal__button modal__button--confirm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- <script type="module" src="../js/atendente.js"></script> -->
+    <script type="module" src="../js/mobile/main.js"></script>
 </body>
+
 </html>

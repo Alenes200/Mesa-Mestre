@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const freeCount = document.getElementById('freeCount');
     const menuBtn = document.querySelector('.menu-btn');
 
-    // Elementos da view de detalhes
+    // Seletores - Resumo Detalhes
     const mainView = document.getElementById('mainView');
     const mesaDetailView = document.getElementById('mesaDetailView');
     const mesaTitle = document.getElementById('mesaTitle');
@@ -20,11 +20,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const addProdutoBtn = document.getElementById('addProdutoBtn');
     const pagarBtn = document.getElementById('pagarBtn');
 
-    // Adicione estas variáveis no início do seu código, com os outros seletores
+    // Seletores - Histórico Detalhes
     const resumoBtn = document.getElementById('resumoBtn');
     const historicoBtn = document.getElementById('historicoBtn');
     const resumoContainer = document.querySelector('.mesa-content-container');
     const historicoContainer = document.getElementById('historicoContainer');
+
+    // Seletores - Pagamento Atendimento
+    const paymentView = document.getElementById('paymentView');
+    const paymentTitle = document.getElementById('paymentTitle');
+    const valorRecebido = document.getElementById('valorRecebido');
+    const valorFaltante = document.getElementById('valorFaltante');
+    const valorTotal = document.getElementById('valorTotal');
+    const divideBy = document.getElementById('divideBy');
+    const subtotal = document.getElementById('subtotal');
+    const decreaseDivide = document.getElementById('decreaseDivide');
+    const increaseDivide = document.getElementById('increaseDivide');
+    const voltarPagamentoBtn = document.getElementById('voltarPagamentoBtn');
+    const addProdutoPagamentoBtn = document.getElementById('addProdutoPagamentoBtn');
+    const adicionarPagamentoBtn = document.getElementById('adicionarPagamentoBtn');
+    const paymentMethods = document.querySelectorAll('.payment-method');
+
+    // Variável para armazenar o valor total da comanda
+    let totalComanda = 0;
+    let selectedPaymentMethod = null;
 
     // Função para alternar entre tabs
     function toggleTab(tab) {
@@ -46,6 +65,253 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Torna a função acessível globalmente para o HTML
     window.toggleTab = toggleTab;
+
+    // Função para mostrar a tela de pagamento
+    async function showPaymentView() {
+        // Esconde a view de detalhes e mostra a de pagamento
+        mesaDetailView.classList.add('hidden');
+        paymentView.classList.remove('hidden');
+        
+        // Atualiza os valores na tela de pagamento
+        const mesaId = mesaTitle.textContent.match(/Mesa (\d+)/)?.[1] || '00';
+        paymentTitle.textContent = `Mesa ${mesaId} - Pagamento da Comanda`;
+        
+        valorTotal.textContent = `R$ ${totalComanda.toFixed(2)}`;
+        valorFaltante.textContent = `Faltam: R$ ${totalComanda.toFixed(2)}`;
+        divideBy.textContent = '1';
+        subtotal.textContent = `R$ ${totalComanda.toFixed(2)} (1)`;
+        
+        // Reseta o valor recebido e método de pagamento
+        valorRecebido.value = '';
+        selectedPaymentMethod = null;
+        // paymentMethods.forEach(method => method.classList.remove('active'));
+        await loadPaymentMethods();
+    }
+
+    // Função para carregar e exibir as formas de pagamento
+    async function loadPaymentMethods() {
+        const methodsContainer = document.querySelector('.payment-methods-grid');
+        methodsContainer.innerHTML = '<div class="loading">Carregando...</div>';
+        
+        try {
+            const formasPagamento = await fetchFormasPagamento();
+            
+            if (formasPagamento.length === 0) {
+                methodsContainer.innerHTML = '<div class="no-results">Nenhuma forma de pagamento disponível</div>';
+                return;
+            }
+            
+            // Limpa o container
+            methodsContainer.innerHTML = '';
+            
+            // Cria os botões para cada forma de pagamento
+            formasPagamento.forEach(forma => {
+                const button = document.createElement('button');
+                button.className = 'payment-method';
+                button.dataset.method = forma.codigo; // Usando o código da forma de pagamento
+                button.textContent = forma.descricao; // Usando a descrição do banco
+                
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedPaymentMethod = this.dataset.method;
+                });
+                
+                methodsContainer.appendChild(button);
+            });
+            
+        } catch (error) {
+            console.error('Erro ao carregar formas de pagamento:', error);
+            methodsContainer.innerHTML = '<div class="error-message">Erro ao carregar formas de pagamento</div>';
+        }
+    }
+
+    // Função para voltar da tela de pagamento para a de detalhes
+    function backToDetailView() {
+        paymentView.classList.add('hidden');
+        mesaDetailView.classList.remove('hidden');
+    }
+
+    // Função para calcular valores quando dividir a conta
+    function calculateDividedTotal() {
+        const divisions = parseInt(divideBy.textContent) || 1;
+        const dividedValue = totalComanda / divisions;
+        subtotal.textContent = `R$ ${dividedValue.toFixed(2)} (${divisions})`;
+        
+        // Atualiza o valor faltante se houver valor recebido
+        if (valorRecebido.value) {
+            updateRemainingValue();
+        }
+    }
+
+    // Função para atualizar o valor faltante
+    function updateRemainingValue() {
+        const received = parseFloat(valorRecebido.value) || 0;
+        const remaining = totalComanda - received;
+        valorFaltante.textContent = `Faltam: R$ ${remaining.toFixed(2)}`;
+        valorFaltante.style.color = remaining > 0 ? '#e74c3c' : '#2ecc71';
+    }
+
+    // Modifique o event listener do botão de pagamento existente
+    pagarBtn.addEventListener('click', showPaymentView);
+
+    // Adicione os novos event listeners
+    voltarPagamentoBtn.addEventListener('click', backToDetailView);
+
+    addProdutoPagamentoBtn.addEventListener('click', () => {
+        alert('Adicionar produto - implementar esta funcionalidade');
+    });
+    
+    adicionarPagamentoBtn.addEventListener('click', async () => {
+        try {
+            // 1. Validações iniciais
+            if (!selectedPaymentMethod) {
+                alert('Selecione uma forma de pagamento');
+                return;
+            }
+    
+            const mesaId = mesaTitle.textContent.match(/Mesa (\d+)/)?.[1];
+            if (!mesaId) throw new Error('ID da mesa não encontrado');
+    
+            const formaPagamentoId = selectedPaymentMethod.split('_')[1];
+            const valorRecebido = parseFloat(document.getElementById('valorRecebido').value) || 0;
+            // const divisoes = parseInt(document.getElementById('divideBy').textContent) || 1;
+    
+            // 2. Buscar comanda ativa e pedidos
+            const comanda = await getComandaAtivaPorMesaId(mesaId);
+            if (!comanda) throw new Error('Nenhuma comanda ativa encontrada para esta mesa');
+    
+            const pedidos = await getPedidosAtivos(comanda.com_id);
+            if (pedidos.length === 0) throw new Error('Nenhum pedido ativo encontrado');
+
+            // 3. Calcular valor total e validar
+            const valorTotal = calcularValorTotal(pedidos);
+
+            if (valorRecebido < valorTotal) {
+                console.log(`Valor insuficiente! Total: R$ ${valorTotal.toFixed(2)}\nRecebido: R$ ${valorRecebido.toFixed(2)}`, 'error', false);
+                return;
+            }
+    
+            // 4. Processar pagamento
+            await processarPagamento({
+                pedidos,
+                formaPagamentoId,
+                comandaId: comanda.com_id,
+                mesaId,
+                valorTotal
+            });
+    
+            // 5. Feedback e redirecionamento
+            alert('Pagamento realizado com sucesso!');
+            toggleTab('resumo');
+            voltarParaTelaInicial(); // Função que implementaremos abaixo
+    
+        } catch (error) {
+            console.error('Erro no pagamento:', error);
+            alert(`Erro: ${error.message}`);
+        }
+    });
+    
+    // Funções auxiliares:
+    
+    async function getPedidosAtivos(mesaId) {
+        const response = await fetch(`/api/comandas/mesas/${mesaId}/pedidos-ativos`);
+        if (!response.ok) throw new Error('Erro ao buscar pedidos');
+        const data = await response.json();
+        return Array.isArray(data) ? data : (data.data || []);
+    }
+    
+    function calcularValorTotal(pedidos) {
+        return pedidos.reduce((total, pedido) => {
+            return total + (parseFloat(pedido.total) || 0);
+        }, 0);
+    }
+    
+    async function processarPagamento({ pedidos, formaPagamentoId, comandaId, mesaId, valorTotal }) {
+        // Atualizar pedidos
+        const updates = pedidos.map(pedido => 
+            fetch(`/api/pedidos/${pedido.pedido_id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fpa_id: formaPagamentoId })
+            })
+        );
+        await Promise.all(updates);
+    
+        // Fechar comanda
+        await fetch(`/api/comandas/${comandaId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ com_status: -1 })
+        });
+    
+        // Liberar mesa - ATENÇÃO ao campo correto
+        const mesaResponse = await fetch(`/api/mesas/${mesaId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 0 }) // Note que aqui é "status" e não "mes_status"
+        });
+        
+        if (!mesaResponse.ok) throw new Error('Falha ao liberar mesa');
+    }
+    
+    function voltarParaTelaInicial() {
+        // Esconde a tela de detalhes/pagamento
+        document.getElementById('mesaDetailView').classList.add('hidden');
+        document.getElementById('paymentView').classList.add('hidden');
+        
+        // Mostra a tela principal
+        document.getElementById('mainView').classList.remove('hidden');
+        
+        // Recarrega as mesas
+        loadTables();
+    }
+    
+    // Função auxiliar para buscar comanda ativa
+    async function getComandaAtivaPorMesaId(mesaId) {
+        try {
+            const response = await fetch('/api/comandas/active');
+            if (!response.ok) throw new Error('Erro ao buscar comandas ativas');
+            
+            const comandasAtivas = await response.json();
+            // Verifica o formato da resposta (array direto ou objeto com propriedade data)
+            const comandas = Array.isArray(comandasAtivas) ? comandasAtivas : 
+                            (Array.isArray(comandasAtivas.data) ? comandasAtivas.data : []);
+            
+            return comandas.find(comanda => 
+                comanda.mes_id && comanda.mes_id.toString() === mesaId
+            );
+        } catch (error) {
+            console.error('Erro ao buscar comanda:', error);
+            throw error;
+        }
+    }
+
+    decreaseDivide.addEventListener('click', () => {
+        const current = parseInt(divideBy.textContent) || 1;
+        if (current > 1) {
+            divideBy.textContent = current - 1;
+            calculateDividedTotal();
+        }
+    });
+
+    increaseDivide.addEventListener('click', () => {
+        const current = parseInt(divideBy.textContent) || 1;
+        divideBy.textContent = current + 1;
+        calculateDividedTotal();
+    });
+
+    // Event listener para o input de valor recebido
+    valorRecebido.addEventListener('input', updateRemainingValue);
+
+    // Event listeners para os métodos de pagamento
+    paymentMethods.forEach(method => {
+        method.addEventListener('click', function() {
+            paymentMethods.forEach(m => m.classList.remove('active'));
+            this.classList.add('active');
+            selectedPaymentMethod = this.dataset.method;
+        });
+    });
 
     // Na função showMesaDetail, adicione no início para resetar para a tab de resumo
     async function showMesaDetail(mesaId) {
@@ -79,6 +345,13 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 // Atualiza a UI com os produtos
                 renderProdutos(produtos);
+                
+                totalComanda = produtos.reduce((sum, produto) => {
+                    const quantidade = Number(produto.quantidade) || 0;
+                    const valorUnitario = Number(produto.preco_unitario) || 0;
+                    const valorTotal = Number(produto.total) || (valorUnitario * quantidade);
+                    return sum + valorTotal;
+                }, 0);
             }
             
             // Atualiza o título
@@ -297,6 +570,8 @@ document.addEventListener('DOMContentLoaded', function() {
             total += valorTotal;
             quantidadeTotal += quantidade;
         });
+
+        totalComanda = total;
         
         // Atualiza totais
         totalProdutos.textContent = `Prod. (${produtos.length})`;
@@ -326,6 +601,20 @@ document.addEventListener('DOMContentLoaded', function() {
         atualizarBotaoPagamento(); 
     };
 
+    // Função para buscar formas de pagamento da API
+    async function fetchFormasPagamento() {
+        try {
+            const response = await fetch('/api/formas-pagamento');
+            if (!response.ok) {
+                throw new Error('Erro ao buscar formas de pagamento');
+            }
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Erro:', error);
+            return [];
+        }
+    }
     // Função para buscar mesas por local
     async function fetchMesasPorLocal(local) {
         try {
@@ -447,9 +736,9 @@ document.addEventListener('DOMContentLoaded', function() {
     addProdutoBtn.addEventListener('click', () => {
         alert('Adicionar produto - implementar esta funcionalidade');
     });
-    pagarBtn.addEventListener('click', () => {
-        alert('Fazer pagamento - implementar esta funcionalidade');
-    });
+    // pagarBtn.addEventListener('click', () => {
+    //     alert('Fazer pagamento - implementar esta funcionalidade');
+    // });
     // Evento do botão menu
     menuBtn.addEventListener('click', function() {
         // Implemente a abertura do menu lateral aqui
