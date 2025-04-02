@@ -1,5 +1,6 @@
 let allProdutos = [];
 let carrinho = [];
+let pedidos = [];
 let mesaId; // Defina o ID da mesa dinamicamente
 let comandaAtivaId = null;
 
@@ -314,12 +315,10 @@ async function enviarPedidos() {
     showToast('Pedido enviado com sucesso!');
 
     // Antes de limpar o carrinho, armazena os itens no array "pedidos"
-    pedidos = [...carrinho];
-
+    pedidos = [...pedidos, ...carrinho];
+    exibirPedidosNoModal(); // Exibe os pedidos no modal
     carrinho = []; // Limpa o carrinho
     closeCarrinho(); // Fecha o modal do carrinho
-    openModalPedidos(); // Abre o modal de pedidos
-    exibirPedidosNoModal(); // Exibe os pedidos no modal
   } catch (error) {
     console.error('Erro detalhado ao enviar pedidos:', error);
     showToast(`Erro ao enviar pedidos: ${error.message}`, 'error');
