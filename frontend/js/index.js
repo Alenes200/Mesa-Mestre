@@ -75,9 +75,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   botaoDesativar.addEventListener('click', desativar);
 
-  const pesquisar = document.getElementById('pesquisar');
+  // const pesquisar = document.getElementById('pesquisar');
 
-  pesquisar.addEventListener('input', buscar);
+  // pesquisar.addEventListener('input', buscar);
 
   // New content switching functionality
   const menuCardapio = document.querySelector('.opcao:nth-child(1)');

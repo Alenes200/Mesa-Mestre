@@ -691,6 +691,22 @@
 
         color: #000000;
       }
+
+      input {
+        border: 1px solid #d9d9d9;
+        margin-top: 8px;
+        width: 100%;
+        height: 33px;
+        border-radius: 5px;
+        padding-left: 21px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 15px;
+        line-height: 112%;
+        letter-spacing: -1px;
+      }
     }
 
     .botoes {
@@ -761,8 +777,9 @@
 
         .codigo {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           gap: 13px;
+          flex-direction: column;
 
           input {
             width: 86px;

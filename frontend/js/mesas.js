@@ -12,6 +12,10 @@ const botaoAdicionar = document.getElementById('adicionar');
 const salvarStatus = document.getElementById('salvarStatus');
 const adicionarStatus = document.getElementById('adicionarStatus');
 
+const nomeMesa = document.getElementById('nomeMesa');
+const idText = document.getElementById('idText');
+const codigoInput = document.getElementById('codigoInput');
+
 export function adicionar() {
   const capacidadeAtual = capacidade.value;
   const descricaoAtual = descricao.value;
@@ -145,6 +149,8 @@ export function salvar() {
 
   // Coletando os dados dos campos
   const data = {
+    nome: nomeMesa.value,
+    codigo: codigoInput.value,
     descricao: descricao.value,
     capacidade: Number(capacidade.value),
     status: Number(statusInput.value),
@@ -227,6 +233,9 @@ export function funcoesModal() {
       modal.style.display = 'flex';
 
       if (card.classList.contains('adicionar-mesa')) {
+        idText.textContent = '';
+        idText.dataset.id = '';
+        nomeMesa.value = '';
         tituloModal.textContent = 'ADICIONAR MESA';
         descricao.value = '';
         capacidade.value = '';
@@ -253,7 +262,7 @@ export function funcoesModal() {
             console.error('Erro:', error);
           });
 
-        statusText.innerText = '1';
+        statusText.innerText = 'disponível';
 
         salvarStatus.style.display = 'None';
         adicionarStatus.style.display = 'Block';
@@ -309,7 +318,11 @@ export async function buscarDadosMesa(mesaId) {
 
     console.log(dados);
     // Aqui você pode preencher os campos do seu modal com os dados da mesa
-    tituloModal.textContent = `EDITAR - MESA ${dados.mes_id}`;
+    tituloModal.textContent = `EDITAR - ${dados.mes_nome}`;
+    idText.innerText = dados.mes_id || '';
+    idText.dataset.id = dados.mes_id || '';
+    nomeMesa.value = dados.mes_nome || '';
+    codigoInput.value = dados.mes_codigo || '';
     descricao.value = dados.mes_descricao || '';
     capacidade.value = dados.mes_capacidade || 1;
 

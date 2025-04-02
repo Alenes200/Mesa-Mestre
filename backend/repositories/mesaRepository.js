@@ -136,20 +136,22 @@ const mesasRepository = {
   },
 
   update: async (id, mesa) => {
-    const { capacidade, descricao, local, status } = mesa;
+    const { nome, codigo, capacidade, descricao, local, status } = mesa;
 
     try {
       const query = `
                 UPDATE TBL_MESA
-                SET MES_CAPACIDADE = COALESCE($1, MES_CAPACIDADE),
-                    MES_DESCRICAO = COALESCE($2, MES_DESCRICAO),
-                    LOC_ID = COALESCE($3, LOC_ID),
-                    MES_STATUS = COALESCE($4, MES_STATUS)
-                WHERE MES_ID = $5
+                SET MES_NOME = COALESCE($1, MES_NOME),
+                    MES_CODIGO = COALESCE($2, MES_CODIGO),
+                    MES_CAPACIDADE = COALESCE($3, MES_CAPACIDADE),
+                    MES_DESCRICAO = COALESCE($4, MES_DESCRICAO),
+                    LOC_ID = COALESCE($5, LOC_ID),
+                    MES_STATUS = COALESCE($6, MES_STATUS)
+                WHERE MES_ID = $7
                 RETURNING *;
             `;
 
-      const values = [capacidade, descricao, local, status, id];
+      const values = [nome, codigo, capacidade, descricao, local, status, id];
       const result = await client.query(query, values);
 
       return result.rows[0];
