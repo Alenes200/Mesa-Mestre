@@ -94,3 +94,10 @@ FOR EACH ROW EXECUTE FUNCTION atualizar_ped_updated_at();
 CREATE OR REPLACE TRIGGER trigger_atualizar_pro_updated_at
 BEFORE UPDATE ON tbl_produto
 FOR EACH ROW EXECUTE FUNCTION atualizar_ped_updated_at();
+
+/*alterar o status no banco de dados dos pedidos*/
+ALTER TABLE TBL_PEDIDO 
+DROP CONSTRAINT IF EXISTS tbl_pedido_ped_status_check;
+ALTER TABLE TBL_PEDIDO
+ADD CONSTRAINT tbl_pedido_ped_status_check 
+CHECK (PED_STATUS IN (-1, 1, 2, 3));
