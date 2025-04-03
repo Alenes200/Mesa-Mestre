@@ -20,38 +20,45 @@ let userId;
 
 document.addEventListener('DOMContentLoaded', async () => {
   carregarLocais();
-  carregarMesasModal(carregarTodasMesasAtivas);
+  carregarMesasModal(carregarMesas, 'Externa');
 
-  // if (!token) {
-  //   window.location.href = '../pages/login_adm.html';
-  //   return;
-  // }
-  // try {
-  //   const userResponse = await fetch('/api/auth', {
-  //     method: 'GET',
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   });
-  //   if (!userResponse.ok) {
-  //     throw new Error('Erro ao obter dados do usuário.');
-  //   }
-  //   userData = await userResponse.json();
-  //   userId = userData.id;
+  if (!token) {
+    window.location.href = '../pages/login_adm.html';
+    return;
+  }
+  try {
+    const userResponse = await fetch('/api/auth', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!userResponse.ok) {
+      throw new Error('Erro ao obter dados do usuário.');
+    }
+    userData = await userResponse.json();
 
-  //   // Configuração do evento de pesquisa
-  //   document
-  //     .getElementById('search-button-func')
-  //     .addEventListener('click', () => {
-  //       buscarFuncionarios(token, userId);
-  //     });
-  // } catch (error) {
-  //   console.error('Erro ao carregar dados do usuário:', error);
-  //   showModal(
-  //     'Erro ao carregar dados do usuário. Tente novamente mais tarde.',
-  //     'error'
-  //   );
-  // }
+    // Esta verificação impede que usuários não administradores acessem a página
+    if (userData.userType !== 1) {
+      window.location.href = '../pages/login_adm.html';
+      return;
+    }
+
+    userId = userData.id;
+
+    // Configuração do evento de pesquisa
+    document
+      .getElementById('search-button-func')
+      .addEventListener('click', () => {
+        buscarFuncionarios(token, userId);
+      });
+  } catch (error) {
+    console.error('Erro ao carregar dados do usuário:', error);
+    localStorage.removeItem('token'); // Remove o token inválido
+    window.location.href = '../pages/login_adm.html'; // Redireciona para login
+    return;
+  }
+
 
   // Modal functionality remains the same
   // const cardMesas = document.querySelectorAll('.card-mesa');

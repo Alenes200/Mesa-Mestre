@@ -1,5 +1,6 @@
 let allProdutos = [];
 let carrinho = [];
+let pedidos = [];
 let mesaId; // Defina o ID da mesa dinamicamente
 let comandaAtivaId = null;
 
@@ -29,16 +30,19 @@ function displayProdutos(produtos) {
 
     const preco = `R$ ${produto.pro_preco}`;
 
+    const imagemSrc = (document.getElementById('modal-imagem').src =
+      `/uploads/${produto.pro_imagem}`);
+
     produtoElement.innerHTML = `
-      <div class="descricao">
-        <h2>${produto.pro_nome} <span>${preco}</span></h2>
-        <p>${produto.pro_descricao}</p>
-        <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
-      </div>
-      <div class="imagem-produto">
-        <img src="../images/${produto.pro_imagem}" alt="Imagem de ${produto.pro_nome}" />
-      </div>
-    `;
+    <div class="descricao">
+      <h2>${produto.pro_nome} <span>${preco}</span></h2>
+      <p>${produto.pro_descricao}</p>
+      <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
+    </div>
+    <div class="imagem-produto">
+      <img src="${imagemSrc}" alt="Imagem de ${produto.pro_nome}" />
+    </div>
+  `;
 
     // Adiciona evento para abrir o modal ao clicar no botão "Adicionar ao carrinho"
     produtoElement
@@ -53,23 +57,33 @@ function displayProdutosPorTipo(tipo) {
   const produtosContainer = document.getElementById('produtos-container');
   produtosContainer.innerHTML = '';
 
-  const tipoProdutos = allProdutos.filter(
-    (produto) => produto.pro_tipo === tipo
-  );
+  const produtos = allProdutos.filter((produto) => produto.pro_tipo === tipo);
 
-  tipoProdutos.forEach((produto) => {
+  produtos.forEach((produto) => {
     const produtoElement = document.createElement('div');
     produtoElement.className = 'card-produto';
-    const preco =
-      typeof produto.pro_preco === 'number'
-        ? `R$ ${produto.pro_preco}`
-        : 'Preço indisponível';
+
+    const preco = `R$ ${produto.pro_preco}`;
+
+    const imagemSrc = (document.getElementById('modal-imagem').src =
+      `/uploads/${produto.pro_imagem}`);
+
     produtoElement.innerHTML = `
-              <h3>${produto.pro_nome}</h3>
-              <p>${produto.pro_descricao}</p>
-              <p>${preco}</p>
-          `;
-    produtoElement.addEventListener('click', () => openModal(produto));
+      <div class="descricao">
+        <h2>${produto.pro_nome} <span>${preco}</span></h2>
+        <p>${produto.pro_descricao}</p>
+        <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
+      </div>
+      <div class="imagem-produto">
+        <img src="${imagemSrc}" alt="Imagem de ${produto.pro_nome}" />
+      </div>
+    `;
+
+    // Adiciona evento para abrir o modal ao clicar no botão "Adicionar ao carrinho"
+    produtoElement
+      .querySelector('.adicionar-carrinho')
+      .addEventListener('click', () => openModal(produto));
+
     produtosContainer.appendChild(produtoElement);
   });
 }
@@ -83,13 +97,13 @@ function openModal(produto) {
 
   document.getElementById('modal-nome').innerText = produto.pro_nome;
   document.getElementById('modal-imagem').src =
-    `../images/${produto.pro_imagem}`;
+    `/uploads/${produto.pro_imagem}`;
   document.getElementById('modal-descricao').innerText = produto.pro_descricao;
   precoElement.innerText = `R$ ${produto.pro_preco}`;
   quantidadeSpan.innerText = '1';
   numeroElement.innerText = '1'; // Inicializa a quantidade no elemento com class="numero"
 
-  modal.style.display = 'block';
+  modal.classList.add('modal-produto-ativo');
 
   // Event listeners para os botões de aumentar e diminuir
   document.getElementById('mais-produto').onclick = () => {
@@ -121,7 +135,7 @@ function openModal(produto) {
 // Função para fechar o modal do produto
 function closeModal() {
   const modal = document.getElementById('modal');
-  modal.style.display = 'none';
+  modal.classList.remove('modal-produto-ativo');
   document.getElementById('quantidade').value = 1; // Redefine a quantidade para 1
 }
 
@@ -163,7 +177,7 @@ function openCarrinho() {
       <div class="produto">
         <div class="E-descricao">
           <img
-            src="../images/${item.pro_imagem}"
+            src="/uploads/${item.pro_imagem}"
             alt="${item.pro_nome}"
             class="imagem-produto"
           />
@@ -197,7 +211,7 @@ function openCarrinho() {
   totalElement.innerText = `R$ ${total.toFixed(2)}`;
 
   // Exibe o modal do carrinho
-  carrinhoOffcanvas.style.display = 'flex';
+  carrinhoOffcanvas.classList.add('aberto');
 
   // Adiciona eventos para os botões de quantidade e remover
   document.querySelectorAll('.btn-quantidade.menos').forEach((button) => {
@@ -244,7 +258,7 @@ function removerProduto(index) {
 // Função para fechar o modal do carrinho
 function closeCarrinho() {
   const carrinhoOffcanvas = document.getElementById('carrinho-offcanvas');
-  carrinhoOffcanvas.style.display = 'none';
+  carrinhoOffcanvas.classList.remove('aberto');
 }
 
 function showToast(message, type = 'success') {
@@ -299,8 +313,12 @@ async function enviarPedidos() {
     await atualizarPedidoComPrecoTotal(pedidoId);
 
     showToast('Pedido enviado com sucesso!');
-    carrinho = [];
-    closeCarrinho();
+
+    // Antes de limpar o carrinho, armazena os itens no array "pedidos"
+    pedidos = [...pedidos, ...carrinho];
+    exibirPedidosNoModal(); // Exibe os pedidos no modal
+    carrinho = []; // Limpa o carrinho
+    closeCarrinho(); // Fecha o modal do carrinho
   } catch (error) {
     console.error('Erro detalhado ao enviar pedidos:', error);
     showToast(`Erro ao enviar pedidos: ${error.message}`, 'error');
@@ -475,8 +493,6 @@ async function atualizarPedidoComPrecoTotal(pedidoId) {
 
 // Adiciona um event listener para carregar os produtos quando a página for carregada
 document.addEventListener('DOMContentLoaded', () => {
-  const modal = document.getElementById('modal');
-  modal.style.display = 'none';
   fetchProdutos();
 });
 
@@ -514,3 +530,159 @@ function obterMesaId() {
   // Implemente a lógica para obter o ID da mesa dinamicamente
   return 1; // Exemplo estático, substitua pela lógica real
 }
+
+function openModalPedidos() {
+  const modalPedidos = document.querySelector('.modal-pedidos');
+  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+
+  // Redefine o número de pessoas para 1 ao abrir o modal
+  numeroPessoasElement.innerText = '1';
+
+  // Atualiza a divisão da conta com o valor inicial
+  atualizarDivisaoConta();
+
+  modalPedidos.classList.add('ativo'); // Adiciona a classe ativo para abrir o modal
+}
+
+function closeModalPedidos() {
+  const modalPedidos = document.querySelector('.modal-pedidos');
+  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+
+  // Redefine o número de pessoas para 1 ao fechar o modal
+  numeroPessoasElement.innerText = '1';
+
+  modalPedidos.classList.remove('ativo'); // Remove a classe ativo para fechar o modal
+}
+
+// Função para exibir os pedidos no modal
+function exibirPedidosNoModal() {
+  const pedidosContainer = document.getElementById('itens-pedidos');
+  const resultadoPessoaElement = document.getElementById('resultado-pessoa');
+  pedidosContainer.innerHTML = ''; // Limpa o container antes de adicionar os pedidos
+
+  let total = 0;
+
+  pedidos.forEach((item) => {
+    const subtotal = item.pro_preco * item.quantidade;
+    total += subtotal;
+
+    const pedidoElement = document.createElement('div');
+    pedidoElement.className = 'card-iten';
+    pedidoElement.innerHTML = `
+    <div class="esquerda">
+      <div class="hora">
+        <p>${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+      </div>
+      <div class="qtde">
+        <p>${item.quantidade}x</p>
+      </div>
+      <div class="item">
+        <p>${item.pro_nome}</p>
+      </div>
+    </div>
+    <div class="direita">
+      <div class="unidade">
+        <p>R$ ${item.pro_preco}</p>
+      </div>
+      <div class="valor">
+        <p>R$ ${subtotal.toFixed(2)}</p>
+      </div>
+    </div>
+  `;
+
+    pedidosContainer.appendChild(pedidoElement);
+  });
+
+  // Atualiza o total no modal
+  const totalElement = document.getElementById('total-pedidos');
+
+  resultadoPessoaElement.innerText = `R$ ${total.toFixed(2)}`;
+  totalElement.innerText = `R$ ${total.toFixed(2)}`;
+}
+
+// Adiciona o evento para fechar o modal ao clicar no botão de fechar
+document
+  .querySelector('.modal-pedidos .fechar-modal')
+  .addEventListener('click', closeModalPedidos);
+
+// Função para calcular e atualizar o valor por pessoa
+function atualizarDivisaoConta() {
+  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+  const resultadoPessoaElement = document.getElementById('resultado-pessoa');
+  const totalElement = document.getElementById('total-pedidos');
+
+  // Obtém o número de pessoas e o total
+  const numeroPessoas = parseInt(numeroPessoasElement.innerText, 10);
+  const total = parseFloat(
+    totalElement.innerText.replace('R$', '').replace(',', '.')
+  );
+
+  // Calcula o valor por pessoa
+  const valorPorPessoa = total / numeroPessoas;
+
+  // Atualiza o valor no elemento resultado-pessoa
+  resultadoPessoaElement.innerText = `R$ ${valorPorPessoa.toFixed(2)}`;
+}
+
+// Adiciona eventos para os botões de aumentar e diminuir o número de pessoas
+document.getElementById('mais-divisao').addEventListener('click', () => {
+  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+  let numeroPessoas = parseInt(numeroPessoasElement.innerText, 10);
+
+  // Incrementa o número de pessoas
+  numeroPessoas += 1;
+  numeroPessoasElement.innerText = numeroPessoas;
+
+  // Atualiza a divisão da conta
+  atualizarDivisaoConta();
+});
+
+document.getElementById('menos-divisao').addEventListener('click', () => {
+  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+  let numeroPessoas = parseInt(numeroPessoasElement.innerText, 10);
+
+  // Garante que o número de pessoas não seja menor que 1
+  if (numeroPessoas > 1) {
+    numeroPessoas -= 1;
+    numeroPessoasElement.innerText = numeroPessoas;
+
+    // Atualiza a divisão da conta
+    atualizarDivisaoConta();
+  }
+});
+
+// Função para atualizar o status da mesa para 2
+async function pedirConta() {
+  try {
+    // if (!mesaId) {
+    //   console.error('ID da mesa não definido.');
+    //   showToast('Erro: ID da mesa não definido.', 'error');
+    //   return;
+    // }
+
+    const response = await fetch(`/api/mesas/1`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status: 2 }), // Atualiza o status da mesa para 2
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao atualizar o status da mesa.');
+    }
+
+    const data = await response.json();
+    console.log('Status da mesa atualizado com sucesso:', data);
+    showToast('Conta solicitada com sucesso!', 'success');
+
+    // Fecha o modal de pedidos
+    closeModalPedidos();
+  } catch (error) {
+    console.error('Erro ao solicitar a conta:', error);
+    showToast('Erro ao solicitar a conta.', 'error');
+  }
+}
+
+// Adiciona o evento ao botão "Pedir a Conta"
+document.getElementById('pedir-conta').addEventListener('click', pedirConta);
