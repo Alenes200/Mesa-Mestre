@@ -4,7 +4,7 @@ const mesasRepository = {
   getAll: async () => {
     try {
       const query =
-        "SELECT * FROM TBL_MESA WHERE MES_STATUS != 'inativa' ORDER BY MES_ID";
+        'SELECT * FROM TBL_MESA WHERE MES_STATUS != -1 ORDER BY MES_ID';
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
@@ -16,7 +16,7 @@ const mesasRepository = {
   getInativas: async () => {
     try {
       const query =
-        "SELECT * FROM TBL_MESA WHERE MES_STATUS = 'inativa' ORDER BY MES_ID";
+        'SELECT * FROM TBL_MESA WHERE MES_STATUS = -1 ORDER BY MES_ID';
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
@@ -32,7 +32,7 @@ const mesasRepository = {
       INNER JOIN TBL_LOCAL AS LOC ON LOC.LOC_ID = MES.LOC_ID
       WHERE (CAST(MES_ID AS TEXT) LIKE $1 OR UPPER(MES_DESCRICAO) LIKE UPPER($2)) 
       AND LOC.LOC_DESCRICAO LIKE $3 
-      AND MES.MES_STATUS = 'disponível'
+      AND MES.MES_STATUS = 0
       ORDER BY MES_ID;
         `;
 
@@ -53,7 +53,7 @@ const mesasRepository = {
     try {
       const query = `
       SELECT * FROM TBL_MESA WHERE (CAST(MES_ID AS TEXT) LIKE $1 OR UPPER(MES_DESCRICAO) LIKE UPPER($2)) 
-      AND MES_STATUS = 'disponível' ORDER BY MES_ID;
+      AND MES_STATUS = 0 ORDER BY MES_ID;
         `;
 
       const values = [`%${mes_id}%`, `%${mes_descricao}%`];
@@ -69,7 +69,7 @@ const mesasRepository = {
     try {
       const query = `
       SELECT * FROM TBL_MESA WHERE (CAST(MES_ID AS TEXT) LIKE $1 OR UPPER(MES_DESCRICAO) LIKE UPPER($2)) 
-      AND MES_STATUS = 'disponível' ORDER BY MES_ID;
+      AND MES_STATUS = -1  ORDER BY MES_ID;
         `;
 
       const values = [`%${mes_id}%`, `%${mes_descricao}%`];
@@ -95,7 +95,7 @@ const mesasRepository = {
   getLocaisRestritos: async () => {
     try {
       const query =
-        "SELECT LOC_DESCRICAO FROM TBL_LOCAL WHERE LOC_DESCRICAO != 'Ativas' AND LOC_DESCRICAO != 'Inativas' ORDER BY LOC_ID";
+        "SELECT LOC_DESCRICAO FROM TBL_LOCAL WHERE LOC_DESCRICAO != 'Todas' AND LOC_DESCRICAO != 'Inativas' ORDER BY LOC_ID";
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
@@ -106,7 +106,7 @@ const mesasRepository = {
 
   getTodosLocais: async () => {
     try {
-      const query = 'SELECT LOC_DESCRICAO FROM TBL_LOCAL ORDER BY LOC_ID;';
+      const query = 'SELECT LOC_DESCRICAO FROM TBL_LOCAL ORDER BY LOC_ID DESC;';
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
@@ -116,16 +116,16 @@ const mesasRepository = {
   },
 
   create: async (mesa) => {
-    const { capacidade, descricao, local } = mesa;
+    const { nome, codigo, status, capacidade, descricao, local } = mesa;
 
     try {
       const query = `
-                INSERT INTO TBL_MESA (MES_CAPACIDADE, MES_DESCRICAO, LOC_ID)
-                VALUES ($1, $2, $3)
+                INSERT INTO TBL_MESA (MES_NOME, MES_CODIGO, MES_STATUS, MES_CAPACIDADE, MES_DESCRICAO, LOC_ID)
+                VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING *;
             `;
 
-      const values = [capacidade, descricao, local];
+      const values = [nome, codigo, status, capacidade, descricao, local];
       const result = await client.query(query, values);
 
       return result.rows[0];

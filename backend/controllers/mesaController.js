@@ -54,15 +54,26 @@ const mesasController = {
 
   create: async (req, res) => {
     try {
-      const { capacidade, descricao, local } = req.body;
+      const { nome, codigo, status, capacidade, descricao, local } = req.body;
 
-      if (!capacidade || !descricao || !local) {
+      if (
+        !capacidade ||
+        !descricao ||
+        isNaN(local) ||
+        !nome ||
+        !codigo ||
+        isNaN(status) ||
+        status < 0
+      ) {
         return res
           .status(400)
           .json({ error: 'Todos os campos são obrigatórios.' });
       }
 
       const novaMesa = await mesasRepository.create({
+        nome,
+        codigo,
+        status,
         capacidade,
         descricao,
         local,
@@ -85,7 +96,7 @@ const mesasController = {
       if (!mesaExistente) {
         return res.status(404).json({ error: 'Mesa não encontrada.' });
       }
-      if (mesaExistente.status < 1 && status < 1) {
+      if (mesaExistente.status == -1 && status == -1) {
         return res.status(400).json({
           error:
             'Mesa desativado. Para reativar, defina um status válido (>= 1).',
@@ -93,12 +104,12 @@ const mesasController = {
       }
 
       const mesaAtualizada = await mesasRepository.update(id, {
-        nome: nome || mesaExistente.mes_nome,
-        codigo: codigo || mesaExistente.mes_codigo,
-        capacidade: capacidade || mesaExistente.mes_capacidade,
-        descricao: descricao || mesaExistente.mes_descricao,
-        local: local || mesaExistente.mes_local,
-        status: status || mesaExistente.mes_status,
+        nome: nome ?? mesaExistente.mes_nome,
+        codigo: codigo ?? mesaExistente.mes_codigo,
+        capacidade: capacidade ?? mesaExistente.mes_capacidade,
+        descricao: descricao ?? mesaExistente.mes_descricao,
+        local: local ?? mesaExistente.mes_local,
+        status: status ?? mesaExistente.mes_status,
       });
 
       res.status(200).json(mesaAtualizada);

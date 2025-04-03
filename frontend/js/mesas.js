@@ -16,13 +16,132 @@ const nomeMesa = document.getElementById('nomeMesa');
 const idText = document.getElementById('idText');
 const codigoInput = document.getElementById('codigoInput');
 
+export async function configurarLocais() {
+  try {
+    const response = await fetch('/api/mesas/local/locais/Todos');
+    if (!response.ok) throw new Error('Erro ao buscar locais');
+
+    const locais = await response.json();
+    preencherTabelaLocais(locais);
+  } catch (error) {
+    console.error('Erro:', error);
+  }
+}
+
+function preencherTabelaLocais(locais) {
+  const tabela = document.querySelector('#tabela-locais tbody');
+  tabela.innerHTML = ''; // Limpa antes de adicionar os novos dados
+
+  locais.forEach((local) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${local.loc_descricao}</td>
+      <td class="opcoes">
+        <button class="editar" data-id="${local.loc_id}">✏️</button>
+        <button class="deletar" data-id="${local.loc_id}">🗑️</button>
+      </td>
+    `;
+
+    tabela.appendChild(row);
+  });
+
+  adicionarEventosBotoes();
+}
+
+function adicionarEventosBotoes() {
+  document.querySelectorAll('.editar').forEach((botao) => {
+    botao.addEventListener('click', (e) => {
+      const id = e.target.dataset.id;
+      editarLocal(id);
+    });
+  });
+
+  document.querySelectorAll('.deletar').forEach((botao) => {
+    botao.addEventListener('click', (e) => {
+      const id = e.target.dataset.id;
+      deletarLocal(id);
+    });
+  });
+}
+
+export async function editarLocal(id) {
+  const novoNome = prompt('Digite o novo nome do local:');
+  if (!novoNome) return;
+
+  try {
+    const response = await fetch(`/api/mesas/local/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ descricao: novoNome }),
+    });
+
+    if (!response.ok) throw new Error('Erro ao editar local');
+    configurarLocais(); // Atualiza a lista
+  } catch (error) {
+    console.error('Erro:', error);
+  }
+}
+
+export async function deletarLocal(id) {
+  if (!confirm('Tem certeza que deseja excluir este local?')) return;
+
+  try {
+    const response = await fetch(`/api/mesas/local/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Erro ao excluir local');
+
+    configurarLocais(); // Atualiza a lista
+  } catch (error) {
+    console.error('Erro:', error);
+  }
+}
+
+export function abrirModal(titulo, conteudo) {
+  const modal = document.getElementById('modalGenerico');
+  const tituloModal = document.getElementById('tituloModalGenerico');
+  const corpoModal = document.getElementById('conteudoModalGenerico');
+
+  tituloModal.textContent = titulo;
+  corpoModal.innerHTML = conteudo; // Adiciona conteúdo dinâmico
+
+  modal.style.display = 'flex';
+}
+
+export function fecharModal() {
+  document.getElementById('modalGenerico').style.display = 'none';
+}
+
 export function adicionar() {
   const capacidadeAtual = capacidade.value;
   const descricaoAtual = descricao.value;
   const localAtual = setor.value;
+  const nomeAtual = nomeMesa.value;
+
+  const salvarStatus = document.getElementById('statusInputAdicionar');
+  const codigoInput = document.getElementById('codigoInputAdicionar');
+
+  const codigoAtual = codigoInput.value;
+  const status = salvarStatus.value;
+
+  console.log(capacidadeAtual);
+  console.log(descricaoAtual);
+  console.log(localAtual);
+  console.log(nomeAtual);
+  console.log(codigoAtual);
+  console.log(status);
 
   // Verifica se os campos estão preenchidos
-  if (!capacidadeAtual || !descricaoAtual || !localAtual) {
+  if (
+    !status ||
+    status == 'selecionar' ||
+    !capacidadeAtual ||
+    !descricaoAtual ||
+    !localAtual ||
+    localAtual == 'selecionar' ||
+    !nomeAtual ||
+    !codigoAtual
+  ) {
     alert('Todos os campos são obrigatórios!');
     return;
   }
@@ -34,8 +153,11 @@ export function adicionar() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      capacidade: capacidadeAtual,
+      nome: nomeAtual,
+      codigo: codigoAtual,
       descricao: descricaoAtual,
+      capacidade: Number(capacidadeAtual),
+      status: Number(statusInput.value),
       local: Number(localAtual),
     }),
   })
@@ -70,15 +192,15 @@ export function desativar() {
       alert(data.message);
       console.log(data.mesa); // Exibe os dados da mesa desativada no console
 
-      if (data.mesa.loc_descricao == 'Ativas') {
+      if (data.mesa.loc_descricao == 'Todas') {
         carregarMesasModal(carregarTodasMesasAtivas);
         return;
       }
 
-      if (data.mesa.loc_descricao == 'Inativas') {
-        carregarMesasModal(carregarTodasMesasInativas);
-        return;
-      }
+      // if (data.mesa.loc_descricao == 'Inativas') {
+      //   carregarMesasModal(carregarTodasMesasInativas);
+      //   return;
+      // }
 
       carregarMesasModal(carregarMesas, data.mesa.loc_descricao);
     })
@@ -89,125 +211,143 @@ export function desativar() {
     });
 }
 
-export function buscar() {
-  const pesquisa = pesquisar.value.trim();
-  const mes_id = pesquisa.match(/\d+/) ? pesquisa.match(/\d+/)[0] : null; // Extrai apenas o número
+// export function buscar() {
+//   const pesquisa = pesquisar.value.trim();
+//   const mes_id = pesquisa.match(/\d+/) ? pesquisa.match(/\d+/)[0] : null; // Extrai apenas o número
 
-  const locais = document.getElementsByClassName('locais');
+//   const locais = document.getElementsByClassName('locais');
 
-  let localPesquisa;
+//   let localPesquisa;
 
-  // Obtém o local selecionado e o id do local
-  Array.from(locais).forEach(function (local, index) {
-    if (local.style.color == 'rgb(255, 99, 71)') {
-      localPesquisa = local.dataset.local;
-    }
-  });
+//   // Obtém o local selecionado e o id do local
+//   Array.from(locais).forEach(function (local, index) {
+//     if (local.style.color == 'rgb(255, 99, 71)') {
+//       localPesquisa = local.dataset.local;
+//     }
+//   });
 
-  if (!pesquisa && localPesquisa === 'Ativas') {
-    carregarMesasModal(carregarTodasMesasAtivas);
-    return;
-  }
+//   if (!pesquisa && localPesquisa === 'Ativas') {
+//     carregarMesasModal(carregarTodasMesasAtivas);
+//     return;
+//   }
 
-  if (!pesquisa && localPesquisa === 'Inativas') {
-    carregarMesasModal(carregarTodasMesasInativas);
-    return;
-  }
+//   if (!pesquisa && localPesquisa === 'Inativas') {
+//     carregarMesasModal(carregarTodasMesasInativas);
+//     return;
+//   }
 
-  if (!pesquisa) {
-    carregarMesasModal(carregarMesas, localPesquisa);
-    return;
-  }
+//   if (!pesquisa) {
+//     carregarMesasModal(carregarMesas, localPesquisa);
+//     return;
+//   }
 
-  carregarMesasPesquisa(mes_id, pesquisa, localPesquisa).then(funcoesModal);
-}
+//   carregarMesasPesquisa(mes_id, pesquisa, localPesquisa).then(funcoesModal);
+// }
 
 export function salvar() {
-  const mesaId = Number(tituloModal.innerText.match(/\d+/)?.[0]);
+  const mesaId = Number(idText.dataset.id);
 
-  let locId;
+  const capacidadeAtual = capacidade.value;
+  const descricaoAtual = descricao.value;
+  const localAtual = setor.value;
+  const nomeAtual = nomeMesa.value;
+  const codigoAtual = codigoInput.value;
+  const status = statusInput.value;
+
+  // Verifica se os campos estão preenchidos
+  if (
+    !status ||
+    status == 'selecionar' ||
+    !capacidadeAtual ||
+    !descricaoAtual ||
+    !localAtual ||
+    localAtual == 'selecionar' ||
+    !nomeAtual ||
+    !codigoAtual
+  ) {
+    alert('Todos os campos são obrigatórios!');
+    return;
+  }
 
   fetch(`/api/mesas/${mesaId}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error('Erro ao buscar os dados da mesa');
       }
-      return response.json(); // Converte a resposta em JSON
+      return response.json();
     })
     .then((mesa) => {
       console.log('Mesa encontrada:', mesa);
 
       // Pegando o loc_id da mesa
-      locId = mesa.loc_id;
+      const locId = mesa.loc_id;
       console.log('loc_id:', locId);
 
-      // Aqui você pode usar o loc_id como precisar
-    })
-    .catch((error) => {
-      console.error('Erro:', error);
-    });
+      if (!locId) {
+        throw new Error('locId está indefinido!');
+      }
 
-  // Coletando os dados dos campos
-  const data = {
-    nome: nomeMesa.value,
-    codigo: codigoInput.value,
-    descricao: descricao.value,
-    capacidade: Number(capacidade.value),
-    status: Number(statusInput.value),
-    local: Number(setor.value),
-  };
+      // Coletando os dados dos campos
+      const data = {
+        nome: nomeAtual,
+        codigo: codigoAtual,
+        descricao: descricaoAtual,
+        capacidade: Number(capacidadeAtual),
+        status: Number(statusInput.value),
+        local: Number(localAtual),
+      };
 
-  // Fazendo a requisição para atualizar os dados da mesa
-  fetch(`/api/mesas/${mesaId}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  })
-    .then((response) => {
-      if (!response.ok) throw new Error('Erro ao atualizar a mesa');
-      return response.json(); // Converte a resposta em JSON
-    })
-    .then((data) => {
-      console.log('Mesa atualizada com sucesso', data);
-      alert('Mesa atualizada com sucesso!');
+      // Atualizar a mesa
+      return fetch(`/api/mesas/${mesaId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error('Erro ao atualizar a mesa');
+          return response.json();
+        })
+        .then((data) => {
+          console.log('Mesa atualizada com sucesso', data);
+          alert('Mesa atualizada com sucesso!');
 
-      // Agora faz o segundo fetch para pegar o local
-      return fetch(`/api/mesas/local/${locId}`);
+          // Agora faz o segundo fetch para pegar o local
+          return fetch(`/api/mesas/local/${locId}`);
+        });
     })
     .then((localResponse) => {
       if (!localResponse.ok) throw new Error('Erro ao buscar o local');
-      return localResponse.json(); // Converte a resposta em JSON
+      return localResponse.json();
     })
     .then((localJson) => {
       console.log(localJson.loc_descricao);
 
       const locais = document.querySelectorAll('.locais');
-
       let retornou = false;
 
       locais.forEach(function (elemento) {
-        const estiloElemento = window.getComputedStyle(elemento); // Pega o estilo computado
+        const estiloElemento = window.getComputedStyle(elemento);
 
         if (
           estiloElemento.color === 'rgb(255, 99, 71)' &&
-          elemento.dataset.local === 'Ativas'
+          elemento.dataset.local === 'Todas'
         ) {
           carregarMesasModal(carregarTodasMesasAtivas);
           retornou = true;
           return;
         }
 
-        if (
-          estiloElemento.color === 'rgb(255, 99, 71)' &&
-          elemento.dataset.local === 'Inativas'
-        ) {
-          carregarMesasModal(carregarTodasMesasInativas);
-          retornou = true;
-          return;
-        }
+        // if (
+        //   estiloElemento.color === 'rgb(255, 99, 71)' &&
+        //   elemento.dataset.local === 'Inativas'
+        // ) {
+        //   carregarMesasModal(carregarTodasMesasInativas);
+        //   retornou = true;
+        //   return;
+        // }
       });
 
-      if (retornou == false) {
+      if (!retornou) {
         carregarMesasModal(carregarMesas, localJson.loc_descricao);
       }
     })
@@ -240,6 +380,12 @@ export function funcoesModal() {
         descricao.value = '';
         capacidade.value = '';
 
+        salvarStatus.style.display = 'None';
+        adicionarStatus.style.display = 'Block';
+
+        botaoSalvar.style.display = 'None';
+        botaoAdicionar.style.display = 'Block';
+
         fetch(`/api/mesas/local/locais/Restritos`)
           .then((response) => {
             if (!response.ok) {
@@ -261,14 +407,6 @@ export function funcoesModal() {
           .catch((error) => {
             console.error('Erro:', error);
           });
-
-        statusText.innerText = 'disponível';
-
-        salvarStatus.style.display = 'None';
-        adicionarStatus.style.display = 'Block';
-
-        botaoSalvar.style.display = 'None';
-        botaoAdicionar.style.display = 'Block';
         return;
       }
 
@@ -319,12 +457,12 @@ export async function buscarDadosMesa(mesaId) {
     console.log(dados);
     // Aqui você pode preencher os campos do seu modal com os dados da mesa
     tituloModal.textContent = `EDITAR - ${dados.mes_nome}`;
-    idText.innerText = dados.mes_id || '';
-    idText.dataset.id = dados.mes_id || '';
-    nomeMesa.value = dados.mes_nome || '';
-    codigoInput.value = dados.mes_codigo || '';
-    descricao.value = dados.mes_descricao || '';
-    capacidade.value = dados.mes_capacidade || 1;
+    idText.innerText = dados.mes_id ?? '';
+    idText.dataset.id = dados.mes_id ?? '';
+    nomeMesa.value = dados.mes_nome ?? '';
+    codigoInput.value = dados.mes_codigo ?? '';
+    descricao.value = dados.mes_descricao ?? '';
+    capacidade.value = dados.mes_capacidade ?? 1;
 
     setor.innerHTML = '';
 
@@ -341,7 +479,7 @@ export async function buscarDadosMesa(mesaId) {
     });
 
     // setor.innerHTML = `<option value="${dados.loc_id}">${descricaoLocal}</option>`;
-    statusInput.value = dados.mes_status || '';
+    statusInput.value = dados.mes_status ?? '';
     return dados;
   } catch (error) {
     console.error(error);
@@ -349,40 +487,40 @@ export async function buscarDadosMesa(mesaId) {
   }
 }
 
-export async function carregarMesasPesquisa(id, descricao, local) {
-  try {
-    let url = `/api/mesas/pesquisa/area?mes_id=${id}&mes_descricao=${descricao}&loc_descricao=${local}`;
+// export async function carregarMesasPesquisa(id, descricao, local) {
+//   try {
+//     let url = `/api/mesas/pesquisa/area?mes_id=${id}&mes_descricao=${descricao}&loc_descricao=${local}`;
 
-    if (local === 'Ativas') {
-      url = `/api/mesas/pesquisa/ativas?mes_id=${id}&mes_descricao=${descricao}`;
-    } else if (local === 'Inativas') {
-      url = `/api/mesas/pesquisa/inativas?mes_id=${id}&mes_descricao=${descricao}`;
-    }
+//     if (local === 'Ativas') {
+//       url = `/api/mesas/pesquisa/ativas?mes_id=${id}&mes_descricao=${descricao}`;
+//     } else if (local === 'Inativas') {
+//       url = `/api/mesas/pesquisa/inativas?mes_id=${id}&mes_descricao=${descricao}`;
+//     }
 
-    const response = await fetch(url);
-    // if (!response.ok)
-    //   throw new Error(`Erro ao carregar a mesa do local ${local}`);
+//     const response = await fetch(url);
+//     // if (!response.ok)
+//     //   throw new Error(`Erro ao carregar a mesa do local ${local}`);
 
-    const mesas = await response.json();
-    containerMesas.innerHTML = ''; // Limpa as mesas antes de renderizar
+//     const mesas = await response.json();
+//     containerMesas.innerHTML = ''; // Limpa as mesas antes de renderizar
 
-    if (mesas.length === 0) {
-      // Caso não haja mesas, apenas limpa e deixa vazio
-      return;
-    }
+//     if (mesas.length === 0) {
+//       // Caso não haja mesas, apenas limpa e deixa vazio
+//       return;
+//     }
 
-    mesas.forEach((mesa) => {
-      const divMesa = document.createElement('div');
-      divMesa.classList.add('card-mesa');
-      divMesa.dataset.id = mesa.mes_id;
-      divMesa.innerHTML = `<p>Mesa ${mesa.mes_id}</p>`;
-      containerMesas.appendChild(divMesa);
-    });
-  } catch (error) {
-    console.error(error);
-    containerMesas.innerHTML = '';
-  }
-}
+//     mesas.forEach((mesa) => {
+//       const divMesa = document.createElement('div');
+//       divMesa.classList.add('card-mesa');
+//       divMesa.dataset.id = mesa.mes_id;
+//       divMesa.innerHTML = `<p>Mesa ${mesa.mes_id}</p>`;
+//       containerMesas.appendChild(divMesa);
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     containerMesas.innerHTML = '';
+//   }
+// }
 
 export async function carregarMesas(local) {
   console.log(local);
@@ -396,20 +534,15 @@ export async function carregarMesas(local) {
 
     <h2>Ocupadas</h2>
     <div class="mesas-container" id="mesas-ocupadas"></div>
-
-    <h2>Aguardando Pagamento</h2>
-    <div class="mesas-container" id="mesas-aguardando"></div>
     `;
 
     // Selecionando os contêineres
     const containerDisponiveis = document.querySelector('#mesas-disponiveis');
     const containerOcupadas = document.querySelector('#mesas-ocupadas');
-    const containerAguardando = document.querySelector('#mesas-aguardando');
 
     // Limpando as seções antes de renderizar
     containerDisponiveis.innerHTML = '';
     containerOcupadas.innerHTML = '';
-    containerAguardando.innerHTML = '';
 
     if (mesas.length === 0) {
       return; // Se não há mesas, não faz nada
@@ -423,14 +556,16 @@ export async function carregarMesas(local) {
 
       // Distribuir a mesa conforme o status
       switch (mesa.mes_status) {
-        case 'disponível':
+        case 0:
           containerDisponiveis.appendChild(divMesa);
           break;
-        case 'ocupada':
+        case 1:
           containerOcupadas.appendChild(divMesa);
+          divMesa.style.backgroundColor = '#90FF98';
           break;
-        case 'aguardando pagamento':
-          containerAguardando.appendChild(divMesa);
+        case 2:
+          containerOcupadas.appendChild(divMesa);
+          divMesa.style.backgroundColor = '#D9BB29';
           break;
         default:
           console.warn(`Status desconhecido: ${mesa.mes_status}`);
@@ -445,9 +580,6 @@ export async function carregarMesas(local) {
 
     <h2>Ocupadas</h2>
     <div class="mesas-container" id="mesas-ocupadas"></div>
-
-    <h2>Aguardando Pagamento</h2>
-    <div class="mesas-container" id="mesas-aguardando"></div>
     `;
   }
 }
@@ -460,7 +592,7 @@ export async function carregarTodasMesasAtivas() {
     containerMesas.innerHTML = `
     <div class="mesas-container">
         <div class="card-mesa adicionar-mesa">
-            <p>+</p>
+            +
         </div>
     </div>
 
@@ -469,20 +601,15 @@ export async function carregarTodasMesasAtivas() {
 
     <h2>Ocupadas</h2>
     <div class="mesas-container" id="mesas-ocupadas"></div>
-
-    <h2>Aguardando Pagamento</h2>
-    <div class="mesas-container" id="mesas-aguardando"></div>
     `;
 
     // Selecionando os contêineres
     const containerDisponiveis = document.querySelector('#mesas-disponiveis');
     const containerOcupadas = document.querySelector('#mesas-ocupadas');
-    const containerAguardando = document.querySelector('#mesas-aguardando');
 
     // Limpando as seções antes de renderizar
     containerDisponiveis.innerHTML = '';
     containerOcupadas.innerHTML = '';
-    containerAguardando.innerHTML = '';
 
     if (mesas.length === 0) {
       return; // Se não há mesas, não faz nada
@@ -496,14 +623,16 @@ export async function carregarTodasMesasAtivas() {
 
       // Distribuir a mesa conforme o status
       switch (mesa.mes_status) {
-        case 'disponível':
+        case 0:
           containerDisponiveis.appendChild(divMesa);
           break;
-        case 'ocupada':
+        case 1:
           containerOcupadas.appendChild(divMesa);
+          divMesa.style.backgroundColor = '#90FF98';
           break;
-        case 'aguardando pagamento':
-          containerAguardando.appendChild(divMesa);
+        case 2:
+          containerOcupadas.appendChild(divMesa);
+          divMesa.style.backgroundColor = '#D9BB29';
           break;
         default:
           console.warn(`Status desconhecido: ${mesa.mes_status}`);
@@ -524,8 +653,6 @@ export async function carregarTodasMesasAtivas() {
     <h2>Ocupadas</h2>
     <div class="mesas-container" id="mesas-ocupadas"></div>
 
-    <h2>Aguardando Pagamento</h2>
-    <div class="mesas-container" id="mesas-aguardando"></div>
     `;
   }
 }
@@ -557,14 +684,7 @@ export async function carregarTodasMesasInativas() {
   } catch (error) {
     console.error(error);
     containerMesas.innerHTML = `
-    <h2>Disponíveis</h2>
-    <div class="mesas-container" id="mesas-disponiveis"></div>
-
-    <h2>Ocupadas</h2>
-    <div class="mesas-container" id="mesas-ocupadas"></div>
-
-    <h2>Aguardando Pagamento</h2>
-    <div class="mesas-container" id="mesas-aguardando"></div>
+    '<div class="mesas-container" id="mesas-inativas"></div>';
     `;
   }
 }
@@ -602,15 +722,15 @@ export async function carregarLocais() {
 
         h2.style.color = '#FF6347';
 
-        if (local.loc_descricao == 'Ativas') {
+        if (local.loc_descricao == 'Todas') {
           carregarMesasModal(carregarTodasMesasAtivas);
           return;
         }
 
-        if (local.loc_descricao == 'Inativas') {
-          carregarMesasModal(carregarTodasMesasInativas);
-          return;
-        }
+        // if (local.loc_descricao == 'Inativas') {
+        //   carregarMesasModal(carregarTodasMesasInativas);
+        //   return;
+        // }
 
         carregarMesasModal(carregarMesas, local.loc_descricao);
       });

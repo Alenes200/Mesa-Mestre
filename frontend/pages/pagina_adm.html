@@ -78,12 +78,41 @@
               <h2>Sala Principal</h2>
               <h2>Sala Principal</h2> -->
             </div>
-            <div class="configueracao">
+            <div class="configueracao" id="configuracao">
               <img
                 src="../images/icon-configuracao.svg"
                 alt="ícone de Configurações"
               />
             </div>
+
+            <table id="tabela-locais">
+              <thead>
+                <tr>
+                  <th>Nome do Local</th>
+                  <th>Opções</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          
+            <div class="modal-generico" id="modalGenerico" style="display: none">
+              <div class="overlay" id="overlayGenerico"></div>
+              <div class="conteudo-modal">
+                <div class="topo">
+                  <h1 id="tituloModalGenerico">Título do Modal</h1>
+                  <img src="../images/icon-fechar.svg" alt="Fechar" id="fecharModalGenerico" />
+                </div>
+            
+                <div class="corpo-modal" id="conteudoModalGenerico">
+                  <!-- Aqui o conteúdo será injetado dinamicamente -->
+                </div>
+            
+                <div class="botoes">
+                  <button id="botaoFecharModal">Fechar</button>
+                </div>
+              </div>
+            </div>
+            
           </div>
           <!-- <div class="pesquisa">
             <div class="box-pesquisa">
@@ -98,7 +127,7 @@
             <div class="card-mesa">
               <p>mesa 02</p>
             </div> -->
-            <div class="mesas-container" class="mesas-adicionar">
+            <div class="mesas-container">
               <div class="card-mesa adicionar-mesa">
                 <p>+</p>
               </div>
@@ -157,7 +186,11 @@
                 <div class="bot" id="salvarStatus">
                   <div class="codigo">
                     <h2>Status</h2>
-                    <input type="text" id="statusInput" />
+                    <select name="setor" id="statusInput">
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                    </select>
 
                     <h2>Código</h2>
                     <input type="text" id="codigoInput" />
@@ -168,10 +201,15 @@
                 <div class="bot" id="adicionarStatus">
                   <div class="codigo">
                     <h2>Status</h2>
-                    <p id="statusText"></p>
+                    <select name="setor" id="statusInputAdicionar">
+                      <option value="selecionar">Selecionar</option>
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                    </select>
 
                     <h2>Código</h2>
-                    <input type="input" id="codigoInput" />
+                    <input type="text" id="codigoInputAdicionar" />
                   </div>
                 </div>
 

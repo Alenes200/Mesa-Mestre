@@ -2,11 +2,13 @@ import { showModal, openConfirmModal } from './modal.js';
 import {
   carregarLocais,
   carregarMesasModal,
-  carregarMesas,
+  carregarTodasMesasAtivas,
   salvar,
-  buscar,
+  // buscar,
   adicionar,
   desativar,
+  abrirModal,
+  fecharModal,
 } from './mesas.js';
 import { listarFuncionarios, buscarFuncionarios } from './funcionario.js';
 import { carregarGraficoComandas, destruirGrafico } from './grafico.js';
@@ -18,7 +20,7 @@ let userId;
 
 document.addEventListener('DOMContentLoaded', async () => {
   carregarLocais();
-  carregarMesasModal(carregarMesas, 'Externa');
+  carregarMesasModal(carregarTodasMesasAtivas);
 
   // if (!token) {
   //   window.location.href = '../pages/login_adm.html';
@@ -62,6 +64,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   //     modal.style.display = 'flex';
   //   });
   // });
+
+  const configuracao = document.getElementById('configuracao');
+  configuracao.addEventListener('click', function () {
+    abrirModal('Locais');
+  });
+
+  // Eventos de fechamento
+  document
+    .getElementById('fecharModalGenerico')
+    .addEventListener('click', fecharModal);
+  document
+    .getElementById('overlayGenerico')
+    .addEventListener('click', fecharModal);
+  document
+    .getElementById('botaoFecharModal')
+    .addEventListener('click', fecharModal);
 
   const botaoSalvar = document.getElementById('salvar-alteracoes');
 
