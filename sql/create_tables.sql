@@ -103,3 +103,7 @@ ALTER TABLE TBL_USERS DROP CONSTRAINT tbl_users_usr_tipo_check;
 
 -- Adicionar uma nova restrição que inclua o valor 4
 ALTER TABLE TBL_USERS ADD CONSTRAINT tbl_users_usr_tipo_check CHECK (USR_TIPO IN (1, 2, 3, 4));
+
+ALTER TABLE TBL_PEDIDO DROP CONSTRAINT IF EXISTS tbl_pedido_ped_status_check;
+
+ALTER TABLE TBL_PEDIDO ADD CONSTRAINT tbl_pedido_ped_status_check CHECK (PED_STATUS IN (-1, 1, 2, 3));
