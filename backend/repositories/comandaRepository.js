@@ -150,6 +150,7 @@ const comandaRepository = {
             tbl_pedido p ON c.com_id = p.com_id
         JOIN 
             tbl_pedido_produto pp ON p.ped_id = pp.ped_id
+            
         JOIN 
             tbl_produto prod ON pp.pro_id = prod.pro_id
         WHERE 
