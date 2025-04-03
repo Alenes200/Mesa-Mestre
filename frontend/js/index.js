@@ -37,13 +37,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       throw new Error('Erro ao obter dados do usuário.');
     }
     userData = await userResponse.json();
-
-    // Esta verificação impede que usuários não administradores acessem a página
-    if (userData.userType !== 1) {
-      window.location.href = '../pages/login_adm.html';
-      return;
-    }
-
     userId = userData.id;
 
     // Configuração do evento de pesquisa
@@ -54,11 +47,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
   } catch (error) {
     console.error('Erro ao carregar dados do usuário:', error);
-    localStorage.removeItem('token'); // Remove o token inválido
-    window.location.href = '../pages/login_adm.html'; // Redireciona para login
-    return;
+    showModal(
+      'Erro ao carregar dados do usuário. Tente novamente mais tarde.',
+      'error'
+    );
   }
-
 
   // Modal functionality remains the same
   // const cardMesas = document.querySelectorAll('.card-mesa');
@@ -72,10 +65,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   //   });
   // });
 
-  const configuracao = document.getElementById('configuracao');
-  configuracao.addEventListener('click', function () {
-    abrirModal('Locais');
-  });
+  // const configuracao = document.getElementById('configuracao');
+  // configuracao.addEventListener('click', function () {
+  //   abrirModal('Locais');
+  // });
 
   // Eventos de fechamento
   document
