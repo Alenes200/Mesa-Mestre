@@ -73,6 +73,8 @@ function redirectUser(userData) {
     window.location.href = '../pages/cardapio.html';
   } else if (userData.userType === 2) {
     window.location.href = '../pages/atendente.html';
+  } else if (userData.userType === 4) {
+    window.location.href = '../pages/cozinha.html';
   } else {
     alert('Você não tem permissão para acessar esta área.');
   }

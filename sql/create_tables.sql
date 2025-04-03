@@ -10,7 +10,7 @@ CREATE TABLE TBL_MESA (
 	MES_CAPACIDADE INTEGER NOT NULL,
 	MES_DESCRICAO TEXT,
 	LOC_ID BIGINT REFERENCES TBL_LOCAL(LOC_ID) ON DELETE SET NULL,
-	MES_STATUS INTEGER DEFAULT 1 CHECK (MES_STATUS IN (2, 1, 0, -1))
+	MES_STATUS INTEGER DEFAULT 0 CHECK (MES_STATUS IN (-1, 0, 1, 2));
 );
 
 CREATE TABLE TBL_COMANDA (
@@ -94,4 +94,21 @@ FOR EACH ROW EXECUTE FUNCTION atualizar_updated_at();
 
 CREATE OR REPLACE TRIGGER trigger_atualizar_pro_updated_at
 BEFORE UPDATE ON tbl_produto
+
 FOR EACH ROW EXECUTE FUNCTION atualizar_updated_at();
+
+FOR EACH ROW EXECUTE FUNCTION atualizar_ped_updated_at();
+
+
+
+NOVOS COMANDOS DO TBL_USERS:
+-- Remover a restrição existente
+ALTER TABLE TBL_USERS DROP CONSTRAINT tbl_users_usr_tipo_check;
+
+-- Adicionar uma nova restrição que inclua o valor 4
+ALTER TABLE TBL_USERS ADD CONSTRAINT tbl_users_usr_tipo_check CHECK (USR_TIPO IN (1, 2, 3, 4));
+
+ALTER TABLE TBL_PEDIDO DROP CONSTRAINT IF EXISTS tbl_pedido_ped_status_check;
+
+ALTER TABLE TBL_PEDIDO ADD CONSTRAINT tbl_pedido_ped_status_check CHECK (PED_STATUS IN (-1, 1, 2, 3));
+

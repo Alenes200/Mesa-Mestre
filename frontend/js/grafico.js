@@ -128,7 +128,7 @@ export async function carregarGraficoComandas(token) {
           }
 
           const dados = await response.json();
-        //   console.log('Dados recebidos:', url, dados);
+          //   console.log('Dados recebidos:', url, dados);
 
           if (!Array.isArray(dados)) {
             console.error('Dados inesperados (não é array):', url, dados);
@@ -267,34 +267,28 @@ export async function carregarGraficoComandas(token) {
         // Gráfico 3: Faturamento diário
         if (graficos.faturamento) graficos.faturamento.destroy();
         graficos.faturamento = criarGrafico(
-            container.querySelector('#graficoFaturamento').getContext('2d'),
-            'line',
-            {
-              labels: dados[2].map((item) => new Date(item.data).toLocaleDateString()),
-              datasets: [
-                {
-                  label: 'Faturamento (R$)',
-                  data: dados[2].map((item) => parseFloat(item.faturamento)),
-                  borderColor: 'rgba(153, 102, 255, 1)',
-                  backgroundColor: 'rgba(153, 102, 255, 0.1)',
-                  yAxisID: 'y',
-                  tension: 0.1
-                },
-                {
-                  label: 'Comandas Atendidas',
-                  data: dados[2].map((item) => parseInt(item.comandas_atendidas)),
-                  borderColor: 'rgba(255, 159, 64, 1)',
-                  backgroundColor: 'rgba(255, 159, 64, 0.1)',
-                  yAxisID: 'y1',
-                  type: 'line'
-                }
-              ]
-            },
-            {
-              responsive: true,
-              interaction: {
-                mode: 'index',
-                intersect: false
+          container.querySelector('#graficoFaturamento').getContext('2d'),
+          'line',
+          {
+            labels: dados[2].map((item) =>
+              new Date(item.data).toLocaleDateString()
+            ),
+            datasets: [
+              {
+                label: 'Faturamento (R$)',
+                data: dados[2].map((item) => parseFloat(item.faturamento)),
+                borderColor: 'rgba(153, 102, 255, 1)',
+                backgroundColor: 'rgba(153, 102, 255, 0.1)',
+                yAxisID: 'y',
+                tension: 0.1,
+              },
+              {
+                label: 'Comandas Atendidas',
+                data: dados[2].map((item) => parseInt(item.comandas_atendidas)),
+                borderColor: 'rgba(255, 159, 64, 1)',
+                backgroundColor: 'rgba(255, 159, 64, 0.1)',
+                yAxisID: 'y1',
+                type: 'line',
               },
               plugins: {
                 title: {
@@ -314,27 +308,24 @@ export async function carregarGraficoComandas(token) {
                 y: {
                   type: 'linear',
                   display: true,
-                  position: 'left',
-                  title: {
-                    display: true,
-                    text: 'Faturamento (R$)'
-                  }
+                  text: 'Faturamento (R$)',
                 },
-                y1: {
-                  type: 'linear',
+              },
+              y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
                   display: true,
-                  position: 'right',
-                  title: {
-                    display: true,
-                    text: 'Comandas'
-                  },
-                  grid: {
-                    drawOnChartArea: false
-                  }
-                }
-              }
-            }
-          );
+                  text: 'Comandas',
+                },
+                grid: {
+                  drawOnChartArea: false,
+                },
+              },
+            },
+          }
+        );
 
         // Gráfico 4: Formas de pagamento
         if (graficos.pagamentos) graficos.pagamentos.destroy();
@@ -506,7 +497,7 @@ export async function carregarGraficoComandas(token) {
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
-                yAxisID: 'y' // Eixo principal
+                yAxisID: 'y', // Eixo principal
               },
               {
                 label: 'Quantidade Vendida',
@@ -515,9 +506,9 @@ export async function carregarGraficoComandas(token) {
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1,
                 type: 'bar',
-                yAxisID: 'y1' // Eixo secundário
-              }
-            ]
+                yAxisID: 'y1', // Eixo secundário
+              },
+            ],
           },
           {
             responsive: true,
@@ -525,12 +516,12 @@ export async function carregarGraficoComandas(token) {
             plugins: {
               tooltip: {
                 callbacks: {
-                  label: function(context) {
+                  label: function (context) {
                     let label = context.dataset.label || '';
                     if (label) {
                       label += ': ';
                     }
-                    
+
                     // Tratamento seguro para valores numéricos
                     const rawValue = context.raw;
                     if (typeof rawValue === 'number') {
@@ -543,7 +534,7 @@ export async function carregarGraficoComandas(token) {
                       // Caso o valor não seja numérico
                       label += rawValue ? rawValue.toString() : '0';
                     }
-                    
+
                     return label;
                   }
                 }
@@ -568,9 +559,9 @@ export async function carregarGraficoComandas(token) {
                 position: 'left',
                 title: {
                   display: true,
-                  text: 'Faturamento (R$)'
+                  text: 'Faturamento (R$)',
                 },
-                beginAtZero: true
+                beginAtZero: true,
               },
               y1: {
                 type: 'linear',
@@ -578,14 +569,14 @@ export async function carregarGraficoComandas(token) {
                 position: 'right',
                 title: {
                   display: true,
-                  text: 'Quantidade Vendida'
+                  text: 'Quantidade Vendida',
                 },
                 grid: {
-                  drawOnChartArea: false // não desenhar grid do eixo secundário
+                  drawOnChartArea: false, // não desenhar grid do eixo secundário
                 },
-                beginAtZero: true
-              }
-            }
+                beginAtZero: true,
+              },
+            },
           }
         );
 
@@ -645,26 +636,26 @@ export async function carregarGraficoComandas(token) {
 // No final do arquivo grafico.js, adicione:
 // Modifique a função setupResizeObserver:
 function setupResizeObserver() {
-    const container = document.querySelector('.conteudo-graficos-container');
-    if (!container) return;
-  
-    // Desconectar observer anterior se existir
-    if (resizeObserver) {
-      resizeObserver.disconnect();
-    }
-  
-    resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        if (entry.contentRect.width > 0) {
-          // Redimensionar apenas gráficos visíveis
-          Object.values(graficos).forEach((grafico) => {
-            if (grafico && grafico.canvas.offsetParent !== null) {
-              grafico.resize();
-            }
-          });
-        }
-      }
-    });
-  
-    resizeObserver.observe(container);
+  const container = document.querySelector('.conteudo-graficos-container');
+  if (!container) return;
+
+  // Desconectar observer anterior se existir
+  if (resizeObserver) {
+    resizeObserver.disconnect();
   }
+
+  resizeObserver = new ResizeObserver((entries) => {
+    for (let entry of entries) {
+      if (entry.contentRect.width > 0) {
+        // Redimensionar apenas gráficos visíveis
+        Object.values(graficos).forEach((grafico) => {
+          if (grafico && grafico.canvas.offsetParent !== null) {
+            grafico.resize();
+          }
+        });
+      }
+    }
+  });
+
+  resizeObserver.observe(container);
+}

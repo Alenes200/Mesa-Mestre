@@ -54,15 +54,26 @@ const mesasController = {
 
   create: async (req, res) => {
     try {
-      const { capacidade, descricao, local } = req.body;
+      const { nome, codigo, status, capacidade, descricao, local } = req.body;
 
-      if (!capacidade || !descricao || !local) {
+      if (
+        !capacidade ||
+        !descricao ||
+        isNaN(local) ||
+        !nome ||
+        !codigo ||
+        isNaN(status) ||
+        status < 0
+      ) {
         return res
           .status(400)
           .json({ error: 'Todos os campos são obrigatórios.' });
       }
 
       const novaMesa = await mesasRepository.create({
+        nome,
+        codigo,
+        status,
         capacidade,
         descricao,
         local,
@@ -78,7 +89,7 @@ const mesasController = {
   update: async (req, res) => {
     try {
       const { id } = req.params;
-      const { capacidade, descricao, local, status } = req.body;
+      const { nome, codigo, capacidade, descricao, local, status } = req.body;
 
       const mesaExistente = await mesasRepository.getByIdIgnoreStatus(id);
       if (!mesaExistente) {
@@ -93,6 +104,7 @@ const mesasController = {
         descricao: descricao || mesaExistente.mes_descricao,
         local: local || mesaExistente.mes_local,
         status: novoStatus !== undefined ? novoStatus : mesaExistente.mes_status,
+
       });
 
       res.status(200).json(mesaAtualizada);

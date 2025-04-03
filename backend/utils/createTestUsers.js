@@ -63,6 +63,14 @@ module.exports = async function createTestUsers(client) {
       process.env.SENHA_SECRETA_3,
       3
     );
+
+    await createTestUser(
+      client,
+      'Cozinha',
+      'cozinha@example.com',
+      process.env.SENHA_SECRETA_4,
+      4
+    );
   } catch (error) {
     console.error('Erro ao criar usuários de teste:', error);
   }

@@ -8,6 +8,7 @@ const loginRepository = require('./repositories/loginRepository');
 const loginRoutes = require('./routes/loginRoutes');
 const produtosRoutes = require('./routes/produtoRoutes');
 const mesasRoutes = require('./routes/mesaRoutes');
+const locaisRoutes = require('./routes/locaisRoutes');
 const userRoutes = require('./routes/userRoutes');
 const comandaRoutes = require('./routes/comandaRoutes');
 const chartRoutes = require('./routes/chartRoutes');
@@ -21,6 +22,7 @@ dotenv.config({ path: './.env' });
 
 const port = process.env.PORT || 3000;
 const app = express();
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Configuração do Swagger
 const swaggerOptions = {
@@ -70,6 +72,7 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 app.use('/api/auth', loginRoutes);
 app.use('/api/produtos', produtosRoutes);
 app.use('/api/mesas', mesasRoutes);
+app.use('/api/locais', locaisRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/comandas', comandaRoutes);
 app.use('/api/graficos', chartRoutes);
