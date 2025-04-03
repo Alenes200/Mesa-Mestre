@@ -69,8 +69,10 @@ async function getCurrentUser(token) {
 function redirectUser(userData) {
   if (userData.userType === 1) {
     window.location.href = '../pages/pagina_adm.html';
-  } else if (userData.userType === 2) {
+  } else if (userData.userType === 3) {
     window.location.href = '../pages/cardapio.html';
+  } else if (userData.userType === 2) {
+    window.location.href = '../pages/atendente.html';
   } else if (userData.userType === 4) {
     window.location.href = '../pages/cozinha.html';
   } else {

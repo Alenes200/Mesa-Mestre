@@ -92,24 +92,19 @@ const mesasController = {
       const { nome, codigo, capacidade, descricao, local, status } = req.body;
 
       const mesaExistente = await mesasRepository.getByIdIgnoreStatus(id);
-
       if (!mesaExistente) {
         return res.status(404).json({ error: 'Mesa não encontrada.' });
       }
-      if (mesaExistente.status == -1 && status == -1) {
-        return res.status(400).json({
-          error:
-            'Mesa desativado. Para reativar, defina um status válido (>= 1).',
-        });
-      }
+      
+       // Remove a validação que pode estar bloqueando
+      const novoStatus = status ?? mes_status;
 
       const mesaAtualizada = await mesasRepository.update(id, {
-        nome: nome ?? mesaExistente.mes_nome,
-        codigo: codigo ?? mesaExistente.mes_codigo,
-        capacidade: capacidade ?? mesaExistente.mes_capacidade,
-        descricao: descricao ?? mesaExistente.mes_descricao,
-        local: local ?? mesaExistente.mes_local,
-        status: status ?? mesaExistente.mes_status,
+        capacidade: capacidade || mesaExistente.mes_capacidade,
+        descricao: descricao || mesaExistente.mes_descricao,
+        local: local || mesaExistente.mes_local,
+        status: novoStatus !== undefined ? novoStatus : mesaExistente.mes_status,
+
       });
 
       res.status(200).json(mesaAtualizada);

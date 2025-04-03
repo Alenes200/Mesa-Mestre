@@ -19,6 +19,14 @@ let userData;
 let userId;
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Remover a classe ativa das mesas e adicionar aos gráficos
+  document.getElementById('op_mesa').classList.remove('op_ativa');
+  document.getElementById('op_grafico').classList.add('op_ativa');
+  document.querySelector('.conteudo-mesas').style.display = 'none';
+  const conteudoGraficos = document.querySelector('.conteudo-graficos-container');
+  const conteudoMesas = document.querySelector('.conteudo-mesas');
+  conteudoGraficos.style.display = 'block';
+
   carregarLocais();
   carregarMesasModal(carregarMesas, 'Externa');
 
@@ -45,6 +53,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     userId = userData.id;
+
+    // Carregar gráficos automaticamente
+    try {
+      await carregarGraficoComandas(token);
+    } catch (error) {
+      console.error('Erro ao carregar gráficos:', error);
+      showModal('Erro ao carregar gráficos. Tente novamente mais tarde.', 'error');
+    }
 
     // Configuração do evento de pesquisa
     document
@@ -108,7 +124,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const menuCardapio = document.querySelector('.opcao:nth-child(1)');
   const menuMesas = document.querySelector('.opcao:nth-child(5)');
   const conteudoCardapio = document.querySelector('.conteudo-cardapio');
-  const conteudoMesas = document.querySelector('.conteudo-mesas');
 
   const botaoLogout = document.querySelector('.sair');
 
@@ -207,6 +222,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   const menuGraficos = document.getElementById('op_grafico');
+  //Conflito merge -add
   const conteudoGraficos = document.querySelector(
     '.conteudo-graficos-container'
   );

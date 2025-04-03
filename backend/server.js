@@ -14,6 +14,7 @@ const comandaRoutes = require('./routes/comandaRoutes');
 const chartRoutes = require('./routes/chartRoutes');
 const pedidoRoutes = require('./routes/pedidoRoutes');
 const pedidoProdutoRoutes = require('./routes/pedidoProdutoRoutes');
+const formaPagamentoRoutes = require('./routes/formaPagamentoRoutes');
 
 const path = require('path');
 
@@ -77,6 +78,7 @@ app.use('/api/comandas', comandaRoutes);
 app.use('/api/graficos', chartRoutes);
 app.use('/api/pedidos', pedidoRoutes);
 app.use('/api/pedidos-produtos', pedidoProdutoRoutes);
+app.use('/api/formas-pagamento', formaPagamentoRoutes);
 
 // Middleware para capturar erros não tratados
 app.use((err, req, res, next) => {
