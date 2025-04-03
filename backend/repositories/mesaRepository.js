@@ -3,8 +3,14 @@ const client = require('../db/postgresql');
 const mesasRepository = {
   getAll: async () => {
     try {
-      const query =
-        'SELECT * FROM TBL_MESA WHERE MES_STATUS >= 1 ORDER BY MES_ID';
+      const query = `
+        SELECT MES.*, LOC.LOC_DESCRICAO
+        FROM TBL_MESA AS MES
+        INNER JOIN TBL_LOCAL AS LOC ON LOC.LOC_ID = MES.LOC_ID
+        WHERE MES.MES_STATUS >= 0 
+        ORDER BY MES.MES_ID
+      `;
+
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
@@ -32,7 +38,7 @@ const mesasRepository = {
       INNER JOIN TBL_LOCAL AS LOC ON LOC.LOC_ID = MES.LOC_ID
       WHERE (CAST(MES_ID AS TEXT) LIKE $1 OR UPPER(MES_DESCRICAO) LIKE UPPER($2)) 
       AND LOC.LOC_DESCRICAO LIKE $3 
-      AND MES.MES_STATUS >= 1
+      AND MES.MES_STATUS >= 0
       ORDER BY MES_ID;
         `;
 
@@ -53,7 +59,7 @@ const mesasRepository = {
     try {
       const query = `
       SELECT * FROM TBL_MESA WHERE (CAST(MES_ID AS TEXT) LIKE $1 OR UPPER(MES_DESCRICAO) LIKE UPPER($2)) 
-      AND MES_STATUS >= 1 ORDER BY MES_ID;
+      AND MES_STATUS >= 0 ORDER BY MES_ID;
         `;
 
       const values = [`%${mes_id}%`, `%${mes_descricao}%`];
@@ -69,7 +75,7 @@ const mesasRepository = {
     try {
       const query = `
       SELECT * FROM TBL_MESA WHERE (CAST(MES_ID AS TEXT) LIKE $1 OR UPPER(MES_DESCRICAO) LIKE UPPER($2)) 
-      AND MES_STATUS = -1 ORDER BY MES_ID;
+      AND MES_STATUS = -1  ORDER BY MES_ID;
         `;
 
       const values = [`%${mes_id}%`, `%${mes_descricao}%`];
@@ -95,7 +101,7 @@ const mesasRepository = {
   getLocaisRestritos: async () => {
     try {
       const query =
-        "SELECT LOC_DESCRICAO FROM TBL_LOCAL WHERE LOC_DESCRICAO != 'Ativas' AND LOC_DESCRICAO != 'Inativas' ORDER BY LOC_ID";
+        "SELECT LOC_DESCRICAO FROM TBL_LOCAL WHERE LOC_DESCRICAO != 'Todas' AND LOC_DESCRICAO != 'Inativas' ORDER BY LOC_ID";
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
@@ -106,7 +112,7 @@ const mesasRepository = {
 
   getTodosLocais: async () => {
     try {
-      const query = 'SELECT LOC_DESCRICAO FROM TBL_LOCAL ORDER BY LOC_ID;';
+      const query = 'SELECT LOC_DESCRICAO FROM TBL_LOCAL ORDER BY LOC_ID DESC;';
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
@@ -116,16 +122,16 @@ const mesasRepository = {
   },
 
   create: async (mesa) => {
-    const { capacidade, descricao, local } = mesa;
+    const { nome, codigo, status, capacidade, descricao, local } = mesa;
 
     try {
       const query = `
-                INSERT INTO TBL_MESA (MES_CAPACIDADE, MES_DESCRICAO, LOC_ID)
-                VALUES ($1, $2, $3)
+                INSERT INTO TBL_MESA (MES_NOME, MES_CODIGO, MES_STATUS, MES_CAPACIDADE, MES_DESCRICAO, LOC_ID)
+                VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING *;
             `;
 
-      const values = [capacidade, descricao, local];
+      const values = [nome, codigo, status, capacidade, descricao, local];
       const result = await client.query(query, values);
 
       return result.rows[0];
@@ -136,20 +142,22 @@ const mesasRepository = {
   },
 
   update: async (id, mesa) => {
-    const { capacidade, descricao, local, status } = mesa;
+    const { nome, codigo, capacidade, descricao, local, status } = mesa;
 
     try {
       const query = `
                 UPDATE TBL_MESA
-                SET MES_CAPACIDADE = COALESCE($1, MES_CAPACIDADE),
-                    MES_DESCRICAO = COALESCE($2, MES_DESCRICAO),
-                    LOC_ID = COALESCE($3, LOC_ID),
-                    MES_STATUS = COALESCE($4, MES_STATUS)
-                WHERE MES_ID = $5
+                SET MES_NOME = COALESCE($1, MES_NOME),
+                    MES_CODIGO = COALESCE($2, MES_CODIGO),
+                    MES_CAPACIDADE = COALESCE($3, MES_CAPACIDADE),
+                    MES_DESCRICAO = COALESCE($4, MES_DESCRICAO),
+                    LOC_ID = COALESCE($5, LOC_ID),
+                    MES_STATUS = COALESCE($6, MES_STATUS)
+                WHERE MES_ID = $7
                 RETURNING *;
             `;
 
-      const values = [capacidade, descricao, local, status, id];
+      const values = [nome, codigo, capacidade, descricao, local, status, id];
       const result = await client.query(query, values);
 
       return result.rows[0];
@@ -194,8 +202,8 @@ const mesasRepository = {
         SELECT * 
         FROM TBL_MESA AS MES
         INNER JOIN TBL_LOCAL AS LOC ON LOC.LOC_ID = MES.LOC_ID
-        WHERE LOC.LOC_DESCRICAO LIKE $1
-        AND MES.MES_STATUS >= 1
+        WHERE UPPER(LOC.LOC_DESCRICAO) LIKE UPPER($1)
+        AND MES.MES_STATUS >= 0
         ORDER BY MES.MES_ID;
       `;
       const result = await client.query(query, [`%${local}%`]);

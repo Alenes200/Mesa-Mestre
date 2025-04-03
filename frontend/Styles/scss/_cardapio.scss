@@ -24,6 +24,7 @@
     gap: 34px;
 
     h2 {
+      cursor: pointer;
       font-family: 'Inter';
       font-style: normal;
       font-weight: 700;
@@ -124,17 +125,67 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    gap: 34px;
+
+    overflow-y: auto;
+
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #D91A1A #ffffff00;
+
+    &::-webkit-scrollbar {
+      -webkit-appearance: none;
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      margin: 5px 0;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #88888800;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+
+    /* Remover setas */
+    &::-webkit-scrollbar-button {
+      display: none;
+    }
+
 
     .card-produto {
       display: flex;
-      padding: 21px;
+      justify-content: space-between;
       background: rgba(0, 0, 0, 0.59);
       border-radius: 0px 14px 14px 0px;
 
       width: 403px;
       height: 184px;
 
+      .imagem-produto {
+        width: 100%;
+        height: 100%;
+        max-width: 169px;
+        -o-object-fit: cover;
+        object-fit: cover;
+        border-radius: 14px 0px 0px 14px;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 0px 14px 14px 0px;
+        }
+      }
+
       .descricao {
+        padding-top: 13px;
+        padding-left: 13px;
+        width: 100%;
         display: flex;
         flex-direction: column;
         padding-bottom: 13px;
@@ -238,6 +289,59 @@
       height: auto;
       max-height: 200px;
       object-fit: cover;
+    }
+  }
+}
+
+body {
+  overflow-y: hidden;
+}
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  border-left: 6px solid;
+  overflow: hidden;
+  transform: translateX(calc(100% + 30px));
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+  z-index: 9999;
+
+  &.success {
+    border-color: #28a745;
+
+    .fas {
+      color: #28a745;
+    }
+  }
+
+  &.error {
+    border-color: #dc3545;
+
+    .fas {
+      color: #dc3545;
+    }
+  }
+
+  .toast-content {
+    display: flex;
+    align-items: center;
+
+    .fas {
+      font-size: 1.4em;
+      margin-right: 12px;
+    }
+
+    .message {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      color: #333;
     }
   }
 }

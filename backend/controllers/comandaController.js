@@ -99,6 +99,56 @@ const comandaController = {
       res.status(500).json({ error: 'Erro ao deletar comanda.' });
     }
   },
+
+  getProdutosByMesaId: async (req, res) => {
+    try {
+      const mesaId = req.params.mesaId;
+      
+      // Validação básica do ID
+      if (!mesaId || isNaN(mesaId)) {
+        return res.status(400).json({ error: 'ID da mesa inválido' });
+      }
+
+      const produtos = await comandaRepository.getProdutosByMesaId(mesaId);
+      
+      if (!produtos || produtos.length === 0) {
+        return res.status(404).json({ message: 'Nenhum produto encontrado para esta mesa' });
+      }
+
+      res.json(produtos);
+    } catch (error) {
+      console.error('Erro no controller ao buscar produtos:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+  },
+
+  getPedidosComandaAtiva: async (req, res) => {
+    const { mesaId } = req.params;
+    
+    if (!mesaId || isNaN(mesaId)) {
+        return res.status(400).json({
+            success: false,
+            message: 'ID da mesa inválido'
+        });
+    }
+
+    try {
+        const pedidos = await comandaRepository.getPedidosByComandaAtiva(mesaId);
+        
+        return res.json({
+            success: true,
+            data: pedidos,
+            message: 'Pedidos obtidos com sucesso'
+        });
+        
+    } catch (error) {
+        console.error('Erro no controller:', error.message);
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+  }
 };
 
 module.exports = comandaController;
