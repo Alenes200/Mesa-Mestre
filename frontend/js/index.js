@@ -2,6 +2,7 @@ import { showModal, openConfirmModal } from './modal.js';
 import {
   carregarLocais,
   carregarMesasModal,
+  carregarMesas,
   carregarTodasMesasAtivas,
   salvar,
   // buscar,
@@ -222,10 +223,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   const menuGraficos = document.getElementById('op_grafico');
-  //Conflito merge -add
-  const conteudoGraficos = document.querySelector(
-    '.conteudo-graficos-container'
-  );
 
   menuGraficos.addEventListener('click', async () => {
     removeActiveClass();

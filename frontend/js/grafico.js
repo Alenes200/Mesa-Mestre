@@ -290,6 +290,7 @@ export async function carregarGraficoComandas(token) {
                 yAxisID: 'y1',
                 type: 'line',
               },
+            ],
               plugins: {
                 title: {
                   display: true,
@@ -323,7 +324,6 @@ export async function carregarGraficoComandas(token) {
                   drawOnChartArea: false,
                 },
               },
-            },
           }
         );
 
