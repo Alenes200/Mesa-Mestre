@@ -2,11 +2,13 @@ import { showModal, openConfirmModal } from './modal.js';
 import {
   carregarLocais,
   carregarMesasModal,
-  carregarMesas,
+  carregarTodasMesasAtivas,
   salvar,
-  buscar,
+  // buscar,
   adicionar,
   desativar,
+  abrirModal,
+  fecharModal,
 } from './mesas.js';
 import { listarFuncionarios, buscarFuncionarios } from './funcionario.js';
 import { carregarGraficoComandas, destruirGrafico } from './grafico.js';
@@ -57,17 +59,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
-  // Modal functionality remains the same
-  const cardMesas = document.querySelectorAll('.card-mesa');
-  const modal = document.querySelector('.modal-mesa');
-  const closeIcon = document.querySelector('#fechar-modal-mesas');
-  const overlay = document.querySelector('.overlay');
 
-  cardMesas.forEach((card) => {
-    card.addEventListener('click', () => {
-      modal.style.display = 'flex';
-    });
+  // Modal functionality remains the same
+  // const cardMesas = document.querySelectorAll('.card-mesa');
+  // const modal = document.querySelector('.modal-mesa');
+  // const closeIcon = document.querySelector('#fechar-modal-mesas');
+  // const overlay = document.querySelector('.overlay');
+
+  // cardMesas.forEach((card) => {
+  //   card.addEventListener('click', () => {
+  //     modal.style.display = 'flex';
+  //   });
+  // });
+
+  const configuracao = document.getElementById('configuracao');
+  configuracao.addEventListener('click', function () {
+    abrirModal('Locais');
   });
+
+  // Eventos de fechamento
+  document
+    .getElementById('fecharModalGenerico')
+    .addEventListener('click', fecharModal);
+  document
+    .getElementById('overlayGenerico')
+    .addEventListener('click', fecharModal);
+  document
+    .getElementById('botaoFecharModal')
+    .addEventListener('click', fecharModal);
 
   const botaoSalvar = document.getElementById('salvar-alteracoes');
 
@@ -81,9 +100,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   botaoDesativar.addEventListener('click', desativar);
 
-  const pesquisar = document.getElementById('pesquisar');
+  // const pesquisar = document.getElementById('pesquisar');
 
-  pesquisar.addEventListener('input', buscar);
+  // pesquisar.addEventListener('input', buscar);
 
   // New content switching functionality
   const menuCardapio = document.querySelector('.opcao:nth-child(1)');
