@@ -171,6 +171,10 @@
         cursor: pointer;
       }
 
+      .tabela-locais {
+        display: none;
+      }
+
       .modal-generico {
         position: fixed;
         top: 0;
@@ -255,7 +259,7 @@
             width: 100px;
             height: 100px;
 
-            background: tomato;
+            background: #90FF98;
             border-radius: 50%;
 
             p {

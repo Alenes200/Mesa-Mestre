@@ -16,6 +16,8 @@ const nomeMesa = document.getElementById('nomeMesa');
 const idText = document.getElementById('idText');
 const codigoInput = document.getElementById('codigoInput');
 
+import { showModal } from './modal.js';
+
 export async function configurarLocais() {
   try {
     const response = await fetch('/api/mesas/local/locais/Todos');
@@ -103,7 +105,7 @@ export function abrirModal(titulo, conteudo) {
   const corpoModal = document.getElementById('conteudoModalGenerico');
 
   tituloModal.textContent = titulo;
-  corpoModal.innerHTML = conteudo; // Adiciona conteúdo dinâmico
+  corpoModal.innerHTML = configurarLocais(); // Adiciona conteúdo dinâmico
 
   modal.style.display = 'flex';
 }
@@ -142,7 +144,7 @@ export function adicionar() {
     !nomeAtual ||
     !codigoAtual
   ) {
-    alert('Todos os campos são obrigatórios!');
+    showModal('Todos os campos são obrigatórios!');
     return;
   }
 
@@ -164,12 +166,13 @@ export function adicionar() {
     .then((response) => response.json())
     .then((data) => {
       console.log('Mesa criada:', data);
-      alert('Mesa criada com sucesso!');
+      showModal('Mesa criada com sucesso!');
+      closeModal();
       carregarMesasModal(carregarTodasMesasAtivas);
     })
     .catch((error) => {
       console.error('Erro:', error);
-      alert('Erro ao criar a mesa');
+      showModal('Erro ao criar a mesa');
     });
 }
 
@@ -189,7 +192,7 @@ export function desativar() {
     })
     .then((data) => {
       // Exibe a mensagem de sucesso
-      alert(data.message);
+      showModal(data.message);
       console.log(data.mesa); // Exibe os dados da mesa desativada no console
 
       if (data.mesa.loc_descricao == 'Todas') {
@@ -207,7 +210,7 @@ export function desativar() {
     .catch((error) => {
       // Trata os erros
       console.error(error);
-      alert('Erro ao desativar mesa.');
+      showModal('Erro ao desativar mesa.');
     });
 }
 
@@ -265,7 +268,7 @@ export function salvar() {
     !nomeAtual ||
     !codigoAtual
   ) {
-    alert('Todos os campos são obrigatórios!');
+    showModal('Todos os campos são obrigatórios!');
     return;
   }
 
@@ -309,7 +312,8 @@ export function salvar() {
         })
         .then((data) => {
           console.log('Mesa atualizada com sucesso', data);
-          alert('Mesa atualizada com sucesso!');
+          showModal('Mesa atualizada com sucesso!');
+          closeModal();
 
           // Agora faz o segundo fetch para pegar o local
           return fetch(`/api/mesas/local/${locId}`);
@@ -353,8 +357,14 @@ export function salvar() {
     })
     .catch((error) => {
       console.error('Erro:', error);
-      alert('Erro ao atualizar a mesa');
+      showModal('Erro ao atualizar a mesa', error);
     });
+}
+
+export function closeModal() {
+  const modal = document.querySelector('.modal-mesa');
+
+  modal.style.display = 'none';
 }
 
 export function carregarMesasModal(carregar, local = null) {
@@ -436,7 +446,7 @@ async function buscarDescricaoLocal(locId) {
     return local.loc_descricao;
   } catch (error) {
     console.error(error);
-    alert('Erro ao buscar descrição do local.');
+    showModal('Erro ao buscar descrição do local.');
   }
 }
 
@@ -483,7 +493,7 @@ export async function buscarDadosMesa(mesaId) {
     return dados;
   } catch (error) {
     console.error(error);
-    alert('Erro ao carregar os dados da mesa.');
+    showModal('Erro ao carregar os dados da mesa.');
   }
 }
 
@@ -561,7 +571,7 @@ export async function carregarMesas(local) {
           break;
         case 1:
           containerOcupadas.appendChild(divMesa);
-          divMesa.style.backgroundColor = '#90FF98';
+          divMesa.style.backgroundColor = 'tomato';
           break;
         case 2:
           containerOcupadas.appendChild(divMesa);
@@ -628,7 +638,7 @@ export async function carregarTodasMesasAtivas() {
           break;
         case 1:
           containerOcupadas.appendChild(divMesa);
-          divMesa.style.backgroundColor = '#90FF98';
+          divMesa.style.backgroundColor = 'tomato';
           break;
         case 2:
           containerOcupadas.appendChild(divMesa);
