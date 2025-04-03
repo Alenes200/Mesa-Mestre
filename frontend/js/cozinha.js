@@ -40,8 +40,6 @@ let maiorPedidoIdConhecido = 0;
 let toast = document.getElementById('toast');
 let primeiraCarga = true;
 let pedidosNovos = new Set();
-let mesasCache = new Map(); // Cache para armazenar informações das mesas
-let comandasCache = new Map(); // Cache para armazenar informações das comandas
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function () {
@@ -83,12 +81,10 @@ async function buscarPedidos() {
     const novosEmPreparo = pedidos.filter((p) => p.ped_status === 1);
     const novosProntos = pedidos.filter((p) => p.ped_status === 2);
 
-    // Buscar produtos para cada pedido e informações adicionais
+    // Buscar produtos para cada pedido
     await Promise.all([
-      ...novosEmPreparo.map((pedido) =>
-        buscarInformacoesCompletasPedido(pedido)
-      ),
-      ...novosProntos.map((pedido) => buscarInformacoesCompletasPedido(pedido)),
+      ...novosEmPreparo.map((pedido) => buscarProdutosPedido(pedido)),
+      ...novosProntos.map((pedido) => buscarProdutosPedido(pedido)),
     ]);
 
     pedidosEmPreparo = novosEmPreparo;
@@ -99,29 +95,6 @@ async function buscarPedidos() {
   } catch (error) {
     console.error('Erro ao buscar pedidos:', error);
     showToast('Erro ao buscar pedidos', 'error');
-  }
-}
-
-// Busca todas as informações necessárias para um pedido
-async function buscarInformacoesCompletasPedido(pedido) {
-  try {
-    // Busca produtos do pedido
-    await buscarProdutosPedido(pedido);
-
-    // Busca informações da mesa se existir mes_id
-    if (pedido.mes_id) {
-      await buscarMesa(pedido);
-    }
-
-    // Busca informações da comanda se existir com_id
-    if (pedido.com_id) {
-      await buscarComanda(pedido);
-    }
-  } catch (error) {
-    console.error(
-      `Erro ao buscar informações completas do pedido ${pedido.ped_id}:`,
-      error
-    );
   }
 }
 
@@ -138,58 +111,6 @@ async function buscarProdutosPedido(pedido) {
   } catch (error) {
     console.error(`Erro ao buscar produtos do pedido ${pedido.ped_id}:`, error);
     pedido.pedido_produtos = [];
-  }
-}
-
-// Busca informações da mesa
-async function buscarMesa(pedido) {
-  try {
-    // Verifica se já temos a mesa em cache
-    if (mesasCache.has(pedido.mes_id)) {
-      pedido.mesa_info = mesasCache.get(pedido.mes_id);
-      return;
-    }
-
-    const response = await fetch(`/api/mesas/${pedido.mes_id}`);
-    if (!response.ok) {
-      throw new Error(`Erro ao buscar mesa ${pedido.mes_id}`);
-    }
-
-    const mesa = await response.json();
-    pedido.mesa_info = mesa;
-    mesasCache.set(pedido.mes_id, mesa); // Armazena no cache
-  } catch (error) {
-    console.error(`Erro ao buscar mesa ${pedido.mes_id}:`, error);
-    pedido.mesa_info = {
-      mes_id: pedido.mes_id,
-      mes_descricao: 'Mesa não encontrada',
-    };
-  }
-}
-
-// Busca informações da comanda
-async function buscarComanda(pedido) {
-  try {
-    // Verifica se já temos a comanda em cache
-    if (comandasCache.has(pedido.com_id)) {
-      pedido.comanda_info = comandasCache.get(pedido.com_id);
-      return;
-    }
-
-    const response = await fetch(`/api/comandas/${pedido.com_id}`);
-    if (!response.ok) {
-      throw new Error(`Erro ao buscar comanda ${pedido.com_id}`);
-    }
-
-    const comanda = await response.json();
-    pedido.comanda_info = comanda;
-    comandasCache.set(pedido.com_id, comanda); // Armazena no cache
-  } catch (error) {
-    console.error(`Erro ao buscar comanda ${pedido.com_id}:`, error);
-    pedido.comanda_info = {
-      com_id: pedido.com_id,
-      com_descricao: 'Comanda não encontrada',
-    };
   }
 }
 
@@ -255,22 +176,10 @@ function renderizarListaPedidos(containerId, pedidos, emPreparo) {
     // Verifica se é um pedido novo
     const pedidoNovo = pedidosNovos.has(pedido.ped_id);
 
-    // Formata a informação da mesa
-    const mesaInfo = pedido.mesa_info
-      ? `Mesa ${pedido.mesa_info.mes_id} (${pedido.mesa_info.mes_descricao || 'Sem descrição'})`
-      : 'Mesa não informada';
-
-    // Formata a informação da comanda
-    const comandaInfo = pedido.comanda_info
-      ? `Comanda ${pedido.comanda_info.com_id}`
-      : 'Comanda não informada';
-
     card.innerHTML = `
     <div class="pedido-header">
       <div class="pedido-info">
         <span class="pedido-id">Pedido #${pedido.ped_id}</span>
-        <span class="mesa">${mesaInfo}</span>
-        <span class="comanda">${comandaInfo}</span>
       </div>
       <span class="pedido-hora">
         ${dataHora}
