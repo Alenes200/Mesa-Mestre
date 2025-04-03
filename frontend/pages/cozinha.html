@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cozinha - Controle de Pedidos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../Styles/main.css" />
+  </head>
+  <body>
+    <div class="cozinha-container">
+      <!-- Adicionado wrapper principal -->
+      <div class="container">
+        <div class="pedidos-section">
+          <h2 class="section-title">
+            Pedidos em Preparação
+            <span id="contador-em-preparo">(0)</span>
+          </h2>
+          <div class="pedidos-container" id="pedidos-em-preparo"></div>
+        </div>
+
+        <div class="pedidos-section">
+          <h2 class="section-title">
+            Pedidos Prontos
+            <span id="contador-prontos">(0)</span>
+          </h2>
+          <div class="pedidos-container" id="pedidos-prontos"></div>
+        </div>
+      </div>
+
+      <div id="toast" class="toast">
+        <div class="toast-content">
+          <i class="fas"></i>
+          <span class="message"></span>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/cozinha.js"></script>
+  </body>
+</html>

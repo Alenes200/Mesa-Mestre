@@ -1,0 +1,289 @@
+// Variáveis específicas para a tela da cozinha
+$cozinha-cor-primaria: #2ecc71;
+$cozinha-cor-secundaria: #3498db;
+$cozinha-cor-aviso: #e74c3c;
+$cozinha-cor-texto: #333;
+$cozinha-cor-borda: #ddd;
+$cozinha-cor-fundo: #f5f5f5;
+$cozinha-cor-fundo-card: #fff;
+$cozinha-cor-destaque: #9b59b6;
+
+// Mixins específicos
+@mixin cozinha-flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin cozinha-card-pedido($cor-borda) {
+    background-color: $cozinha-cor-fundo-card;
+    border: 1px solid $cor-borda;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+// Classe wrapper para encapsular todos os estilos
+.cozinha-container {
+    padding: 20px; // Aqui colocamos o padding que era no body
+    background-color: $cozinha-cor-fundo;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: inherit;
+    }
+
+    // Layout principal
+    .container {
+        display: flex;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .pedidos-section {
+        flex: 1;
+        background-color: white;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        height: calc(100vh - 50px);
+        display: flex;
+        flex-direction: column;
+
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            color: $cozinha-cor-texto;
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    // Container de pedidos
+    .pedidos-container {
+        overflow-y: auto;
+        flex-grow: 1;
+        padding-right: 5px;
+
+        &::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+
+            &:hover {
+                background: #a8a8a8;
+            }
+        }
+    }
+
+    // Cards de pedido
+    .pedido-card {
+        @include cozinha-card-pedido($cozinha-cor-borda);
+
+        &.em-preparo {
+            border-left: 4px solid #f39c12;
+        }
+
+        &.pronto {
+            border-left: 4px solid $cozinha-cor-primaria;
+            background-color: darken($cozinha-cor-fundo, 5%);
+        }
+    }
+
+    .pedido-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .pedido-info {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        font-size: 0.85rem;
+        flex-wrap: wrap;
+
+        span {
+            white-space: nowrap;
+        }
+    }
+
+    .pedido-id {
+        font-weight: 600;
+        color: $cozinha-cor-destaque;
+    }
+
+    .mesa {
+        font-weight: 600;
+        color: $cozinha-cor-aviso;
+    }
+
+    .comanda {
+        font-weight: 600;
+        color: $cozinha-cor-secundaria;
+    }
+
+    .pedido-hora {
+        font-size: 0.8rem;
+        color: #7f8c8d;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .indicador-novo {
+        background-color: $cozinha-cor-aviso;
+        color: white;
+        border-radius: 4px;
+        padding: 2px 6px;
+        font-size: 0.7rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        animation: pulsar 1.5s infinite;
+    }
+
+    @keyframes pulsar {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .pedido-itens {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px dashed $cozinha-cor-borda;
+    }
+
+    .pedido-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+        font-size: 0.85rem;
+
+        .quantidade {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+    }
+
+    // Botões
+    .btn-pronto {
+        background-color: $cozinha-cor-primaria;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        margin-top: 8px;
+        width: 100%;
+        font-size: 0.85rem;
+        transition: background-color 0.3s;
+
+        &:hover {
+            background-color: darken($cozinha-cor-primaria, 10%);
+        }
+    }
+
+    .btn-entregue {
+        background-color: $cozinha-cor-secundaria;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        margin-top: 8px;
+        width: 100%;
+        font-size: 0.85rem;
+        transition: background-color 0.3s;
+
+        &:hover {
+            background-color: darken($cozinha-cor-secundaria, 10%);
+        }
+    }
+
+    // Notificações Toast
+    .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        z-index: 1000;
+        transform: translateX(200%);
+        transition: transform 0.3s ease-in-out;
+
+        &.show {
+            transform: translateX(0);
+        }
+
+        &.success {
+            border-left: 4px solid $cozinha-cor-primaria;
+        }
+
+        &.error {
+            border-left: 4px solid $cozinha-cor-aviso;
+        }
+    }
+
+    .toast-content {
+        display: flex;
+        align-items: center;
+
+        .fas {
+            font-size: 1.4em;
+            margin-right: 12px;
+        }
+
+        .message {
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 500;
+            font-size: 14px;
+            color: $cozinha-cor-texto;
+        }
+    }
+
+    .toast-success .fas {
+        color: $cozinha-cor-primaria;
+    }
+
+    .toast-error .fas {
+        color: $cozinha-cor-aviso;
+    }
+}
