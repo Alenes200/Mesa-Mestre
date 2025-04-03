@@ -1,24 +1,23 @@
 INSERT INTO TBL_LOCAL (LOC_DESCRICAO) VALUES 
     ('Área Externa'),
     ('Área Interna'),
-    ('Área VIP')
-    ('Ativa'),
-    ('Inativa'),;
+    ('Área VIP'),
+    ('Todas');
 
 INSERT INTO TBL_MESA (MES_CAPACIDADE, MES_DESCRICAO, LOC_ID, MES_STATUS)
 VALUES
-    (5, 'Mesa 1', 2, 'disponível'),
-    (5, 'Mesa 2', 1, 'disponível'),
-    (5, 'Mesa 3', 2, 'disponível'),
-    (5, 'Mesa 4', 2, 'inativa'),
-    (5, 'Mesa 5', 1, 'disponível'),
-    (5, 'Mesa 6', 2, 'disponível'),
-    (4, 'Mesa 7', 1, 'disponível'),
-    (6, 'Mesa 8', 2, 'disponível'),
-    (2, 'Mesa 9', 3, 'disponível'),
-    (8, 'Mesa 10', 2, 'inativa'),
-    (4, 'Mesa 11', 1, 'disponível'),
-    (6, 'Mesa 12', 3, 'disponível');
+    (5, 'Mesa 1', 2, 0),
+    (5, 'Mesa 2', 1, 0),
+    (5, 'Mesa 3', 2, 0),
+    (5, 'Mesa 4', 2, -1),
+    (5, 'Mesa 5', 1, 0),
+    (5, 'Mesa 6', 2, 0),
+    (4, 'Mesa 7', 1, 0),
+    (6, 'Mesa 8', 2, 0),
+    (2, 'Mesa 9', 3, 0),
+    (8, 'Mesa 10', 2, -1),
+    (4, 'Mesa 11', 1, 0),
+    (6, 'Mesa 12', 3, 0);
 
 INSERT INTO TBL_COMANDA (MES_ID, COM_STATUS)
 VALUES
