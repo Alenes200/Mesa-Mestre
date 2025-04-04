@@ -209,6 +209,27 @@ const mesasController = {
       res.status(500).json({ error: 'Erro ao listar mesas.' });
     }
   },
+
+  getByCode: async (req, res) => {
+    try {
+      const { codigo } = req.params;
+
+      if (!codigo) {
+        return res.status(400).json({ error: 'Código da mesa é obrigatório.' });
+      }
+
+      const mesa = await mesasRepository.getByCode(codigo);
+
+      if (mesa) {
+        res.status(200).json(mesa);
+      } else {
+        res.status(404).json({ error: 'Mesa não encontrada.' });
+      }
+    } catch (error) {
+      console.error('Erro ao buscar mesa pelo código:', error);
+      res.status(500).json({ error: 'Erro ao buscar mesa pelo código.' });
+    }
+  },
 };
 
 module.exports = mesasController;
