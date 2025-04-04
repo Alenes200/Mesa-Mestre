@@ -24,15 +24,7 @@ $colors: (
     border-color: $border-color;
 }
 
-// Estilos globais
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
+.body-atendimento {
     background-color: #f9f9f9;
     color: map-get($colors, text);
     line-height: 1.6;
