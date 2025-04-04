@@ -197,6 +197,8 @@ router.put('/:id', mesasController.update);
  */
 router.delete('/:id', mesasController.delete);
 
+router.get('/codigo/:codigo', mesasController.getByCode);
+
 /**
  * @swagger
  * /api/mesas/local/{local}:

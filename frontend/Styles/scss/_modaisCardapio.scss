@@ -802,7 +802,7 @@
 }
 
 .modal-login-mesas {
-    position: absolute;
+    position: fixed; // Alterado para fixed para garantir que o modal fique fixo na tela
     top: 0;
     left: 0;
     width: 100%;
@@ -812,6 +812,16 @@
     justify-content: center;
     align-items: center;
 
+    transform: translateX(-100%); // Posição inicial fora da tela (à esquerda)
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0; // Inicialmente invisível
+
+    &.ativo {
+        transform: translateX(0); // Posição final (centralizada)
+        opacity: 1; // Visível
+        pointer-events: all;
+    }
+
     .overlay {
         position: absolute;
         top: 0;
@@ -819,12 +829,10 @@
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.4);
-
     }
 
     .conteudo {
-        transition: all 0.3s;
-        position: absolute;
+        position: relative;
         z-index: 2;
         width: 100%;
         max-width: 450px;
@@ -848,10 +856,9 @@
 
         input {
             width: 100%;
-            background: #C6C5CE;
+            background: #c6c5ce;
             border-radius: 80px;
             padding: 13px 0;
-
 
             font-family: 'Inter';
             font-style: normal;
@@ -866,7 +873,7 @@
             padding: 13px 0;
             width: 100%;
             margin-top: 34px;
-            background: #FF0000;
+            background: #ff0000;
             border-radius: 80px;
 
             font-family: 'Inter';
@@ -874,7 +881,7 @@
             font-weight: 700;
             font-size: 21px;
             line-height: 39px;
-            color: #FAF7F7;
+            color: #faf7f7;
         }
     }
 
@@ -884,7 +891,7 @@
         left: -34px;
         width: 55px;
         height: 55px;
-        background: #D91A1A;
+        background: #d91a1a;
         border-radius: 50%;
         display: flex;
         align-items: center;
