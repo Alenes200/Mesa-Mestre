@@ -1,0 +1,104 @@
+// Variáveis para personalização
+$modal-bg: #ffffff;
+$modal-border-radius: 12px;
+$modal-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+$modal-width: 85%;
+$modal-max-width: 320px;
+$modal-padding: 1.5rem;
+$button-padding: 0.75rem 1.25rem;
+$button-border-radius: 8px;
+
+// Estilos base
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  background-color: transparent; // Sem fundo escuro
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &--active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  &__content {
+    background: $modal-bg;
+    border-radius: $modal-border-radius;
+    box-shadow: $modal-shadow;
+    width: $modal-width;
+    max-width: $modal-max-width;
+    padding: $modal-padding;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+  }
+
+  &--active &__content {
+    transform: translateY(0);
+  }
+
+  &__message {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    color: #333;
+    text-align: center;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  &__button {
+    border: none;
+    padding: $button-padding;
+    border-radius: $button-border-radius;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    flex: 1;
+    transition: all 0.2s ease;
+
+    &--confirm {
+      background-color: #4CAF50;
+      color: white;
+
+      &:hover {
+        background-color: darken(#4CAF50, 10%);
+      }
+    }
+
+    &--cancel {
+      background-color: #f5f5f5;
+      color: #333;
+
+      &:hover {
+        background-color: darken(#f5f5f5, 10%);
+      }
+    }
+  }
+}
+
+// Responsividade
+@media (max-width: 480px) {
+  .modal {
+    &__content {
+      width: 60%;
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    &__buttons {
+      flex-direction: column;
+    }
+  }
+}

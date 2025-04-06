@@ -186,6 +186,18 @@ export async function carregarGraficoComandas(token) {
             plugins: {
               legend: { display: false },
               tooltip: { mode: 'index', intersect: false },
+              title: {
+                display: true,
+                text: 'Comandas por Dia da Semana',
+                font: {
+                  size: 16,
+                  weight: 'bold'
+                },
+                padding: {
+                  top: 10,
+                  bottom: 20
+                }
+              }
             },
             scales: { y: { beginAtZero: true } },
           }
@@ -223,6 +235,18 @@ export async function carregarGraficoComandas(token) {
             maintainAspectRatio: false,
             plugins: {
               tooltip: { mode: 'index', intersect: false },
+              title: {
+                display: true,
+                text: 'Top 10 Produtos (Quantidade e Faturamento)',
+                font: {
+                  size: 16,
+                  weight: 'bold'
+                },
+                padding: {
+                  top: 10,
+                  bottom: 20
+                }
+              }
             },
             scales: {
               y: {
@@ -267,19 +291,23 @@ export async function carregarGraficoComandas(token) {
                 type: 'line',
               },
             ],
-          },
-          {
-            responsive: true,
-            interaction: {
-              mode: 'index',
-              intersect: false,
-            },
-            scales: {
-              y: {
-                type: 'linear',
-                display: true,
-                position: 'left',
+              plugins: {
                 title: {
+                  display: true,
+                  text: 'Faturamento Diário e Comandas Atendidas',
+                  font: {
+                    size: 16,
+                    weight: 'bold'
+                  },
+                  padding: {
+                    top: 10,
+                    bottom: 20
+                  }
+                }
+              },          
+              scales: {
+                y: {
+                  type: 'linear',
                   display: true,
                   text: 'Faturamento (R$)',
                 },
@@ -296,7 +324,6 @@ export async function carregarGraficoComandas(token) {
                   drawOnChartArea: false,
                 },
               },
-            },
           }
         );
 
@@ -309,18 +336,10 @@ export async function carregarGraficoComandas(token) {
             labels: dados[3].map((item) => item.forma_pagamento),
             datasets: [
               {
-                data: dados[3].map((item) => parseFloat(item.total_faturado)),
+                data: dados[3].map((item) => item.quantidade_pedidos),
                 backgroundColor: [
-                  '#FF6384',
-                  '#36A2EB',
-                  '#FFCE56',
-                  '#4BC0C0',
-                  '#9966FF',
-                  '#FF9F40',
-                  '#8AC24A',
-                  '#607D8B',
-                  '#E91E63',
-                  '#9C27B0',
+                  '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', 
+                  '#FF9F40', '#8AC24A', '#607D8B', '#E91E63', '#9C27B0'
                 ],
               },
             ],
@@ -329,18 +348,25 @@ export async function carregarGraficoComandas(token) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-              legend: { position: 'bottom' },
+              legend: { 
+                position: 'bottom',
+                labels: {
+                  padding: 20
+                }
+              },
+              title: {
+                display: true,
+                text: 'Distribuição por Forma de Pagamento',
+                font: { size: 16, weight: 'bold' }
+              },
               tooltip: {
                 callbacks: {
                   label: function (context) {
                     const label = context.label || '';
                     const value = context.raw || 0;
-                    const total = context.dataset.data.reduce(
-                      (a, b) => a + b,
-                      0
-                    );
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
                     const percentage = Math.round((value / total) * 100);
-                    return `${label}: R$${value.toFixed(2)} (${percentage}%)`;
+                    return `${label}: ${value} pedidos (${percentage}%)`;
                   },
                 },
               },
@@ -382,12 +408,24 @@ export async function carregarGraficoComandas(token) {
             plugins: {
               legend: { display: false },
               tooltip: { mode: 'index', intersect: false },
+              title: {
+                display: true,
+                text: 'Média por Comanda e Total de Comandas',
+                font: {
+                  size: 16,
+                  weight: 'bold'
+                },
+                padding: {
+                  top: 10,
+                  bottom: 20
+                }
+              },
             },
             scales: { y: { beginAtZero: true } },
           }
         );
 
-        // Gráfico 6: Ocupação de mesas
+        // Gráfico 6: Distribuição de uso das áreas
         if (graficos.ocupacao) graficos.ocupacao.destroy();
         graficos.ocupacao = criarGrafico(
           container.querySelector('#graficoOcupacao').getContext('2d'),
@@ -398,16 +436,8 @@ export async function carregarGraficoComandas(token) {
               {
                 data: dados[5].map((item) => item.percentual),
                 backgroundColor: [
-                  '#FF6384',
-                  '#36A2EB',
-                  '#FFCE56',
-                  '#4BC0C0',
-                  '#9966FF',
-                  '#FF9F40',
-                  '#8AC24A',
-                  '#607D8B',
-                  '#E91E63',
-                  '#9C27B0',
+                  '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                  '#FF9F40', '#8AC24A', '#607D8B', '#E91E63', '#9C27B0'
                 ],
               },
             ],
@@ -416,13 +446,38 @@ export async function carregarGraficoComandas(token) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-              legend: { position: 'bottom' },
+              legend: { 
+                position: 'bottom',
+                labels: {
+                  padding: 20,
+                  font: { size: 12 }
+                }
+              },
               tooltip: {
                 callbacks: {
                   label: function (context) {
-                    return `${context.label}: ${context.raw}%`;
+                    const label = context.label || '';
+                    const value = context.raw || 0;
+                    const comandas = dados[5].find(item => item.local_mesa === label)?.total_comandas || 0;
+                    return [
+                      `Área: ${label}`,
+                      `Percentual: ${value}%`,
+                      `Total comandas: ${comandas}`
+                    ];
                   },
                 },
+              },
+              title: {
+                display: true,
+                text: 'Distribuição de Clientes por Área',
+                font: {
+                  size: 16,
+                  weight: 'bold'
+                },
+                padding: {
+                  top: 10,
+                  bottom: 20
+                }
               },
             },
           }
@@ -481,8 +536,20 @@ export async function carregarGraficoComandas(token) {
                     }
 
                     return label;
-                  },
+                  }
+                }
+              },
+              title: {
+                display: true,
+                text: 'Vendas por Categoria',
+                font: {
+                  size: 16,
+                  weight: 'bold'
                 },
+                padding: {
+                  top: 10,
+                  bottom: 20
+                }
               },
             },
             scales: {

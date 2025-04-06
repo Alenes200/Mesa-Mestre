@@ -3,10 +3,13 @@ import {
   carregarLocais,
   carregarMesasModal,
   carregarMesas,
+  carregarTodasMesasAtivas,
   salvar,
-  buscar,
+  // buscar,
   adicionar,
   desativar,
+  abrirModal,
+  fecharModal,
 } from './mesas.js';
 import { listarFuncionarios, buscarFuncionarios } from './funcionario.js';
 import { carregarGraficoComandas, destruirGrafico } from './grafico.js';
@@ -17,6 +20,14 @@ let userData;
 let userId;
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Remover a classe ativa das mesas e adicionar aos gráficos
+  document.getElementById('op_mesa').classList.remove('op_ativa');
+  document.getElementById('op_grafico').classList.add('op_ativa');
+  document.querySelector('.conteudo-mesas').style.display = 'none';
+  const conteudoGraficos = document.querySelector('.conteudo-graficos-container');
+  const conteudoMesas = document.querySelector('.conteudo-mesas');
+  conteudoGraficos.style.display = 'block';
+
   carregarLocais();
   carregarMesasModal(carregarMesas, 'Externa');
 
@@ -35,7 +46,22 @@ document.addEventListener('DOMContentLoaded', async () => {
       throw new Error('Erro ao obter dados do usuário.');
     }
     userData = await userResponse.json();
+
+    // Esta verificação impede que usuários não administradores acessem a página
+    if (userData.userType !== 1) {
+      window.location.href = '../pages/login_adm.html';
+      return;
+    }
+
     userId = userData.id;
+
+    // Carregar gráficos automaticamente
+    try {
+      await carregarGraficoComandas(token);
+    } catch (error) {
+      console.error('Erro ao carregar gráficos:', error);
+      showModal('Erro ao carregar gráficos. Tente novamente mais tarde.', 'error');
+    }
 
     // Configuração do evento de pesquisa
     document
@@ -45,23 +71,39 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
   } catch (error) {
     console.error('Erro ao carregar dados do usuário:', error);
-    showModal(
-      'Erro ao carregar dados do usuário. Tente novamente mais tarde.',
-      'error'
-    );
+    localStorage.removeItem('token'); // Remove o token inválido
+    window.location.href = '../pages/login_adm.html'; // Redireciona para login
+    return;
   }
 
-  // Modal functionality remains the same
-  const cardMesas = document.querySelectorAll('.card-mesa');
-  const modal = document.querySelector('.modal-mesa');
-  const closeIcon = document.querySelector('#fechar-modal-mesas');
-  const overlay = document.querySelector('.overlay');
 
-  cardMesas.forEach((card) => {
-    card.addEventListener('click', () => {
-      modal.style.display = 'flex';
-    });
+  // Modal functionality remains the same
+  // const cardMesas = document.querySelectorAll('.card-mesa');
+  // const modal = document.querySelector('.modal-mesa');
+  // const closeIcon = document.querySelector('#fechar-modal-mesas');
+  // const overlay = document.querySelector('.overlay');
+
+  // cardMesas.forEach((card) => {
+  //   card.addEventListener('click', () => {
+  //     modal.style.display = 'flex';
+  //   });
+  // });
+
+  const configuracao = document.getElementById('configuracao');
+  configuracao.addEventListener('click', function () {
+    abrirModal('Locais');
   });
+
+  // Eventos de fechamento
+  document
+    .getElementById('fecharModalGenerico')
+    .addEventListener('click', fecharModal);
+  document
+    .getElementById('overlayGenerico')
+    .addEventListener('click', fecharModal);
+  document
+    .getElementById('botaoFecharModal')
+    .addEventListener('click', fecharModal);
 
   const botaoSalvar = document.getElementById('salvar-alteracoes');
 
@@ -75,15 +117,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   botaoDesativar.addEventListener('click', desativar);
 
-  const pesquisar = document.getElementById('pesquisar');
+  // const pesquisar = document.getElementById('pesquisar');
 
-  pesquisar.addEventListener('input', buscar);
+  // pesquisar.addEventListener('input', buscar);
 
   // New content switching functionality
   const menuCardapio = document.querySelector('.opcao:nth-child(1)');
   const menuMesas = document.querySelector('.opcao:nth-child(5)');
   const conteudoCardapio = document.querySelector('.conteudo-cardapio');
-  const conteudoMesas = document.querySelector('.conteudo-mesas');
 
   const botaoLogout = document.querySelector('.sair');
 
@@ -182,9 +223,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   const menuGraficos = document.getElementById('op_grafico');
-  const conteudoGraficos = document.querySelector(
-    '.conteudo-graficos-container'
-  );
 
   menuGraficos.addEventListener('click', async () => {
     removeActiveClass();

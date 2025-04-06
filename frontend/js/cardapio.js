@@ -527,9 +527,75 @@ document
 
 // Função para obter o ID da mesa dinamicamente
 function obterMesaId() {
-  // Implemente a lógica para obter o ID da mesa dinamicamente
-  return 1; // Exemplo estático, substitua pela lógica real
+  if (!mesaId) {
+    showToast('Você precisa logar na mesa primeiro.', 'error');
+    throw new Error('ID da mesa não definido.');
+  }
+
+  return mesaId;
 }
+
+// Função para abrir o modal de login da mesa
+function openLoginModal() {
+  const modalLogin = document.querySelector('.modal-login-mesas');
+  modalLogin.classList.add('ativo'); // Adiciona a classe ativo para abrir o modal
+}
+
+// Função para fechar o modal de login da mesa
+function closeLoginModal() {
+  const modalLogin = document.querySelector('.modal-login-mesas');
+  modalLogin.classList.remove('ativo'); // Remove a classe ativo para fechar o modal
+}
+
+// Função para logar na mesa
+async function logarNaMesa() {
+  const codigoMesaInput = document.getElementById('codigo-mesa');
+  const codigoMesa = codigoMesaInput.value.trim();
+
+  if (!codigoMesa) {
+    showToast('Por favor, insira o código da mesa.', 'error');
+    return;
+  }
+
+  try {
+    // Faz a requisição para buscar a mesa pelo código
+    const response = await fetch(`/api/mesas/codigo/${codigoMesa}`);
+    if (!response.ok) {
+      throw new Error('Mesa não encontrada ou código inválido.');
+    }
+
+    const mesa = await response.json();
+    console.log('Mesa encontrada:', mesa);
+
+    // Define o ID da mesa globalmente
+    mesaId = mesa.mes_id;
+    console.log('ID da mesa logado:', mesaId);
+
+    // Atualiza o texto do elemento com o ID "mesa-logada"
+    const mesaLogadaElement = document.getElementById('mesa-logada');
+    mesaLogadaElement.innerHTML = mesa.mes_nome;
+
+    showToast(
+      `Logado na mesa ${mesa.mes_descricao || mesa.mes_id} com sucesso!`,
+      'success'
+    );
+    closeLoginModal(); // Fecha o modal após o login
+  } catch (error) {
+    console.error('Erro ao logar na mesa:', error);
+    showToast(error.message || 'Erro ao logar na mesa.', 'error');
+  }
+}
+
+// Adiciona eventos para abrir e fechar o modal de login
+document.getElementById('entrar-mesa').addEventListener('click', logarNaMesa);
+document
+  .querySelector('.modal-login-mesas .fechar-modal')
+  .addEventListener('click', closeLoginModal);
+
+// Exemplo: Abre o modal de login ao carregar a página (pode ser ajustado conforme necessário)
+document.addEventListener('DOMContentLoaded', () => {
+  openLoginModal();
+});
 
 function openModalPedidos() {
   const modalPedidos = document.querySelector('.modal-pedidos');
@@ -654,13 +720,14 @@ document.getElementById('menos-divisao').addEventListener('click', () => {
 // Função para atualizar o status da mesa para 2
 async function pedirConta() {
   try {
-    // if (!mesaId) {
-    //   console.error('ID da mesa não definido.');
-    //   showToast('Erro: ID da mesa não definido.', 'error');
-    //   return;
-    // }
+    if (!mesaId) {
+      console.error('ID da mesa não definido.');
+      showToast('Erro: ID da mesa não definido.', 'error');
+      return;
+    }
 
-    const response = await fetch(`/api/mesas/1`, {
+    // Use o ID da mesa logada (mesaId) na URL
+    const response = await fetch(`/api/mesas/${mesaId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

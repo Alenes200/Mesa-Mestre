@@ -112,21 +112,20 @@ const chartRepository = {
         SELECT 
           fp.fpa_descricao AS forma_pagamento,
           COUNT(ped.ped_id) AS quantidade_pedidos,
-          SUM(ped.ped_preco_total) AS total_faturado,
-          ROUND(100.0 * SUM(ped.ped_preco_total) / 
-            NULLIF((SELECT SUM(ped2.ped_preco_total) 
+          ROUND(100.0 * COUNT(ped.ped_id) / 
+            NULLIF((SELECT COUNT(ped2.ped_id) 
              FROM tbl_pedido ped2
-             ${dataInicio && dataFim ? `WHERE ped2.ped_created_at BETWEEN $3 AND $4` : ''}), 0), 2) AS percentual
+             ${dataInicio && dataFim ? `WHERE ped2.ped_created_at BETWEEN $1 AND $2` : ''}), 0), 2) AS percentual_uso
         FROM tbl_pedido ped
         JOIN tbl_forma_pagamento fp ON ped.fpa_id = fp.fpa_id
         ${dataInicio && dataFim ? `WHERE ped.ped_created_at BETWEEN $1 AND $2` : ''}
         GROUP BY fp.fpa_descricao
-        ORDER BY total_faturado DESC
+        ORDER BY quantidade_pedidos DESC
       `;
       
       const params = [];
       if (dataInicio && dataFim) {
-        params.push(dataInicio, dataFim, dataInicio, dataFim);
+        params.push(dataInicio, dataFim);
       }
   
       const result = await client.query(query, params);
@@ -173,15 +172,16 @@ const chartRepository = {
     try {
       const query = `
         SELECT
-          m.LOC_ID AS local_mesa,
+          l.loc_descricao AS local_mesa,  -- Pegando a descrição ao invés do ID
           COUNT(c.com_id) AS total_comandas,
           ROUND(100.0 * COUNT(c.com_id) / 
             (SELECT COUNT(*) FROM tbl_comanda c2
-             ${dataInicio && dataFim ? `WHERE c2.com_data_inicio BETWEEN $3 AND $4` : ''}), 2) AS percentual
+            ${dataInicio && dataFim ? `WHERE c2.com_data_inicio BETWEEN $3 AND $4` : ''}), 2) AS percentual
         FROM tbl_comanda c
         JOIN tbl_mesa m ON c.mes_id = m.mes_id
+        JOIN tbl_local l ON m.loc_id = l.loc_id  -- Adicionando JOIN com a tabela de locais
         ${dataInicio && dataFim ? `WHERE c.com_data_inicio BETWEEN $1 AND $2` : ''}
-        GROUP BY m.LOC_ID
+        GROUP BY l.loc_descricao  -- Agrupando pela descrição
         ORDER BY total_comandas DESC
       `;
       

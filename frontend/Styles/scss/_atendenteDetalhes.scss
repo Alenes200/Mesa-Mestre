@@ -1,0 +1,498 @@
+// Variáveis
+$colors: (
+  primary: #3498db,
+  secondary: #2ecc71,
+  danger: #e74c3c,
+  light-gray: #f5f5f5,
+  dark-gray: #333,
+  border: #eee
+);
+
+$spacing: (
+  small: 10px,
+  medium: 15px,
+  large: 20px
+);
+
+$breakpoints: (
+  mobile: 600px
+);
+
+// Mixins
+@mixin flex-center($justify: center, $direction: row) {
+  display: flex;
+  justify-content: $justify;
+  align-items: center;
+  flex-direction: $direction;
+}
+
+@mixin button-style($bg-color, $text-color: white) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: darken($bg-color, 10%);
+  }
+}
+
+// Estilos para a view de detalhes da mesa
+// Estilos para a view de detalhes da mesa
+.hidden {
+  display: none !important;
+}
+
+.mesa-header {
+  padding: map-get($spacing, medium);
+  background-color: white;
+  border-bottom: 1px solid map-get($colors, border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+
+  h2 {
+    margin: 0;
+    color: map-get($colors, dark-gray);
+    font-size: 1.3rem;
+  }
+
+  .mesa-tabs {
+    display: flex;
+    margin-top: map-get($spacing, small);
+  }
+}
+
+.tab-button {
+  flex: 1;
+  padding: map-get($spacing, small);
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  font-weight: 600;
+  cursor: pointer;
+
+  &.active {
+    border-bottom: 2px solid map-get($colors, primary);
+    color: map-get($colors, primary);
+  }
+}
+
+.mesa-content-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 200px);
+  background-color: white;
+}
+
+.list-header {
+  @include flex-center(flex-start);
+  padding: map-get($spacing, small) map-get($spacing, medium);
+  border-bottom: 1px solid map-get($colors, border);
+  font-weight: 600;
+  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+
+  span {
+    flex: 2;
+
+    &:nth-child(2) {
+      flex: 1;
+      text-align: center;
+    }
+
+    &:last-child {
+      flex: 1;
+      text-align: right;
+    }
+  }
+}
+
+.produtos-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 map-get($spacing, medium);
+
+  #produtosContainer {
+    min-height: min-content;
+  }
+}
+
+.produto-item {
+  @include flex-center(flex-start);
+  padding: map-get($spacing, small) 0;
+  border-bottom: 1px solid lighten(map-get($colors, border), 5%);
+
+  span {
+    flex: 2;
+
+    &:nth-child(2) {
+      flex: 1;
+      text-align: center;
+    }
+
+    &:last-child {
+      flex: 1;
+      text-align: right;
+    }
+  }
+}
+
+.list-footer {
+  @include flex-center(flex-start);
+  padding: 10px 15px;
+  border-top: 2px solid map-get($colors, border);
+  font-weight: 600;
+  background-color: white;
+  position: sticky;
+  bottom: 0;
+  z-index: 15;
+
+  span {
+    flex: 2;
+
+    &:nth-child(2) {
+      flex: 2;
+      text-align: center;
+    }
+
+    &:last-child {
+      // flex: 2;
+      text-align: right;
+      color: map-get($colors, danger);
+    }
+  }
+}
+
+.mesa-actions {
+  @include flex-center(space-between);
+  padding: map-get($spacing, medium);
+  background-color: white;
+  border-top: 1px solid map-get($colors, border);
+  position: fixed;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+
+  .mesa-actions-flex {
+    display: flex;
+
+    .action-button {
+      flex: 1;
+      padding: map-get($spacing, small);
+      margin: 0 5px;
+      @include flex-center;
+
+      i {
+        margin-right: 5px;
+      }
+    }
+
+  }
+
+  .back-button {
+    @include button-style(map-get($colors, light-gray), map-get($colors, dark-gray));
+  }
+
+  .add-button {
+    @include button-style(map-get($colors, primary));
+  }
+
+  .pay-button {
+    @include button-style(map-get($colors, secondary));
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: map-get($colors, primary);
+
+  i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+}
+
+.no-products,
+.error-message {
+  text-align: center;
+  padding: 30px;
+  color: map-get($colors, dark-gray);
+
+  i {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: map-get($colors, primary);
+  }
+
+  p {
+    margin-top: 10px;
+  }
+}
+
+.error-message i {
+  color: map-get($colors, danger);
+}
+
+#pagarBtn {
+  display: none;
+  /* Inicia escondido */
+  /* Use flex para manter consistência com outros botões */
+  @include button-style(map-get($colors, secondary));
+
+  /* Quando visível */
+  &.visible,
+  &[style*="display: flex"] {
+    display: flex !important;
+  }
+}
+
+/* Estilos para o histórico */
+/* Container principal do histórico */
+#historicoContainer {
+  .list-header {
+    span {
+      &:nth-child(1) {
+        flex: 1.5;
+        text-align: left;
+        padding-left: 15px;
+      }
+
+      &:nth-child(2) {
+        flex: 2;
+        text-align: center;
+      }
+
+      &:nth-child(3) {
+        flex: 1;
+        text-align: right;
+        padding-right: 15px;
+      }
+    }
+  }
+
+  /* Item do pedido */
+  .pedido-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid lighten(map-get($colors, border), 8%);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+
+    &:hover {
+      background-color: lighten(map-get($colors, light-gray), 3%);
+    }
+
+    .pedido-header {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    /* Quando expandido */
+    &.expandido {
+      background-color: lighten(map-get($colors, light-gray), 2%);
+      margin-bottom: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+      .detalhes-pedido {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      &::after {
+        // content: "▼";
+        position: absolute;
+        right: 15px;
+        top: 12px;
+        font-size: 0.8rem;
+        color: map-get($colors, primary);
+      }
+    }
+
+    /* Ícone quando não expandido */
+    &:not(.expandido)::after {
+      // content: "▶";
+      position: absolute;
+      right: 15px;
+      top: 12px;
+      font-size: 0.8rem;
+      color: map-get($colors, text-secondary);
+    }
+
+    span {
+      &:nth-child(1) {
+        /* Data/Hora */
+        flex: 3;
+        font-size: 0.85rem;
+        color: map-get($colors, text-secondary);
+      }
+
+      &:nth-child(2) {
+        /* Número do Pedido */
+        flex: 2;
+        font-weight: 600;
+        color: map-get($colors, primary);
+      }
+
+      &:nth-child(3) {
+        /* Valor Total */
+        flex: 2;
+        text-align: right;
+        font-weight: 700;
+      }
+    }
+  }
+
+  /* Área de detalhes expandidos */
+  .detalhes-pedido {
+    display: none;
+    width: calc(100% - 30px);
+    margin: 10px auto 0;
+    padding: map-get($spacing, small);
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    /* Cabeçalho dos detalhes */
+    &::before {
+      content: "Itens do Pedido";
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: map-get($colors, text-secondary);
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed map-get($colors, border);
+    }
+  }
+
+  /* Itens individuais do pedido */
+  .produto-historico {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 0.9em;
+    border-bottom: 1px solid lighten(map-get($colors, border), 10%);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    span:first-child {
+      &::before {
+        content: "•";
+        color: map-get($colors, primary);
+        margin-right: 8px;
+      }
+    }
+
+    span:last-child {
+      font-weight: 600;
+      color: map-get($colors, dark-gray);
+    }
+  }
+
+  /* Rodapé */
+  .list-footer {
+    background-color: lighten(map-get($colors, light-gray), 2%);
+    padding: 5px 15px;
+    border-top: 2px solid map-get($colors, border);
+
+    span {
+      font-weight: 600;
+
+      &:nth-child(1) {
+        /* Total de Pedidos */
+        flex: 1;
+        text-align: left;
+        color: map-get($colors, text);
+      }
+
+      &:nth-child(2) {
+        /* Espaço vazio */
+        flex: 2;
+        display: none;
+      }
+
+      &:nth-child(3) {
+        /* Valor Total */
+        flex: 1;
+        text-align: right;
+        color: map-get($colors, primary);
+      }
+    }
+  }
+
+  /* Animações */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Mensagens de estado */
+  .no-results,
+  .error-message {
+    text-align: center;
+    padding: 30px;
+    color: map-get($colors, dark-gray);
+
+    i {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: map-get($colors, primary);
+    }
+
+    p {
+      margin-top: 10px;
+    }
+  }
+
+  .error-message i {
+    color: map-get($colors, danger);
+  }
+}
+
+// Responsividade
+@media (max-width: map-get($breakpoints, mobile)) {
+  .mesa-header {
+    padding: map-get($spacing, small);
+
+    h2 {
+      font-size: 1.1rem;
+    }
+  }
+
+  .mesa-content-container {
+    height: calc(85vh - 180px);
+  }
+
+  .mesa-actions {
+    flex-direction: column;
+    gap: map-get($spacing, small);
+    position: static;
+    margin-top: 3px;
+
+    .action-button {
+      width: 100%;
+      margin: 0;
+    }
+  }
+}

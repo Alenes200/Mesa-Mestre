@@ -49,7 +49,7 @@
                   src="../images/icon-graficos.svg"
                   alt="ícone de grafico em tendencia"
                 />
-                <h3>Gráficos</h3>
+                <h3>Dashboard</h3>
               </div>
               <div id="op_configuracao" class="opcao">
                 <img
@@ -58,7 +58,7 @@
                 />
                 <h3>Configurações</h3>
               </div>
-              <div id="op_mesa" class="opcao op_ativa">
+              <div id="op_mesa" class="opcao">
                 <img src="../images/icone-mesas.svg" alt="ícone de mesa" />
                 <h3>Mesas</h3>
               </div>
@@ -71,26 +71,55 @@
         </div>
       </div>
       <div class="direita">
-        <div class="conteudo-mesas">
+        <div class="conteudo-mesas" style="display: none;">
           <div class="locais-mesas">
             <div class="opcoes" id="locais">
               <!-- <h2>Sala Principal</h2>
               <h2>Sala Principal</h2>
               <h2>Sala Principal</h2> -->
             </div>
-            <div class="configueracao">
+            <div class="configueracao" id="configuracao">
               <img
                 src="../images/icon-configuracao.svg"
                 alt="ícone de Configurações"
               />
             </div>
+
+            <table class="tabela-locais" id="tabela-locais">
+              <thead>
+                <tr>
+                  <th>Nome do Local</th>
+                  <th>Opções</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          
+            <div class="modal-generico" id="modalGenerico" style="display: none">
+              <div class="overlay" id="overlayGenerico"></div>
+              <div class="conteudo-modal">
+                <div class="topo">
+                  <h1 id="tituloModalGenerico">Título do Modal</h1>
+                  <img src="../images/icon-fechar.svg" alt="Fechar" id="fecharModalGenerico" />
+                </div>
+            
+                <div class="corpo-modal" id="conteudoModalGenerico">
+                  <!-- Aqui o conteúdo será injetado dinamicamente -->
+                </div>
+            
+                <div class="botoes">
+                  <button id="botaoFecharModal">Fechar</button>
+                </div>
+              </div>
+            </div>
+            
           </div>
-          <div class="pesquisa">
+          <!-- <div class="pesquisa">
             <div class="box-pesquisa">
               <input type="text" placeholder="Pesquisar" id="pesquisar" />
               <img src="../images/icon-pesquisa.svg" alt="ícone de pesquisa" />
             </div>
-          </div>
+          </div> -->
           <div class="mesas">
             <!-- <div class="card-mesa">
               <p>mesa 01</p>
@@ -98,9 +127,20 @@
             <div class="card-mesa">
               <p>mesa 02</p>
             </div> -->
-            <div class="card-mesa adicionar-mesa">
-              <p>+</p>
+            <div class="mesas-container">
+              <div class="card-mesa adicionar-mesa">
+                <p>+</p>
+              </div>
             </div>
+
+            <h2>Disponíveis</h2>
+            <div class="mesas-container" id="mesas-disponiveis"></div>
+
+            <h2>Ocupadas</h2>
+            <div class="mesas-container" id="mesas-ocupadas"></div>
+
+            <h2>Aguardando Pagamento</h2>
+            <div class="mesas-container" id="mesas-aguardando"></div>
           </div>
           <div class="modal-mesa" style="display: none">
             <div class="overlay"></div>
@@ -113,6 +153,16 @@
                   id="fechar-modal-mesas"
                 />
               </div>
+
+              <div class="text">
+                <h2>ID - <span id="idText"></span> </h2>
+              </div>
+
+              <div class="text">
+                <h2>Nome</h2>
+                <input type="text" id="nomeMesa" />
+              </div>
+
               <div class="text">
                 <h2>Descrição</h2>
                 <textarea name="descricao" id="descricao"></textarea>
@@ -136,7 +186,14 @@
                 <div class="bot" id="salvarStatus">
                   <div class="codigo">
                     <h2>Status</h2>
-                    <input type="text" id="statusInput" />
+                    <select name="setor" id="statusInput">
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                    </select>
+
+                    <h2>Código</h2>
+                    <input type="text" id="codigoInput" />
                   </div>
                 </div>
 
@@ -144,7 +201,15 @@
                 <div class="bot" id="adicionarStatus">
                   <div class="codigo">
                     <h2>Status</h2>
-                    <p id="statusText"></p>
+                    <select name="setor" id="statusInputAdicionar">
+                      <option value="selecionar">Selecionar</option>
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                    </select>
+
+                    <h2>Código</h2>
+                    <input type="text" id="codigoInputAdicionar" />
                   </div>
                 </div>
 

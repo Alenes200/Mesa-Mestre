@@ -8,11 +8,13 @@ const loginRepository = require('./repositories/loginRepository');
 const loginRoutes = require('./routes/loginRoutes');
 const produtosRoutes = require('./routes/produtoRoutes');
 const mesasRoutes = require('./routes/mesaRoutes');
+const locaisRoutes = require('./routes/locaisRoutes');
 const userRoutes = require('./routes/userRoutes');
 const comandaRoutes = require('./routes/comandaRoutes');
 const chartRoutes = require('./routes/chartRoutes');
 const pedidoRoutes = require('./routes/pedidoRoutes');
 const pedidoProdutoRoutes = require('./routes/pedidoProdutoRoutes');
+const formaPagamentoRoutes = require('./routes/formaPagamentoRoutes');
 
 const path = require('path');
 
@@ -70,11 +72,13 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 app.use('/api/auth', loginRoutes);
 app.use('/api/produtos', produtosRoutes);
 app.use('/api/mesas', mesasRoutes);
+app.use('/api/locais', locaisRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/comandas', comandaRoutes);
 app.use('/api/graficos', chartRoutes);
 app.use('/api/pedidos', pedidoRoutes);
 app.use('/api/pedidos-produtos', pedidoProdutoRoutes);
+app.use('/api/formas-pagamento', formaPagamentoRoutes);
 
 // Middleware para capturar erros não tratados
 app.use((err, req, res, next) => {

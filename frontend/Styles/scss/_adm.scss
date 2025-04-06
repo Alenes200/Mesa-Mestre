@@ -167,12 +167,61 @@
         }
       }
 
+      .configueracao {
+        cursor: pointer;
+      }
+
+      .tabela-locais {
+        display: none;
+      }
+
+      .modal-generico {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .conteudo-modal {
+          background: white;
+          padding: 20px;
+          width: 400px;
+          border-radius: 10px;
+          text-align: center;
+
+          .topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            img {
+              cursor: pointer;
+            }
+          }
+
+          .botoes {
+            margin-top: 20px;
+
+            button {
+              padding: 10px 20px;
+              border: none;
+              cursor: pointer;
+              background: tomato;
+              color: white;
+              border-radius: 5px;
+            }
+          }
+        }
+      }
+
       .mesas {
         margin-top: 55px;
         display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 34px;
+        flex-direction: column;
 
         .card-mesa {
           cursor: pointer;
@@ -192,6 +241,40 @@
             font-size: 16px;
             line-height: 120%;
             color: #FFFFFF;
+          }
+        }
+
+        .mesas-container {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 34px;
+
+          .card-mesa {
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+
+            background: #90FF98;
+            border-radius: 50%;
+
+            p {
+              font-family: 'Inter';
+              font-style: normal;
+              font-weight: 700;
+              font-size: 16px;
+              line-height: 120%;
+              color: #FFFFFF;
+            }
+          }
+
+          .adicionar-mesa {
+            color: #FFFFFF;
+            font-size: 50px;
           }
         }
       }
@@ -664,6 +747,22 @@
 
         color: #000000;
       }
+
+      input {
+        border: 1px solid #d9d9d9;
+        margin-top: 8px;
+        width: 100%;
+        height: 33px;
+        border-radius: 5px;
+        padding-left: 21px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 15px;
+        line-height: 112%;
+        letter-spacing: -1px;
+      }
     }
 
     .botoes {
@@ -734,8 +833,9 @@
 
         .codigo {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           gap: 13px;
+          flex-direction: column;
 
           input {
             width: 86px;
@@ -744,6 +844,14 @@
             border: 1px solid #d9d9d9;
             border-radius: 5px;
             text-align: center;
+          }
+
+          select {
+            width: 181px;
+            height: 33px;
+
+            border: 1px solid #d9d9d9;
+            border-radius: 5px;
           }
         }
       }
