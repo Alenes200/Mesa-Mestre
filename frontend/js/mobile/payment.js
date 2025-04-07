@@ -149,7 +149,7 @@ export async function handlePayment() {
         const comanda = await getComandaAtivaPorMesaId(mesaId);
         if (!comanda) throw new Error('Nenhuma comanda ativa encontrada para esta mesa');
 
-        const pedidos = await getPedidosAtivos(comanda.com_id);
+        const pedidos = await getPedidosAtivos(mesaId);
         if (pedidos.length === 0) throw new Error('Nenhum pedido ativo encontrado');
 
         const valorTotal = calcularValorTotal(pedidos);
