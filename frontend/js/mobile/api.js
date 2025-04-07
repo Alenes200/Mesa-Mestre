@@ -1,4 +1,23 @@
 // Funções para chamadas à API
+export async function logoutAtendimento() {
+  try {
+    const response = await fetch('/api/auth/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      localStorage.removeItem('token');
+      window.location.href = '../pages/login_adm.html';
+    } 
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    showModal('Erro ao fazer logout. Tente novamente.', 'error');
+  }
+}
+
 export async function fetchMesas() {
   try {
     const response = await fetch(`/api/mesas`);

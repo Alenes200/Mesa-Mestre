@@ -1,6 +1,7 @@
 import { fetchProdutosComanda } from './api.js';
 import { showPaymentView } from './payment.js';
 import { appState } from './state.js';
+import { ModalService } from './modalMobile.js';
 
 export function initUI() {
     const mainView = document.getElementById('mainView');
@@ -12,8 +13,9 @@ export function initUI() {
 
     // Event listeners
     voltarBtn.addEventListener('click', backToMainView);
-    addProdutoBtn.addEventListener('click', () => {
-        alert('Adicionar produto - implementar esta funcionalidade');
+    addProdutoBtn.addEventListener('click', async () => {
+        // alert('Adicionar produto - implementar esta funcionalidade');
+        await ModalService.alert(`Funcionalidade em desenvolvimento`);
     });
     pagarBtn.addEventListener('click', showPaymentView);
     menuBtn.addEventListener('click', () => {

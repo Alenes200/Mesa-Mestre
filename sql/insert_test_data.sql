@@ -5,7 +5,7 @@ INSERT INTO TBL_LOCAL (LOC_DESCRICAO) VALUES
 
 INSERT INTO TBL_MESA (MES_NOME, MES_CODIGO, MES_CAPACIDADE, MES_DESCRICAO, LOC_ID, MES_STATUS)
 VALUES
-    ('Mesa 01', 'CodM01', 5, 'Mesa 1', 2, 1),
+    ('Mesa 01', 'CodM01', 5, 'Mesa 1', 2, 0),
     ('Mesa 02', 'CodM02', 5, 'Mesa 2', 1, 2),
     ('Mesa 03', 'CodM03', 5, 'Mesa 3', 2, 0),
     ('Mesa 04', 'CodM04', 5, 'Mesa 4', 2, 1),
