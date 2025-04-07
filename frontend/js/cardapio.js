@@ -370,6 +370,9 @@ async function enviarPedidos() {
     await adicionarProdutosAoPedido(pedidoId);
     await atualizarPedidoComPrecoTotal(pedidoId);
 
+    // Atualiza o status da mesa para 1
+    await atualizarStatusMesa(1);
+
     showToast('Pedido enviado com sucesso!');
 
     exibirPedidosNoModal(); // Exibe os pedidos no modal
@@ -378,6 +381,28 @@ async function enviarPedidos() {
   } catch (error) {
     console.error('Erro detalhado ao enviar pedidos:', error);
     showToast(`Erro ao enviar pedidos: ${error.message}`, 'error');
+  }
+}
+
+async function atualizarStatusMesa(status) {
+  try {
+    const response = await fetch(`/api/mesas/${mesaId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao atualizar o status da mesa.');
+    }
+
+    const data = await response.json();
+    console.log(`Status da mesa atualizado para ${status}:`, data);
+  } catch (error) {
+    console.error('Erro ao atualizar o status da mesa:', error);
+    showToast('Erro ao atualizar o status da mesa.', 'error');
   }
 }
 
