@@ -3,6 +3,7 @@ let carrinho = [];
 let pedidos = [];
 let mesaId; // Defina o ID da mesa dinamicamente
 let comandaAtivaId = null;
+let contaPedida = false;
 
 // Função para buscar os produtos do backend
 async function fetchProdutos() {
@@ -145,8 +146,16 @@ function addToCart(produto, quantidade) {
 
   if (itemCarrinho) {
     itemCarrinho.quantidade += quantidade;
+    showToast(
+      `${quantidade}x ${produto.pro_nome} adicionado ao carrinho!`,
+      'success'
+    );
   } else {
     carrinho.push({ ...produto, quantidade });
+    showToast(
+      `${quantidade}x ${produto.pro_nome} adicionado ao carrinho!`,
+      'success'
+    );
   }
 
   console.log('Carrinho:', carrinho);
@@ -610,14 +619,43 @@ function openModalPedidos() {
   modalPedidos.classList.add('ativo'); // Adiciona a classe ativo para abrir o modal
 }
 
-function closeModalPedidos() {
-  const modalPedidos = document.querySelector('.modal-pedidos');
-  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+async function closeModalPedidos() {
+  try {
+    // Verifica o status da mesa toda vez que tentar fechar o modal
+    const response = await fetch(`/api/mesas/${mesaId}`);
+    if (!response.ok) {
+      throw new Error('Erro ao verificar status da mesa.');
+    }
 
-  // Redefine o número de pessoas para 1 ao fechar o modal
-  numeroPessoasElement.innerText = '1';
+    const mesa = await response.json();
+    console.log('Status atual da mesa:', mesa.mes_status);
 
-  modalPedidos.classList.remove('ativo'); // Remove a classe ativo para fechar o modal
+    // Se a conta foi pedida (status 2), não permite fechar o modal
+    if (mesa.mes_status === 2) {
+      showToast('Aguarde o garçom para finalizar sua conta.', 'info');
+      return;
+    }
+
+    // Se a mesa foi liberada (status 0), recarrega a página
+    if (mesa.mes_status === 0) {
+      showToast('Mesa liberada. Redirecionando...', 'success');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+      return;
+    }
+
+    // Se o status for normal (1), fecha o modal normalmente
+    const modalPedidos = document.querySelector('.modal-pedidos');
+    const numeroPessoasElement = document.getElementById('pessoas-divisao');
+    if (numeroPessoasElement) {
+      numeroPessoasElement.innerText = '1';
+    }
+    modalPedidos.classList.remove('ativo');
+  } catch (error) {
+    console.error('Erro ao fechar modal de pedidos:', error);
+    showToast('Erro ao verificar status da mesa.', 'error');
+  }
 }
 
 // Função para exibir os pedidos no modal
@@ -726,13 +764,13 @@ async function pedirConta() {
       return;
     }
 
-    // Use o ID da mesa logada (mesaId) na URL
+    // Atualiza o status da mesa para 2 (conta pedida)
     const response = await fetch(`/api/mesas/${mesaId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ status: 2 }), // Atualiza o status da mesa para 2
+      body: JSON.stringify({ status: 2 }),
     });
 
     if (!response.ok) {
@@ -741,10 +779,16 @@ async function pedirConta() {
 
     const data = await response.json();
     console.log('Status da mesa atualizado com sucesso:', data);
-    showToast('Conta solicitada com sucesso!', 'success');
 
-    // Fecha o modal de pedidos
-    closeModalPedidos();
+    // Trava o modal e adiciona a mensagem
+    contaPedida = true;
+    const tituloConta = document.querySelector('.modal-pedidos .titulo h1');
+    tituloConta.textContent = 'MINHA CONTA - AGUARDE O GARÇOM';
+
+    // Desabilita o botão de pedir conta
+    document.getElementById('pedir-conta').disabled = true;
+
+    showToast('Conta solicitada com sucesso! Aguarde o garçom.', 'success');
   } catch (error) {
     console.error('Erro ao solicitar a conta:', error);
     showToast('Erro ao solicitar a conta.', 'error');

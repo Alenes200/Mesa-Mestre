@@ -61,6 +61,25 @@ async function buscarPedidos() {
       (p) => p.ped_status === 1 || p.ped_status === 2
     );
 
+    // Buscar informações adicionais de comanda para cada pedido
+    await Promise.all(
+      pedidos.map(async (pedido) => {
+        try {
+          const comandaResponse = await fetch(`/api/comandas/${pedido.com_id}`);
+          if (comandaResponse.ok) {
+            const comanda = await comandaResponse.json();
+            pedido.mesa_id = comanda.mes_id;
+            pedido.comanda_id = comanda.com_id;
+          }
+        } catch (error) {
+          console.error(
+            `Erro ao buscar comanda do pedido ${pedido.ped_id}:`,
+            error
+          );
+        }
+      })
+    );
+
     // Encontrar o maior ID atual
     const maxIdAtual =
       pedidos.length > 0 ? Math.max(...pedidos.map((p) => p.ped_id)) : 0;
@@ -173,13 +192,14 @@ function renderizarListaPedidos(containerId, pedidos, emPreparo) {
       minute: '2-digit',
     });
 
-    // Verifica se é um pedido novo
     const pedidoNovo = pedidosNovos.has(pedido.ped_id);
 
     card.innerHTML = `
     <div class="pedido-header">
       <div class="pedido-info">
         <span class="pedido-id">Pedido #${pedido.ped_id}</span>
+        <span class="mesa">Mesa #${pedido.mesa_id || 'N/A'}</span>
+        <span class="comanda">Comanda #${pedido.comanda_id || 'N/A'}</span>
       </div>
       <span class="pedido-hora">
         ${dataHora}
