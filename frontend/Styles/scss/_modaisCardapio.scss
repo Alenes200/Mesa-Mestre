@@ -623,6 +623,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                margin-right: 13px;
 
                 .esquerda {
                     display: flex;
@@ -646,6 +647,35 @@
             margin-top: 21px;
             padding-top: 13px;
             border-top: 1px solid rgba(0, 0, 0, 0.23);
+            padding-right: 5px;
+
+            /* Adiciona o scroll */
+            overflow-y: auto; // Permite rolagem vertical
+            max-height: 360px; // Define uma altura máxima para o scroll funcionar
+
+            /* Estiliza a barra de rolagem para navegadores modernos */
+            scrollbar-width: thin; // Firefox
+            scrollbar-color: #c6c5ce #F1F0F5; // Cor da barra e do fundo no Firefox
+
+            &::-webkit-scrollbar {
+                width: 8px; // Largura da barra de rolagem
+            }
+
+            &::-webkit-scrollbar-track {
+                background: #F1F0F5; // Cor do fundo da barra
+                border-radius: 10px; // Bordas arredondadas
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background-color: #c6c5ce; // Cor da barra de rolagem
+                border-radius: 10px; // Bordas arredondadas
+                border: 2px solid #F1F0F5; // Espaço entre a barra e o fundo
+            }
+
+            /* Remove setas de rolagem em navegadores baseados no WebKit */
+            &::-webkit-scrollbar-button {
+                display: none;
+            }
 
             .card-iten {
                 display: flex;

@@ -735,43 +735,43 @@ async function exibirPedidosNoModal() {
 
     // Itera sobre os pedidos no array `data`
     data.forEach((pedido) => {
-      const subtotal = pedido.total;
-      total += subtotal;
+      const horaPedido = new Date(pedido.data).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
 
-      // Calcula a quantidade total de itens no pedido
-      const quantidadeTotal = pedido.itens.reduce(
-        (acc, item) => acc + item.quantidade,
-        0
-      );
+      // Itera sobre os itens do pedido
+      pedido.itens.forEach((item) => {
+        const subtotalItem = item.quantidade * item.preco_unitario;
+        total += subtotalItem;
 
-      const pedidoElement = document.createElement('div');
-      pedidoElement.className = 'card-iten';
-      pedidoElement.innerHTML = `
-        <div class="esquerda">
-          <div class="hora">
-            <p>${new Date(pedido.data).toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}</p>
+        // Cria um elemento para o item do pedido
+        const itemElement = document.createElement('div');
+        itemElement.className = 'card-iten';
+        itemElement.innerHTML = `
+          <div class="esquerda">
+            <div class="hora">
+              <p>${horaPedido}</p>
+            </div>
+            <div class="qtde">
+              <p>${item.quantidade}x</p>
+            </div>
+            <div class="item">
+              <p>${item.nome}</p>
+            </div>
           </div>
-          <div class="qtde">
-            <p>${quantidadeTotal}x</p>
+          <div class="direita">
+            <div class="unidade">
+              <p>R$ ${item.preco_unitario.toFixed(2)}</p>
+            </div>
+            <div class="valor">
+              <p>R$ ${subtotalItem.toFixed(2)}</p>
+            </div>
           </div>
-          <div class="item">
-            <p>${pedido.itens.map((item) => item.nome).join(', ')}</p>
-          </div>
-        </div>
-        <div class="direita">
-          <div class="unidade">
-            <p>R$ ${subtotal.toFixed(2)}</p>
-          </div>
-          <div class="valor">
-            <p>R$ ${subtotal.toFixed(2)}</p>
-          </div>
-        </div>
-      `;
+        `;
 
-      pedidosContainer.appendChild(pedidoElement);
+        pedidosContainer.appendChild(itemElement);
+      });
     });
 
     // Atualiza o total no modal
