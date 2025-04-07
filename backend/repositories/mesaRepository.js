@@ -224,6 +224,21 @@ const mesasRepository = {
       throw error;
     }
   },
+
+  getByCode: async (codigo) => {
+    try {
+      const query = `
+        SELECT * 
+        FROM TBL_MESA 
+        WHERE MES_CODIGO = $1 AND MES_STATUS >= 0
+      `;
+      const result = await client.query(query, [codigo]);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Erro ao buscar mesa pelo código:', error);
+      throw error;
+    }
+  },
 };
 
 module.exports = mesasRepository;
