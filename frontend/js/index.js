@@ -24,12 +24,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('op_mesa').classList.remove('op_ativa');
   document.getElementById('op_grafico').classList.add('op_ativa');
   document.querySelector('.conteudo-mesas').style.display = 'none';
-  const conteudoGraficos = document.querySelector('.conteudo-graficos-container');
+  const conteudoGraficos = document.querySelector(
+    '.conteudo-graficos-container'
+  );
   const conteudoMesas = document.querySelector('.conteudo-mesas');
   conteudoGraficos.style.display = 'block';
 
   carregarLocais();
-  carregarMesasModal(carregarMesas, 'Externa');
+  carregarMesasModal(carregarTodasMesasAtivas);
 
   if (!token) {
     window.location.href = '../pages/login_adm.html';
@@ -60,7 +62,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       await carregarGraficoComandas(token);
     } catch (error) {
       console.error('Erro ao carregar gráficos:', error);
-      showModal('Erro ao carregar gráficos. Tente novamente mais tarde.', 'error');
+      showModal(
+        'Erro ao carregar gráficos. Tente novamente mais tarde.',
+        'error'
+      );
     }
 
     // Configuração do evento de pesquisa
@@ -70,24 +75,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         buscarFuncionarios(token, userId);
       });
   } catch (error) {
-    console.error('Erro ao carregar dados do usuário:', error);
     localStorage.removeItem('token'); // Remove o token inválido
     window.location.href = '../pages/login_adm.html'; // Redireciona para login
     return;
   }
-
-
-  // Modal functionality remains the same
-  // const cardMesas = document.querySelectorAll('.card-mesa');
-  // const modal = document.querySelector('.modal-mesa');
-  // const closeIcon = document.querySelector('#fechar-modal-mesas');
-  // const overlay = document.querySelector('.overlay');
-
-  // cardMesas.forEach((card) => {
-  //   card.addEventListener('click', () => {
-  //     modal.style.display = 'flex';
-  //   });
-  // });
 
   const configuracao = document.getElementById('configuracao');
   configuracao.addEventListener('click', function () {
@@ -143,14 +134,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = '../pages/login_adm.html';
       } else {
         const errorData = await response.json();
-        console.error('Erro ao fazer logout:', errorData);
         showModal(
           'Erro ao fazer logout. Tente novamente.' + errorData.error,
           'error'
         );
       }
     } catch (error) {
-      console.error('Erro na requisição:', error);
       showModal('Erro ao fazer logout. Tente novamente.', 'error');
     }
   });
@@ -247,7 +236,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       await carregarGraficoComandas(token);
       conteudoGraficos.style.opacity = '1'; // Mostrar gradualmente
     } catch (error) {
-      console.error('Erro ao carregar gráficos:', error);
       conteudoGraficos.innerHTML = `
         <div class="graficos-error">
           <p>Erro ao carregar gráficos. Tente novamente.</p>
@@ -280,28 +268,75 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 const btnSalvarFuncionario = document.getElementById('btn-salvar-funcionario');
 
-btnSalvarFuncionario.addEventListener('click', async () => {
-  const nome = document.getElementById('nome-funcionario').value.trim();
-  const email = document.getElementById('email-funcionario').value.trim();
-  const telefone = document.getElementById('telefone-funcionario').value.trim();
-  const funcao = document.getElementById('funcao-funcionario').value.trim();
-  const senha = document.getElementById('senha-funcionario').value.trim();
-  const funcionarioFormContainer = document.getElementById(
-    'funcionario-form-container'
-  );
+aplicarMascaraTelefone('telefone-funcionario');
 
-  if (!nome || !email || !senha) {
-    showModal('Por favor, preencha todos os campos obrigatórios.', 'warning');
+btnSalvarFuncionario.addEventListener('click', async () => {
+  // Sanitização dos dados
+  const nome = sanitizarTexto(
+    document.getElementById('nome-funcionario').value.trim()
+  );
+  const email = sanitizarTexto(
+    document.getElementById('email-funcionario').value.trim().toLowerCase()
+  );
+  const telefone = document
+    .getElementById('telefone-funcionario')
+    .value.replace(/\D/g, '');
+
+  const funcao = sanitizarTexto(
+    document.getElementById('funcao-funcionario').value.trim()
+  );
+  const senha = document.getElementById('senha-funcionario').value.trim();
+
+  // Validações
+  const erros = [];
+
+  // Validação do nome (3-100 caracteres)
+  if (!nome || nome.length < 3 || nome.length > 100) {
+    erros.push('Nome deve ter entre 3 e 100 caracteres, ');
+  }
+
+  // Validação de e-mail
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    erros.push('Formato de e-mail inválido,');
+  }
+
+  // Validação de telefone (opcional, mas se preenchido 10 ou 11 dígitos)
+  if (telefone && (telefone.length < 10 || telefone.length > 11)) {
+    erros.push('Telefone deve ter 10 ou 11 dígitos (com DDD),');
+  }
+
+  // Validação de função (opcional, até 50 caracteres)
+  if (funcao && funcao.length > 50) {
+    erros.push('Função deve ter no máximo 50 caracteres,');
+  }
+
+  // Validação de senha (mínimo 8 caracteres, 1 letra maiúscula, 1 número)
+  const senhaRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+  if (!senhaRegex.test(senha)) {
+    erros.push(
+      'Senha deve ter pelo menos 8 caracteres, 1 letra maiúscula e 1 número'
+    );
+  }
+
+  // Exibir erros se houver
+  if (erros.length > 0) {
+    showModal(erros.join('\n\n'), 'warning');
     return;
   }
 
+  // Montar objeto com dados sanitizados
   const novoFuncionario = {
     nome: nome,
     email: email,
-    telefone: telefone,
-    funcao: funcao,
+    telefone: telefone || null, // Enviar null se vazio
+    funcao: funcao || null,
     senha: senha,
   };
+
+  const funcionarioFormContainer = document.getElementById(
+    'funcionario-form-container'
+  );
 
   try {
     const response = await fetch('/api/users', {
@@ -314,23 +349,81 @@ btnSalvarFuncionario.addEventListener('click', async () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log('Funcionário adicionado com sucesso:', data);
       showModal('Funcionário adicionado com sucesso!', 'success');
       listarFuncionarios(token, userId); // Atualiza a lista de funcionários
       funcionarioFormContainer.classList.remove('aberto'); // Fecha o formulário
     } else {
       const errorData = await response.json();
-      console.error('Erro ao adicionar funcionário:', errorData);
-      showModal('Erro ao adicionar funcionário: ' + errorData.error, 'error');
+      showModal(
+        'Erro ao adicionar funcionário: ' +
+          (errorData.message || 'Erro desconhecido'),
+        'error'
+      );
     }
   } catch (error) {
-    console.error('Erro na requisição:', error);
     showModal(
       'Erro ao adicionar funcionário. Tente novamente mais tarde.',
       'error'
     );
   }
 });
+
+// Função de máscara para telefone
+function aplicarMascaraTelefone(inputId = 'editar-telefone-funcionario') {
+  const telefoneInput = document.getElementById(inputId);
+
+  telefoneInput.addEventListener('input', function (e) {
+    let valor = e.target.value.replace(/\D/g, '');
+    let formato = '';
+
+    if (valor.length > 10) {
+      formato = valor.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    } else if (valor.length > 5) {
+      formato = valor.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+    } else if (valor.length > 2) {
+      formato = valor.replace(/(\d{0,2})(\d{0,4})/, '($1) $2');
+    } else {
+      formato = valor.replace(/(\d{0,2})/, '($1');
+    }
+
+    // Remove parênteses vazios
+    formato = formato.replace(/\(\)/g, '').replace(/\(-\)/g, '');
+
+    // Mantém o cursor na posição correta
+    const posicaoOriginal = e.target.selectionStart;
+    const posicaoAtual = Math.max(
+      posicaoOriginal + (formato.length - e.target.value.length),
+      1
+    );
+
+    e.target.value = formato;
+    e.target.setSelectionRange(posicaoAtual, posicaoAtual);
+  });
+
+  // Validação melhorada
+  telefoneInput.addEventListener('blur', function (e) {
+    const valor = e.target.value.replace(/\D/g, '');
+    if (valor.length === 0) {
+      e.target.value = '';
+      return;
+    }
+
+    const valido = valor.length === 10 || valor.length === 11;
+    e.target.classList.toggle('input-error', !valido);
+
+    if (!valido) {
+      showModal(
+        'Telefone inválido! Formato esperado: (00) 0000-0000 ou (00) 00000-0000',
+        'warning',
+        3000
+      );
+    }
+  });
+}
+
+function sanitizarTexto(texto) {
+  return texto.replace(/<[^>]*>?/gm, ''); // Remove tags HTML
+}
 
 // Abrir modal de edição
 document.addEventListener('click', (event) => {
@@ -368,6 +461,14 @@ async function abrirModalEdicao(funcionarioId) {
       const modalEdicao = document.getElementById('editar-funcionario-modal');
       modalEdicao.style.display = 'flex';
 
+      // Aplicar máscara ao campo de telefone
+      aplicarMascaraTelefone();
+
+      // Aplicar máscara ao campo de telefone
+      const telefone = funcionario.usr_telefone || '';
+      document.getElementById('editar-telefone-funcionario').value =
+        telefone.replace(/(\d{2})(\d{4,5})(\d{4})/, '($1) $2-$3');
+
       // Remove eventos anteriores
       document
         .getElementById('btn-cancelar-edicao')
@@ -392,35 +493,67 @@ async function abrirModalEdicao(funcionarioId) {
         .addEventListener('click', salvarEdicao);
 
       async function salvarEdicao() {
-        const nome = document
-          .getElementById('editar-nome-funcionario')
-          .value.trim();
-        const email = document
-          .getElementById('editar-email-funcionario')
-          .value.trim();
+        // Sanitização dos campos
+        const nome = sanitizarTexto(
+          document.getElementById('editar-nome-funcionario').value.trim()
+        );
+        const email = sanitizarTexto(
+          document
+            .getElementById('editar-email-funcionario')
+            .value.trim()
+            .toLowerCase()
+        );
         const telefone = document
           .getElementById('editar-telefone-funcionario')
-          .value.trim();
-        const funcao = document
-          .getElementById('editar-funcao-funcionario')
-          .value.trim();
+          .value.replace(/\D/g, '');
+        const funcao = sanitizarTexto(
+          document.getElementById('editar-funcao-funcionario').value.trim()
+        );
         const status = parseInt(
           document.getElementById('editar-status-funcionario').value
         );
 
-        if (!nome || !email) {
-          showModal(
-            'Por favor, preencha todos os campos obrigatórios.',
-            'warning'
-          );
+        // Validações
+        const erros = [];
+
+        // Validação do nome
+        if (!nome || nome.length < 3 || nome.length > 100) {
+          erros.push('Nome deve ter entre 3 e 100 caracteres');
+        }
+
+        // Validação do email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          erros.push('E-mail inválido');
+        }
+
+        // Validação do telefone (se preenchido)
+        if (telefone.length > 0) {
+          if (telefone.length < 10 || telefone.length > 11) {
+            erros.push('Telefone inválido');
+          }
+        }
+
+        // Validação da função
+        if (funcao && funcao.length > 50) {
+          erros.push('Função deve ter no máximo 50 caracteres');
+        }
+
+        // Validação do status
+        if (isNaN(status) || ![0, 1].includes(status)) {
+          erros.push('Status inválido');
+        }
+
+        if (erros.length > 0) {
+          showModal(erros.join('\n'), 'warning');
           return;
         }
 
         const dadosAtualizados = {
           nome: nome,
           email: email,
-          telefone: telefone,
-          funcao: funcao,
+          telefone: telefone || null, // Enviar null se vazio
+          funcao: funcao || null,
           status: status,
         };
 
@@ -435,20 +568,17 @@ async function abrirModalEdicao(funcionarioId) {
 
           if (response.ok) {
             const data = await response.json();
-            console.log('Funcionário atualizado com sucesso:', data);
             showModal('Funcionário atualizado com sucesso!', 'success');
             listarFuncionarios(token, userId); // Atualiza a lista de funcionários
             closeModalEdicao(); // Fecha o modal
           } else {
             const errorData = await response.json();
-            console.error('Erro ao atualizar funcionário:', errorData);
             showModal(
-              'Erro ao atualizar funcionário: ' + errorData.error,
+              'Erro ao atualizar funcionário: ' + errorData.message,
               'error'
             );
           }
         } catch (error) {
-          console.error('Erro na requisição:', error);
           showModal(
             'Erro ao atualizar funcionário. Tente novamente mais tarde.',
             'error'
@@ -467,11 +597,9 @@ async function abrirModalEdicao(funcionarioId) {
       }
     } else {
       const errorData = await response.json();
-      console.error('Erro ao buscar funcionário:', errorData);
       showModal('Erro ao buscar funcionário.', 'error');
     }
   } catch (error) {
-    console.error('Erro na requisição:', error);
     showModal(
       'Erro ao buscar funcionário. Tente novamente mais tarde.',
       'error'
@@ -494,19 +622,16 @@ document.addEventListener('click', (event) => {
 
           if (response.ok) {
             const data = await response.json();
-            console.log('Funcionário deletado com sucesso:', data);
             showModal('Funcionário deletado com sucesso!', 'success');
             listarFuncionarios(token, userId); // Atualiza a lista de funcionários
           } else {
             const errorData = await response.json();
-            console.error('Erro ao deletar funcionário:', errorData);
             showModal(
               'Erro ao deletar funcionário: ' + errorData.error,
               'error'
             );
           }
         } catch (error) {
-          console.error('Erro na requisição:', error);
           showModal(
             'Erro ao deletar funcionário. Tente novamente mais tarde.',
             'error'
@@ -546,7 +671,6 @@ document
     const preco = parseFloat(precoInput.replace(',', '.')); // Substitui vírgula por ponto e converte para float
     const imagemInput = document.getElementById('imagem'); // Campo de upload de imagem
     const tipo = document.querySelector('.allergen-select').value.trim();
-    console.log(tipo);
 
     // Verifica se uma imagem foi selecionada
     if (

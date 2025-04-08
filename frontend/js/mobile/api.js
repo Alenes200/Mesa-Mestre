@@ -24,11 +24,17 @@ export async function fetchMesasPorLocal(local) {
 export async function fetchProdutosComanda(mesaId) {
   try {
     const response = await fetch(`/api/comandas/mesa/${mesaId}/produtos`);
+
+    console.log(response);
+
+    console.log('chegou aqui 1');
     if (!response.ok) {
       const errorData = await response.json().catch(() => null);
       const errorMsg = errorData?.message || response.statusText;
       throw new Error(errorMsg || `Erro ${response.status} ao buscar produtos`);
     }
+
+    console.log('chegou aqui 2');
 
     const data = await response.json();
     if (!Array.isArray(data))

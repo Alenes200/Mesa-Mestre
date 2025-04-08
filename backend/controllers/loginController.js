@@ -6,6 +6,35 @@ const loginController = {
   login: async (req, res) => {
     const { email, senha } = req.body;
 
+    // Validação dos dados
+    const errors = [];
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email || !senha) {
+      errors.push('Por favor, preencha todos os campos.');
+    }
+
+    if (!emailRegex.test(email)) {
+      errors.push('Formato de e-mail inválido.');
+    }
+
+    if (senha.length < 8) {
+      errors.push('A senha deve ter no mínimo 8 caracteres.');
+    }
+
+    if (!/[A-Z]/.test(senha)) {
+      errors.push('A senha deve conter pelo menos uma letra maiúscula.');
+    }
+
+    if (!/\d/.test(senha)) {
+      errors.push('A senha deve conter pelo menos um número.');
+    }
+
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
+
+    // Lógica de autenticação
     try {
       const user = await loginRepository.getUserByEmail(email);
       if (!user) {
@@ -15,7 +44,6 @@ const loginController = {
       }
 
       const match = await comparePassword(senha, user.usr_senha);
-
       if (!match) {
         return res.status(400).json({
           error: 'E-mail ou senha incorretos.',
@@ -40,11 +68,13 @@ const loginController = {
         httpOnly: true,
         maxAge: 3600000,
       });
+
       res.status(200).json({
         message: 'Login realizado com sucesso.',
         token,
       });
     } catch (error) {
+      console.error('Erro ao fazer login:', error);
       res.status(500).json({
         error: 'Erro ao fazer login.',
       });

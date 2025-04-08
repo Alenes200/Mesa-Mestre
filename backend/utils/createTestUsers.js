@@ -36,6 +36,7 @@ async function createTestUser(client, nome, email, password, userType) {
 
 // Exporta a função principal para criar usuários de teste
 module.exports = async function createTestUsers(client) {
+  console.log('→ ENV SENHA_SECRETA_1 =', process.env.SENHA_SECRETA_1);
   try {
     // Cria um usuário admin (user_type = 1)
     await createTestUser(
