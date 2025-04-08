@@ -14,7 +14,6 @@ export function initPayment() {
     const voltarPagamentoBtn = document.getElementById('voltarPagamentoBtn');
     const adicionarPagamentoBtn = document.getElementById('adicionarPagamentoBtn');
 
-    // Event listeners
     voltarPagamentoBtn.addEventListener('click', backToDetailView);
     decreaseDivide.addEventListener('click', () => {
         const current = parseInt(divideBy.textContent) || 1;
@@ -41,7 +40,6 @@ export function initPayment() {
         }, 1000);
     });
 
-     // Adicione este listener para o checkbox
      document.getElementById('taxaServico').addEventListener('change', async () => {
         const mesaId = document.getElementById('paymentTitle').textContent.match(/Mesa (\d+)/)?.[1];
         if (!mesaId) return;
@@ -54,13 +52,11 @@ export function initPayment() {
         document.getElementById('valorFaltante').textContent = `Faltam: R$ ${totalComTaxa.toFixed(2)}`;
         calculateDividedTotal();
         
-        // Atualiza o valor faltante se já tiver valor digitado
         if (document.getElementById('valorRecebido').value) {
             updateRemainingValue();
         }
     });
 
-    // Configurar métodos de pagamento
     loadPaymentMethods();
 }
 
@@ -131,16 +127,6 @@ async function loadPaymentMethods() {
     }
 }
 
-// function calculateDividedTotal() {
-//     const divisions = parseInt(document.getElementById('divideBy').textContent) || 1;
-//     const dividedValue = appState.totalComanda / divisions;
-//     document.getElementById('subtotal').textContent = `R$ ${dividedValue.toFixed(2)} (${divisions})`;
-    
-//     if (document.getElementById('valorRecebido').value) {
-//         updateRemainingValue();
-//     }
-// }
-
 function calculateDividedTotal() {
     const divisions = parseInt(document.getElementById('divideBy').textContent) || 1;
     const dividedValue = appState.totalComanda / divisions;
@@ -187,17 +173,14 @@ export async function handlePayment() {
         const pedidos = await getPedidosAtivos(mesaId);
         if (pedidos.length === 0) throw new Error('Nenhum pedido ativo encontrado');
 
-        // const valorTotal = calcularValorTotal(pedidos);
         const valorTotal = calculateTotalWithFee(pedidos);
 
         if (valorRecebido < valorTotal) {
-            // console.log(`Valor insuficiente! Total: R$ ${valorTotal.toFixed(2)}\nRecebido: R$ ${valorRecebido.toFixed(2)}`, 'error', false);
             await ModalService.alert(`Valor insuficiente! Faltam R$ ${(valorTotal - valorRecebido).toFixed(2)}`);
             return;
         }
 
         if (valorRecebido > valorTotal) {
-            // console.log(`Valor insuficiente! Total: R$ ${valorTotal.toFixed(2)}\nRecebido: R$ ${valorRecebido.toFixed(2)}`, 'error', false);
             await ModalService.alert(`Valor maior que necessário! Passou R$ ${(valorRecebido - valorTotal).toFixed(2)}`);
             return;
         }
@@ -233,20 +216,11 @@ function calcularValorTotal(pedidos) {
     }, 0);
 }
 
-// // Adicione esta função para calcular o valor com taxa
-// function calculateTotalWithFee(pedidos) {
-//     const subtotal = calcularValorTotal(pedidos);
-//     const withFee = document.getElementById('taxaServico').checked;
-    
-//     return withFee ? subtotal * 1.1 : subtotal;
-// }
-
 function calculateTotalWithFee(pedidos) {
     const subtotal = calcularValorTotal(pedidos);
     const withFee = document.getElementById('taxaServico').checked;
     const taxa = withFee ? subtotal * 0.1 : 0;
     
-    // Atualiza o display da taxa
     document.getElementById('valorTaxa').textContent = `R$ ${taxa.toFixed(2)}`;
     
     return subtotal + taxa;

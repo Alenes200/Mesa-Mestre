@@ -2,7 +2,6 @@ import { fetchMesas, fetchMesasPorLocal } from './api.js';
 import { showMesaDetail } from './ui.js';
 import { appState } from './state.js';
 
-// Função para criar card de mesa
 function createTableCard(table) {
     let statusText = '';
     if (table.status === 2) {
@@ -19,7 +18,6 @@ function createTableCard(table) {
     `;
 }
 
-// Função para atualizar a exibição das mesas (exportada para uso interno)
 export function updateTablesDisplay(tablesData, filter = '') {
     const occupiedTablesContainer = document.getElementById('occupiedTables');
     const freeTablesContainer = document.getElementById('freeTables');
@@ -51,7 +49,6 @@ export function updateTablesDisplay(tablesData, filter = '') {
         '<div class="no-results">Nenhuma mesa ocupada encontrada</div>';
 }
 
-// Função principal de carregamento (exportada)
 export async function loadTables() {
     try {
         const mesas = await fetchMesas();
@@ -75,16 +72,10 @@ export async function loadTables() {
 
 export function initTables() {
     const searchInput = document.getElementById('searchInput');
-    // Carregar mesas ao iniciar
     loadTables();
-
-    // Inicia polling a cada 5 segundos
     appState.pollingInterval = setInterval(loadTables, 5000);
-
-    // Evento de busca
     searchInput.addEventListener('input', async function() {
         const searchTerm = this.value.trim();
-        
         if (searchTerm) {
             try {
                 const mesas = await fetchMesasPorLocal(searchTerm);
@@ -106,7 +97,6 @@ export function initTables() {
     });
 }
 
-// Função global para lidar com clique na mesa
 window.handleTableClick = function(tableId, status) {
     appState.mesaStatusAtual = status;
     showMesaDetail(tableId);

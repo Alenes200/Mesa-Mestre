@@ -17,7 +17,6 @@ function initApp() {
   });
 }
 
-// Verifica se o DOM já está carregado
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initApp);
 } else {

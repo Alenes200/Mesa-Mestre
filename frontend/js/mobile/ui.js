@@ -11,19 +11,16 @@ export function initUI() {
   const menuBtn = document.querySelector('.menu-btn');
   const mobileMenu = document.getElementById('mobileMenu');
 
-  // Event listeners
   voltarBtn.addEventListener('click', backToMainView);
   addProdutoBtn.addEventListener('click', async () => {
     await ModalService.alert(`Funcionalidade em desenvolvimento`);
   });
   pagarBtn.addEventListener('click', showPaymentView);
-  // Alternar menu sanduíche
   if (menuBtn && mobileMenu) {
     menuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       mobileMenu.classList.toggle('hidden');
     });
-    // Logout mobile
     const botaoLogoutMobile = document.querySelector('.sair-mobile');
     if (botaoLogoutMobile) {
       botaoLogoutMobile.addEventListener('click', () => {
@@ -56,18 +53,15 @@ export async function showMesaDetail(mesaId) {
   const totalValor = document.getElementById('totalValor');
 
   try {
-    // Resetar totais antes de carregar
     totalProdutos.textContent = `Produtos (0)`;
     totalQuantidade.textContent = `Quantidade (0)`;
     totalValor.textContent = `R$ 0,00`;
 
-    // Mostra loading enquanto busca os dados
     mesaDetailView.classList.remove('hidden');
     produtosContainer.innerHTML =
       '<div class="loading">Carregando produtos...</div>';
     mainView.classList.add('hidden');
 
-    // Busca os produtos da comanda
     const produtos = await fetchProdutosComanda(mesaId);
 
     if (produtos.length === 0) {
@@ -88,7 +82,6 @@ export async function showMesaDetail(mesaId) {
       }, 0);
     }
 
-    // Atualiza o título
     mesaTitle.textContent = `Mesa ${mesaId} - Comanda`;
   } catch (error) {
     console.error('Erro ao carregar detalhes da mesa:', error);
@@ -143,7 +136,6 @@ export function renderProdutos(produtos) {
 
   appState.totalComanda = total;
 
-  // Atualiza totais
   totalProdutos.textContent = `Prod. (${produtos.length})`;
   totalQuantidade.textContent = `Quant. (${quantidadeTotal})`;
   totalValor.textContent = `R$ ${total.toFixed(2)}`;
@@ -161,7 +153,6 @@ export function backToMainView() {
   mainView.classList.remove('hidden');
   mesaDetailView.classList.add('hidden');
 
-  // Reinicia o polling se estiver parado
   if (!appState.pollingInterval) {
     appState.pollingInterval = setInterval(loadTables, 5000);
   }
@@ -183,7 +174,4 @@ export function voltarParaTelaInicial() {
   mesaDetailView.classList.add('hidden');
   paymentView.classList.add('hidden');
   mainView.classList.remove('hidden');
-
-  // Recarrega as mesas
-  // loadTables();
 }
