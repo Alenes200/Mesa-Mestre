@@ -29,41 +29,41 @@ $colors: (
     top: 49px;
     right: 0;
     width: 50%;
-    height: calc(40vh - 60px); // Ajuste para altura do header
+    height: 69px; // Ajuste para altura do header
     background-color: #333;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     padding: 0px 20px;
     transition: transform 0.3s ease;
     transform: translateX(100%);
-    
+
     &:not(.hidden) {
         transform: translateX(0);
     }
-    
+
     .mobile-menu-item {
         display: flex;
         align-items: center;
         padding: 15px 0;
         border-bottom: 1px solid #eee;
         cursor: pointer;
-        
+
         img {
             width: 20px;
             margin-right: 15px;
             color: white;
         }
-        
+
         h3 {
             margin: 0;
             font-size: 16px;
             color: white;
         }
     }
-    
+
     .sair-mobile {
         color: white;
-        
+
         h3:hover {
             color: #ff4444;
         }
@@ -221,7 +221,7 @@ $colors: (
 
     .tables-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         min-height: min-content;
         padding: 0px 10px;
 
@@ -261,11 +261,8 @@ $colors: (
                 position: absolute;
                 top: 0px;
                 right: 5px;
-                font-size: 0.7rem;
+                font-size: 13px;
                 color: #7f8c8d;
-                background-color: rgba(255, 255, 255, 0.5);
-                padding: 2px 5px;
-                border-radius: 10px;
             }
         }
     }

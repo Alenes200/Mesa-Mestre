@@ -5,7 +5,8 @@ $colors: (
   danger: #e74c3c,
   light-gray: #f5f5f5,
   dark-gray: #333,
-  border: #eee
+  border: #eee,
+  transparent: transparent,
 );
 
 $spacing: (
@@ -184,6 +185,7 @@ $breakpoints: (
     display: flex;
 
     .action-button {
+      border: 1px solid black;
       flex: 1;
       padding: map-get($spacing, small);
       margin: 0 5px;
@@ -197,7 +199,7 @@ $breakpoints: (
   }
 
   .back-button {
-    @include button-style(map-get($colors, light-gray), map-get($colors, dark-gray));
+    @include button-style(map-get($colors, transparent), map-get($colors, dark-gray));
   }
 
   .add-button {

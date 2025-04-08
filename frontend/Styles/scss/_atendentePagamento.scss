@@ -6,11 +6,11 @@
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s;
-  
+
     &:hover {
-      background-color: darken($bg-color, 10%);
+        background-color: darken($bg-color, 10%);
     }
-  }
+}
 
 // Estilos para a tela de pagamento
 #paymentView {
@@ -172,12 +172,11 @@
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
 
     &.back-button {
-        @include button-style(map-get($colors, light-gray), map-get($colors, dark-gray));
-        background: #ecf0f1;
+        border: 1px solid black;
         color: #333;
         flex: 2;
     }
