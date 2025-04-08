@@ -99,6 +99,9 @@ const mesasController = {
       // Remove a validação que pode estar bloqueando
       const novoStatus = status ?? mes_status;
 
+      if (novoStatus === 0) {
+        await mesasRepository.setMesaLogado(id, false);
+      }
       const mesaAtualizada = await mesasRepository.update(id, {
         capacidade: capacidade || mesaExistente.mes_capacidade,
         descricao: descricao || mesaExistente.mes_descricao,
@@ -228,6 +231,49 @@ const mesasController = {
     } catch (error) {
       console.error('Erro ao buscar mesa pelo código:', error);
       res.status(500).json({ error: 'Erro ao buscar mesa pelo código.' });
+    }
+  },
+
+  setMesaLogado: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      if (typeof status !== 'boolean') {
+        return res
+          .status(400)
+          .json({ error: 'Status deve ser um valor booleano.' });
+      }
+
+      const mesa = await mesasRepository.getById(id);
+      if (!mesa) {
+        return res.status(404).json({ error: 'Mesa não encontrada.' });
+      }
+
+      const mesaAtualizada = await mesasRepository.setMesaLogado(id, status);
+      res.json(mesaAtualizada);
+    } catch (error) {
+      console.error('Erro ao atualizar status de login da mesa:', error);
+      res
+        .status(500)
+        .json({ error: 'Erro ao atualizar status de login da mesa.' });
+    }
+  },
+  getMesaLogado: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const mesaLogado = await mesasRepository.getMesaLogado(id);
+
+      if (!mesaLogado) {
+        return res.status(404).json({ error: 'Mesa não encontrada.' });
+      }
+
+      res.json(mesaLogado);
+    } catch (error) {
+      console.error('Erro ao verificar status de login da mesa:', error);
+      res
+        .status(500)
+        .json({ error: 'Erro ao verificar status de login da mesa.' });
     }
   },
 };
