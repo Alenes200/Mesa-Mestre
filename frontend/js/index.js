@@ -24,7 +24,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('op_mesa').classList.remove('op_ativa');
   document.getElementById('op_grafico').classList.add('op_ativa');
   document.querySelector('.conteudo-mesas').style.display = 'none';
-  const conteudoGraficos = document.querySelector('.conteudo-graficos-container');
+  const conteudoGraficos = document.querySelector(
+    '.conteudo-graficos-container'
+  );
   const conteudoMesas = document.querySelector('.conteudo-mesas');
   conteudoGraficos.style.display = 'block';
 
@@ -60,7 +62,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       await carregarGraficoComandas(token);
     } catch (error) {
       console.error('Erro ao carregar gráficos:', error);
-      showModal('Erro ao carregar gráficos. Tente novamente mais tarde.', 'error');
+      showModal(
+        'Erro ao carregar gráficos. Tente novamente mais tarde.',
+        'error'
+      );
     }
 
     // Configuração do evento de pesquisa
@@ -75,7 +80,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.location.href = '../pages/login_adm.html'; // Redireciona para login
     return;
   }
-
 
   // Modal functionality remains the same
   // const cardMesas = document.querySelectorAll('.card-mesa');
@@ -284,7 +288,7 @@ btnSalvarFuncionario.addEventListener('click', async () => {
   const nome = document.getElementById('nome-funcionario').value.trim();
   const email = document.getElementById('email-funcionario').value.trim();
   const telefone = document.getElementById('telefone-funcionario').value.trim();
-  const funcao = document.getElementById('funcao-funcionario').value.trim();
+  const tipo = document.getElementById('tipo-funcionario').value;
   const senha = document.getElementById('senha-funcionario').value.trim();
   const funcionarioFormContainer = document.getElementById(
     'funcionario-form-container'
@@ -299,7 +303,7 @@ btnSalvarFuncionario.addEventListener('click', async () => {
     nome: nome,
     email: email,
     telefone: telefone,
-    funcao: funcao,
+    tipo: parseInt(tipo),
     senha: senha,
   };
 
@@ -353,60 +357,35 @@ async function abrirModalEdicao(funcionarioId) {
       const funcionario = await response.json();
 
       // Preenche o modal com os dados do funcionário
-      document.getElementById('editar-nome-funcionario').value =
-        funcionario.usr_nome;
-      document.getElementById('editar-email-funcionario').value =
-        funcionario.usr_email;
-      document.getElementById('editar-telefone-funcionario').value =
-        funcionario.usr_telefone || '';
-      document.getElementById('editar-funcao-funcionario').value =
-        funcionario.usr_funcao || '';
-      document.getElementById('editar-status-funcionario').value =
-        funcionario.usr_status;
+      document.getElementById('editar-nome-funcionario').value = funcionario.usr_nome;
+      document.getElementById('editar-email-funcionario').value = funcionario.usr_email;
+      document.getElementById('editar-telefone-funcionario').value = funcionario.usr_telefone || '';
+      document.getElementById('editar-tipo-funcionario').value = funcionario.usr_tipo || '';
+      document.getElementById('editar-status-funcionario').value = funcionario.usr_status;
 
       // Exibe o modal
       const modalEdicao = document.getElementById('editar-funcionario-modal');
       modalEdicao.style.display = 'flex';
 
       // Remove eventos anteriores
-      document
-        .getElementById('btn-cancelar-edicao')
-        .removeEventListener('click', closeModalEdicao);
+      document.getElementById('btn-cancelar-edicao').removeEventListener('click', closeModalEdicao);
       modalEdicao.removeEventListener('click', closeModalEdicaoOutside);
-      document
-        .getElementById('btn-salvar-edicao')
-        .removeEventListener('click', salvarEdicao);
+      document.getElementById('btn-salvar-edicao').removeEventListener('click', salvarEdicao);
 
       // Fechar modal ao clicar no botão de cancelar ou fora do modal
-      document
-        .getElementById('btn-cancelar-edicao')
-        .addEventListener('click', closeModalEdicao);
-      document
-        .getElementById('close-modal-editar')
-        .addEventListener('click', closeModalEdicao);
+      document.getElementById('btn-cancelar-edicao').addEventListener('click', closeModalEdicao);
+      document.getElementById('close-modal-editar').addEventListener('click', closeModalEdicao);
       modalEdicao.addEventListener('click', closeModalEdicaoOutside);
 
       // Salvar edição
-      document
-        .getElementById('btn-salvar-edicao')
-        .addEventListener('click', salvarEdicao);
+      document.getElementById('btn-salvar-edicao').addEventListener('click', salvarEdicao);
 
       async function salvarEdicao() {
-        const nome = document
-          .getElementById('editar-nome-funcionario')
-          .value.trim();
-        const email = document
-          .getElementById('editar-email-funcionario')
-          .value.trim();
-        const telefone = document
-          .getElementById('editar-telefone-funcionario')
-          .value.trim();
-        const funcao = document
-          .getElementById('editar-funcao-funcionario')
-          .value.trim();
-        const status = parseInt(
-          document.getElementById('editar-status-funcionario').value
-        );
+        const nome = document.getElementById('editar-nome-funcionario').value.trim();
+        const email = document.getElementById('editar-email-funcionario').value.trim();
+        const telefone = document.getElementById('editar-telefone-funcionario').value.trim();
+        const tipo = parseInt(document.getElementById('editar-tipo-funcionario').value);
+        const status = parseInt(document.getElementById('editar-status-funcionario').value);
 
         if (!nome || !email) {
           showModal(
@@ -420,7 +399,7 @@ async function abrirModalEdicao(funcionarioId) {
           nome: nome,
           email: email,
           telefone: telefone,
-          funcao: funcao,
+          tipo: tipo,
           status: status,
         };
 
@@ -435,7 +414,7 @@ async function abrirModalEdicao(funcionarioId) {
 
           if (response.ok) {
             const data = await response.json();
-            console.log('Funcionário atualizado com sucesso:', data);
+            // console.log('Funcionário atualizado com sucesso:', data);
             showModal('Funcionário atualizado com sucesso!', 'success');
             listarFuncionarios(token, userId); // Atualiza a lista de funcionários
             closeModalEdicao(); // Fecha o modal
