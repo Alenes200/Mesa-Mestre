@@ -869,7 +869,25 @@ async function pedirConta() {
       return;
     }
 
-    // Atualiza o status da mesa para 2 (conta pedida)
+    // Verifica se existem pedidos ativos para esta mesa
+    const responsePedidos = await fetch(
+      `/api/comandas/mesas/${mesaId}/pedidos-ativos`
+    );
+    if (!responsePedidos.ok) {
+      throw new Error('Erro ao verificar pedidos ativos.');
+    }
+
+    const { success, data: pedidosAtivos } = await responsePedidos.json();
+
+    if (!success || !pedidosAtivos || pedidosAtivos.length === 0) {
+      showToast(
+        'Adicione pedidos ao carrinho antes de solicitar a conta.',
+        'info'
+      );
+      return;
+    }
+
+    // Continua com o processo de pedir a conta
     const response = await fetch(`/api/mesas/${mesaId}`, {
       method: 'PUT',
       headers: {
@@ -882,16 +900,14 @@ async function pedirConta() {
       throw new Error('Erro ao atualizar o status da mesa.');
     }
 
-    const data = await response.json();
-    console.log('Status da mesa atualizado com sucesso:', data);
+    const mesaAtualizada = await response.json();
+    console.log('Status da mesa atualizado com sucesso:', mesaAtualizada);
+
+    comandaAtivaId = null;
 
     // Trava o modal e adiciona a mensagem
-    contaPedida = true;
     const tituloConta = document.querySelector('.modal-pedidos .titulo h1');
     tituloConta.textContent = 'MINHA CONTA - AGUARDE O GARÇOM';
-
-    // Desabilita o botão de pedir conta
-    document.getElementById('pedir-conta').disabled = true;
 
     showToast('Conta solicitada com sucesso! Aguarde o garçom.', 'success');
   } catch (error) {
