@@ -10,6 +10,7 @@ import {
   desativar,
   abrirModal,
   fecharModal,
+  adicionarLocal,
 } from './mesas.js';
 import { listarFuncionarios, buscarFuncionarios } from './funcionario.js';
 import { carregarGraficoComandas, destruirGrafico } from './grafico.js';
@@ -93,8 +94,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     .getElementById('overlayGenerico')
     .addEventListener('click', fecharModal);
   document
-    .getElementById('botaoFecharModal')
-    .addEventListener('click', fecharModal);
+    .getElementById('botaoAdicionarLocal')
+    .addEventListener('click', adicionarLocal);
 
   const botaoSalvar = document.getElementById('salvar-alteracoes');
 

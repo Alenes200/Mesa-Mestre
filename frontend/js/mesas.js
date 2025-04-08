@@ -18,7 +18,7 @@ const codigoInput = document.getElementById('codigoInput');
 const codigoInputAdicionar = document.getElementById('codigoInputAdicionar');
 
 import { escapeHTML } from '../utils/sanitizacao.js';
-import { showModal } from './modal.js';
+import { showModal, openConfirmModal } from './modal.js';
 
 // Funções de sanitização
 function sanitizarTexto(texto) {
@@ -74,40 +74,76 @@ function validarSelect(valor, campo) {
 
 export async function configurarLocais() {
   try {
-    const response = await fetch('/api/mesas/local/locais/Todos');
+    const response = await fetch('/api/locais/');
     if (!response.ok) throw new Error('Erro ao buscar locais');
 
     const locais = await response.json();
-    preencherTabelaLocais(locais);
+    return criarTabelaLocais(locais); // agora retorna a tabela inteira
   } catch (error) {
     showModal('Erro ao carregar locais. Tente novamente mais tarde.');
   }
 }
 
-function preencherTabelaLocais(locais) {
-  const tabela = document.querySelector('#tabela-locais tbody');
-  tabela.innerHTML = '';
+function criarTabelaLocais(locais) {
+  const tabela = document.createElement('table');
+  tabela.classList.add('tabelaLocais');
+  tabela.innerHTML = `
+    <thead>
+      <tr>
+        <th>Descrição</th>
+        <th>Opções</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  `;
+
+  const tbody = tabela.querySelector('tbody');
 
   locais.forEach((local) => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${escapeHTML(local.loc_descricao)}</td>
+       <td>
+        <input 
+          type="text" 
+          value="${escapeHTML(local.descricao)}" 
+          disabled 
+          class="input-descricao" 
+          data-id="${escapeHTML(local.codigo)}"
+        />
+      </td>
       <td class="opcoes">
-        <button class="editar" data-id="${escapeHTML(local.loc_id)}">✏️</button>
-        <button class="deletar" data-id="${escapeHTML(local.loc_id)}">🗑️</button>
+        <button class="editar" data-id="${escapeHTML(local.codigo)}">✏️</button>
+        <button class="deletar" data-id="${escapeHTML(local.codigo)}">🗑️</button>
       </td>
     `;
-    tabela.appendChild(row);
+    tbody.appendChild(row);
   });
 
-  adicionarEventosBotoes();
+  return tabela;
 }
 
 function adicionarEventosBotoes() {
   document.querySelectorAll('.editar').forEach((botao) => {
-    botao.addEventListener('click', (e) => {
-      const id = e.target.dataset.id;
-      editarLocal(id);
+    botao.addEventListener('click', () => {
+      const id = botao.dataset.id;
+      const input = document.querySelector(
+        `input.input-descricao[data-id="${id}"]`
+      );
+
+      if (input.disabled) {
+        input.disabled = false;
+        input.focus();
+        input.classList.add('editando');
+        botao.textContent = '💾'; // muda para "salvar"
+      } else {
+        const novoNome = input.value.trim();
+        if (!validarTexto(novoNome, 'nome do local')) return;
+
+        editarLocal(id, novoNome);
+        input.disabled = true;
+        input.classList.remove('editando');
+        botao.textContent = '✏️'; // volta para "editar"
+      }
     });
   });
 
@@ -119,47 +155,110 @@ function adicionarEventosBotoes() {
   });
 }
 
-export async function editarLocal(id) {
-  const novoNome = prompt('Digite o novo nome do local:');
-  if (!novoNome || !validarTexto(novoNome, 'nome do local')) return;
+export async function adicionarLocal() {
+  const tabela = document.querySelector('.tabelaLocais');
+  if (!tabela) {
+    console.error('Tabela de locais não encontrada');
+    return;
+  }
 
+  const tbody = tabela.querySelector('tbody');
+  const row = document.createElement('tr');
+
+  row.innerHTML = `
+    <td>
+      <input 
+        type="text" 
+        placeholder="Digite a descrição" 
+        class="input-descricao novo" 
+      />
+    </td>
+    <td class="opcoes">
+      <button class="salvar-novo">💾</button>
+      <button class="cancelar-novo">✖️</button>
+    </td>
+  `;
+
+  tbody.appendChild(row);
+
+  // Foca no input imediatamente para facilitar a digitação.
+  const input = row.querySelector('.input-descricao');
+  input.focus();
+
+  // Botão de salvar novo local
+  row.querySelector('.salvar-novo').addEventListener('click', async () => {
+    const descricao = input.value.trim();
+
+    if (!validarTexto(descricao, 'nome do local')) return;
+
+    try {
+      const response = await fetch('/api/locais/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ descricao }),
+      });
+
+      if (!response.ok) throw new Error('Erro ao adicionar local');
+
+      showModal('Local adicionado com sucesso!', 'success');
+      // Atualiza o modal para refletir a nova lista:
+      abrirModal('Locais');
+    } catch (error) {
+      showModal('Erro ao adicionar local. Tente novamente.', 'error');
+    }
+  });
+
+  // Botão de cancelar novo local
+  row.querySelector('.cancelar-novo').addEventListener('click', () => {
+    row.remove();
+  });
+}
+
+export async function editarLocal(id, novoNome) {
   try {
-    const response = await fetch(`/api/mesas/local/${id}`, {
+    const response = await fetch(`/api/locais/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ descricao: novoNome }),
     });
 
     if (!response.ok) throw new Error('Erro ao editar local');
-    configurarLocais();
+    showModal('Local atualizado com sucesso!', 'success');
   } catch (error) {
-    showModal('Erro ao editar local. Tente novamente.');
+    showModal('Erro ao editar local. Tente novamente.', 'error');
   }
 }
 
 export async function deletarLocal(id) {
-  const confirmacao = confirm('Tem certeza que deseja excluir este local?');
-  if (!confirmacao) return;
+  openConfirmModal('Tem certeza que deseja excluir este local?', async () => {
+    try {
+      const response = await fetch(`/api/locais/${id}`, {
+        method: 'DELETE',
+      });
 
-  try {
-    const response = await fetch(`/api/mesas/local/${id}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) throw new Error('Erro ao excluir local');
+      if (!response.ok) throw new Error('Erro ao excluir local');
 
-    configurarLocais();
-  } catch (error) {
-    showModal('Erro ao excluir local. Tente novamente.');
-  }
+      showModal('Local excluído com sucesso!', 'success');
+      abrirModal('Locais'); // ou configurarLocais() se preferir
+    } catch (error) {
+      showModal('Erro ao excluir local. Tente novamente.', 'error');
+    }
+  });
 }
 
-export function abrirModal(titulo, conteudo) {
+export async function abrirModal(titulo, conteudo) {
   const modal = document.getElementById('modalGenerico');
   const tituloModal = document.getElementById('tituloModalGenerico');
   const corpoModal = document.getElementById('conteudoModalGenerico');
 
   tituloModal.textContent = titulo;
-  corpoModal.innerHTML = configurarLocais();
+  const tabela = await configurarLocais();
+
+  corpoModal.innerHTML = '';
+  corpoModal.appendChild(tabela);
+
+  adicionarEventosBotoes();
+
   modal.style.display = 'flex';
 }
 
