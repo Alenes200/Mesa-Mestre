@@ -41,6 +41,25 @@ export function initPayment() {
         }, 1000);
     });
 
+     // Adicione este listener para o checkbox
+     document.getElementById('taxaServico').addEventListener('change', async () => {
+        const mesaId = document.getElementById('paymentTitle').textContent.match(/Mesa (\d+)/)?.[1];
+        if (!mesaId) return;
+        
+        const pedidos = await getPedidosAtivos(mesaId);
+        const totalComTaxa = calculateTotalWithFee(pedidos);
+        appState.totalComanda = totalComTaxa;
+        
+        document.getElementById('valorTotal').textContent = `R$ ${totalComTaxa.toFixed(2)}`;
+        document.getElementById('valorFaltante').textContent = `Faltam: R$ ${totalComTaxa.toFixed(2)}`;
+        calculateDividedTotal();
+        
+        // Atualiza o valor faltante se já tiver valor digitado
+        if (document.getElementById('valorRecebido').value) {
+            updateRemainingValue();
+        }
+    });
+
     // Configurar métodos de pagamento
     loadPaymentMethods();
 }
@@ -60,11 +79,17 @@ export async function showPaymentView() {
     
     const mesaId = document.getElementById('mesaTitle').textContent.match(/Mesa (\d+)/)?.[1] || '00';
     paymentTitle.textContent = `Mesa ${mesaId} - Pagamento da Comanda`;
+
+    document.getElementById('taxaServico').checked = true;
+
+    const pedidos = await getPedidosAtivos(mesaId);
+    const totalComTaxa = calculateTotalWithFee(pedidos);
+    appState.totalComanda = totalComTaxa; 
     
-    valorTotal.textContent = `R$ ${appState.totalComanda.toFixed(2)}`;
-    valorFaltante.textContent = `Faltam: R$ ${appState.totalComanda.toFixed(2)}`;
+    valorTotal.textContent = `R$ ${totalComTaxa.toFixed(2)}`;
+    valorFaltante.textContent = `Faltam: R$ ${totalComTaxa.toFixed(2)}`;
     divideBy.textContent = '1';
-    subtotal.textContent = `R$ ${appState.totalComanda.toFixed(2)} (1)`;
+    subtotal.textContent = `R$ ${totalComTaxa.toFixed(2)} (1)`;
     
     valorRecebido.value = '';
     appState.selectedPaymentMethod = null;
@@ -105,6 +130,16 @@ async function loadPaymentMethods() {
         methodsContainer.innerHTML = '<div class="error-message">Erro ao carregar formas de pagamento</div>';
     }
 }
+
+// function calculateDividedTotal() {
+//     const divisions = parseInt(document.getElementById('divideBy').textContent) || 1;
+//     const dividedValue = appState.totalComanda / divisions;
+//     document.getElementById('subtotal').textContent = `R$ ${dividedValue.toFixed(2)} (${divisions})`;
+    
+//     if (document.getElementById('valorRecebido').value) {
+//         updateRemainingValue();
+//     }
+// }
 
 function calculateDividedTotal() {
     const divisions = parseInt(document.getElementById('divideBy').textContent) || 1;
@@ -152,11 +187,18 @@ export async function handlePayment() {
         const pedidos = await getPedidosAtivos(mesaId);
         if (pedidos.length === 0) throw new Error('Nenhum pedido ativo encontrado');
 
-        const valorTotal = calcularValorTotal(pedidos);
+        // const valorTotal = calcularValorTotal(pedidos);
+        const valorTotal = calculateTotalWithFee(pedidos);
 
         if (valorRecebido < valorTotal) {
             // console.log(`Valor insuficiente! Total: R$ ${valorTotal.toFixed(2)}\nRecebido: R$ ${valorRecebido.toFixed(2)}`, 'error', false);
             await ModalService.alert(`Valor insuficiente! Faltam R$ ${(valorTotal - valorRecebido).toFixed(2)}`);
+            return;
+        }
+
+        if (valorRecebido > valorTotal) {
+            // console.log(`Valor insuficiente! Total: R$ ${valorTotal.toFixed(2)}\nRecebido: R$ ${valorRecebido.toFixed(2)}`, 'error', false);
+            await ModalService.alert(`Valor maior que necessário! Passou R$ ${(valorRecebido - valorTotal).toFixed(2)}`);
             return;
         }
 
@@ -189,4 +231,23 @@ function calcularValorTotal(pedidos) {
     return pedidos.reduce((total, pedido) => {
         return total + (parseFloat(pedido.total) || 0);
     }, 0);
+}
+
+// // Adicione esta função para calcular o valor com taxa
+// function calculateTotalWithFee(pedidos) {
+//     const subtotal = calcularValorTotal(pedidos);
+//     const withFee = document.getElementById('taxaServico').checked;
+    
+//     return withFee ? subtotal * 1.1 : subtotal;
+// }
+
+function calculateTotalWithFee(pedidos) {
+    const subtotal = calcularValorTotal(pedidos);
+    const withFee = document.getElementById('taxaServico').checked;
+    const taxa = withFee ? subtotal * 0.1 : 0;
+    
+    // Atualiza o display da taxa
+    document.getElementById('valorTaxa').textContent = `R$ ${taxa.toFixed(2)}`;
+    
+    return subtotal + taxa;
 }

@@ -170,7 +170,7 @@ $breakpoints: (
 }
 
 .mesa-actions {
-  @include flex-center(space-between);
+  // @include flex-center(space-between);
   padding: map-get($spacing, medium);
   background-color: white;
   border-top: 1px solid map-get($colors, border);
@@ -481,7 +481,7 @@ $breakpoints: (
   }
 
   .mesa-content-container {
-    height: calc(85vh - 180px);
+    height: calc(87vh - 180px);
   }
 
   .mesa-actions {

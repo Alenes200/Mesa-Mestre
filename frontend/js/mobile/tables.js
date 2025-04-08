@@ -78,6 +78,9 @@ export function initTables() {
     // Carregar mesas ao iniciar
     loadTables();
 
+    // Inicia polling a cada 5 segundos
+    appState.pollingInterval = setInterval(loadTables, 5000);
+
     // Evento de busca
     searchInput.addEventListener('input', async function() {
         const searchTerm = this.value.trim();
