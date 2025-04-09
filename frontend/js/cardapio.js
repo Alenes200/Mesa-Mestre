@@ -1,8 +1,8 @@
 let allProdutos = [];
 let carrinho = [];
-let pedidos = [];
 let mesaId; // Defina o ID da mesa dinamicamente
 let comandaAtivaId = null;
+let contaPedida = false;
 
 // Função para buscar os produtos do backend
 async function fetchProdutos() {
@@ -141,16 +141,52 @@ function closeModal() {
 
 // Função para adicionar o item ao carrinho
 function addToCart(produto, quantidade) {
-  const itemCarrinho = carrinho.find((item) => item.pro_id === produto.pro_id);
+  fetch(`/api/mesas/${mesaId}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Erro ao verificar o status da mesa.');
+      }
+      return response.json();
+    })
+    .then((mesa) => {
+      console.log('Status atual da mesa:', mesa.mes_status);
 
-  if (itemCarrinho) {
-    itemCarrinho.quantidade += quantidade;
-  } else {
-    carrinho.push({ ...produto, quantidade });
-  }
+      // Se o status da mesa for 2, impede adicionar itens ao carrinho
+      if (mesa.mes_status === 2) {
+        showToast(
+          'A conta já foi pedida. Não é possível adicionar novos itens.',
+          'info'
+        );
+        exibirPedidosNoModal();
+        openModalPedidos(); // Abre o modal de pedidos
+        return;
+      }
 
-  console.log('Carrinho:', carrinho);
-  closeModal();
+      // Adiciona o item ao carrinho
+      const itemCarrinho = carrinho.find(
+        (item) => item.pro_id === produto.pro_id
+      );
+
+      if (itemCarrinho) {
+        itemCarrinho.quantidade += quantidade;
+        showToast(
+          `${quantidade}x ${produto.pro_nome} adicionado ao carrinho!`,
+          'success'
+        );
+      } else {
+        carrinho.push({ ...produto, quantidade });
+        showToast(
+          `${quantidade}x ${produto.pro_nome} adicionado ao carrinho!`,
+          'success'
+        );
+      }
+
+      console.log('Carrinho:', carrinho);
+    })
+    .catch((error) => {
+      console.error('Erro ao verificar o status da mesa:', error);
+      showToast('Erro ao verificar o status da mesa.', 'error');
+    });
 }
 
 // Função para abrir o modal do carrinho
@@ -294,11 +330,32 @@ function showToast(message, type = 'success') {
 // Função para enviar os pedidos
 async function enviarPedidos() {
   try {
+    // Verifica o status da mesa
+    const response = await fetch(`/api/mesas/${mesaId}`);
+    if (!response.ok) {
+      throw new Error('Erro ao verificar o status da mesa.');
+    }
+
+    const mesa = await response.json();
+    console.log('Status atual da mesa:', mesa.mes_status);
+
+    // Se o status da mesa for 2, impede novos pedidos e abre o modal de pedidos
+    if (mesa.mes_status === 2) {
+      showToast(
+        'A conta já foi pedida. Não é possível adicionar novos pedidos.',
+        'info'
+      );
+      exibirPedidosNoModal(); // Abre o modal de pedidos
+      return;
+    }
+
+    // Verifica se o carrinho está vazio
     if (carrinho.length === 0) {
       showToast('O carrinho está vazio!', 'error');
       return;
     }
 
+    // Continua com o envio dos pedidos
     mesaId = obterMesaId();
     console.log('Mesa ID obtido:', mesaId);
 
@@ -309,19 +366,43 @@ async function enviarPedidos() {
     const pedidoId = await criarPedido(comandaAtivaId);
     console.log('Pedido ID criado:', pedidoId);
 
+    // Adiciona os produtos ao pedido usando o carrinho atualizado
     await adicionarProdutosAoPedido(pedidoId);
     await atualizarPedidoComPrecoTotal(pedidoId);
 
+    // Atualiza o status da mesa para 1
+    await atualizarStatusMesa(1);
+
     showToast('Pedido enviado com sucesso!');
 
-    // Antes de limpar o carrinho, armazena os itens no array "pedidos"
-    pedidos = [...pedidos, ...carrinho];
     exibirPedidosNoModal(); // Exibe os pedidos no modal
     carrinho = []; // Limpa o carrinho
     closeCarrinho(); // Fecha o modal do carrinho
   } catch (error) {
     console.error('Erro detalhado ao enviar pedidos:', error);
     showToast(`Erro ao enviar pedidos: ${error.message}`, 'error');
+  }
+}
+
+async function atualizarStatusMesa(status) {
+  try {
+    const response = await fetch(`/api/mesas/${mesaId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao atualizar o status da mesa.');
+    }
+
+    const data = await response.json();
+    console.log(`Status da mesa atualizado para ${status}:`, data);
+  } catch (error) {
+    console.error('Erro ao atualizar o status da mesa:', error);
+    showToast('Erro ao atualizar o status da mesa.', 'error');
   }
 }
 
@@ -439,7 +520,7 @@ async function adicionarProdutosAoPedido(pedidoId) {
       const produtoData = {
         ped_id: parseInt(pedidoId),
         pro_id: parseInt(item.pro_id),
-        ppr_quantidade: parseInt(item.quantidade), // Alterado para ppr_quantidade conforme tabela
+        ppr_quantidade: parseInt(item.quantidade), // Usa a quantidade atualizada
       };
 
       console.log(
@@ -493,6 +574,26 @@ async function atualizarPedidoComPrecoTotal(pedidoId) {
 
 // Adiciona um event listener para carregar os produtos quando a página for carregada
 document.addEventListener('DOMContentLoaded', () => {
+  // Recupera o ID da mesa do Local Storage
+  const savedMesaId = localStorage.getItem('mesaId');
+  if (savedMesaId) {
+    mesaId = parseInt(savedMesaId, 10);
+    console.log('Mesa recuperada do Local Storage:', mesaId);
+
+    // Atualiza o texto do elemento com o ID "mesa-logada"
+    const mesaLogadaElement = document.getElementById('mesa-logada');
+    mesaLogadaElement.innerHTML = `MESA ${String(mesaId).padStart(2, '0')}`;
+
+    showToast(
+      `Bem-vindo de volta à mesa ${String(mesaId).padStart(2, '0')}!`,
+      'success'
+    );
+  } else {
+    // Se não houver mesa salva, abre o modal de login
+    openLoginModal();
+  }
+
+  // Carrega os produtos
   fetchProdutos();
 });
 
@@ -571,9 +672,12 @@ async function logarNaMesa() {
     mesaId = mesa.mes_id;
     console.log('ID da mesa logado:', mesaId);
 
+    // Salva o ID da mesa no Local Storage
+    localStorage.setItem('mesaId', mesaId);
+
     // Atualiza o texto do elemento com o ID "mesa-logada"
     const mesaLogadaElement = document.getElementById('mesa-logada');
-    mesaLogadaElement.innerHTML = mesa.mes_nome;
+    mesaLogadaElement.innerHTML = mesa.mes_nome.toUpperCase();
 
     showToast(
       `Logado na mesa ${mesa.mes_descricao || mesa.mes_id} com sucesso!`,
@@ -592,78 +696,140 @@ document
   .querySelector('.modal-login-mesas .fechar-modal')
   .addEventListener('click', closeLoginModal);
 
-// Exemplo: Abre o modal de login ao carregar a página (pode ser ajustado conforme necessário)
-document.addEventListener('DOMContentLoaded', () => {
-  openLoginModal();
-});
+async function openModalPedidos() {
+  try {
+    // Primeiro verifica o status da mesa
+    const responseMesa = await fetch(`/api/mesas/${mesaId}`);
+    if (!responseMesa.ok) {
+      throw new Error('Erro ao verificar status da mesa.');
+    }
 
-function openModalPedidos() {
-  const modalPedidos = document.querySelector('.modal-pedidos');
-  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+    const mesa = await responseMesa.json();
+    const tituloConta = document.querySelector('.modal-pedidos .titulo h1');
 
-  // Redefine o número de pessoas para 1 ao abrir o modal
-  numeroPessoasElement.innerText = '1';
+    // Define o título com base no status da mesa
+    if (mesa.mes_status === 2) {
+      tituloConta.textContent = 'MINHA CONTA - AGUARDE O GARÇOM';
+    } else {
+      tituloConta.textContent = 'MINHA CONTA';
+    }
 
-  // Atualiza a divisão da conta com o valor inicial
-  atualizarDivisaoConta();
+    // Atualiza os pedidos no modal
+    await exibirPedidosNoModal();
 
-  modalPedidos.classList.add('ativo'); // Adiciona a classe ativo para abrir o modal
+    const modalPedidos = document.querySelector('.modal-pedidos');
+    const numeroPessoasElement = document.getElementById('pessoas-divisao');
+
+    // Redefine o número de pessoas para 1 ao abrir o modal
+    numeroPessoasElement.innerText = '1';
+
+    // Atualiza a divisão da conta com o valor inicial
+    atualizarDivisaoConta();
+
+    modalPedidos.classList.add('ativo');
+  } catch (error) {
+    console.error('Erro ao abrir modal de pedidos:', error);
+    showToast('Erro ao abrir modal de pedidos.', 'error');
+  }
 }
 
-function closeModalPedidos() {
-  const modalPedidos = document.querySelector('.modal-pedidos');
-  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+async function closeModalPedidos() {
+  try {
+    exibirPedidosNoModal(); // Atualiza os pedidos no modal
 
-  // Redefine o número de pessoas para 1 ao fechar o modal
-  numeroPessoasElement.innerText = '1';
-
-  modalPedidos.classList.remove('ativo'); // Remove a classe ativo para fechar o modal
+    const modalPedidos = document.querySelector('.modal-pedidos');
+    const numeroPessoasElement = document.getElementById('pessoas-divisao');
+    if (numeroPessoasElement) {
+      numeroPessoasElement.innerText = '1';
+    }
+    modalPedidos.classList.remove('ativo');
+  } catch (error) {
+    console.error('Erro ao fechar modal de pedidos:', error);
+    showToast('Erro ao verificar status da mesa.', 'error');
+  }
 }
 
 // Função para exibir os pedidos no modal
-function exibirPedidosNoModal() {
-  const pedidosContainer = document.getElementById('itens-pedidos');
-  const resultadoPessoaElement = document.getElementById('resultado-pessoa');
-  pedidosContainer.innerHTML = ''; // Limpa o container antes de adicionar os pedidos
+async function exibirPedidosNoModal() {
+  try {
+    // Verifica se o ID da mesa está definido
+    if (!mesaId) {
+      showToast('Você precisa logar na mesa primeiro.', 'error');
+      throw new Error('ID da mesa não definido.');
+    }
 
-  let total = 0;
+    // Faz a requisição para buscar os pedidos ativos da mesa
+    const response = await fetch(
+      `/api/comandas/mesas/${mesaId}/pedidos-ativos`
+    );
+    if (!response.ok) {
+      throw new Error('Erro ao buscar pedidos ativos da mesa.');
+    }
 
-  pedidos.forEach((item) => {
-    const subtotal = item.pro_preco * item.quantidade;
-    total += subtotal;
+    const { success, data } = await response.json();
 
-    const pedidoElement = document.createElement('div');
-    pedidoElement.className = 'card-iten';
-    pedidoElement.innerHTML = `
-    <div class="esquerda">
-      <div class="hora">
-        <p>${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-      </div>
-      <div class="qtde">
-        <p>${item.quantidade}x</p>
-      </div>
-      <div class="item">
-        <p>${item.pro_nome}</p>
-      </div>
-    </div>
-    <div class="direita">
-      <div class="unidade">
-        <p>R$ ${item.pro_preco}</p>
-      </div>
-      <div class="valor">
-        <p>R$ ${subtotal.toFixed(2)}</p>
-      </div>
-    </div>
-  `;
+    if (!success) {
+      throw new Error('Erro ao buscar pedidos.');
+    }
 
-    pedidosContainer.appendChild(pedidoElement);
-  });
+    console.log('Pedidos ativos obtidos:', data);
 
-  // Atualiza o total no modal
-  const totalElement = document.getElementById('total-pedidos');
+    // Atualiza o modal com os pedidos obtidos
+    const pedidosContainer = document.getElementById('itens-pedidos');
+    const resultadoPessoaElement = document.getElementById('resultado-pessoa');
+    pedidosContainer.innerHTML = ''; // Limpa o container antes de adicionar os pedidos
 
-  resultadoPessoaElement.innerText = `R$ ${total.toFixed(2)}`;
-  totalElement.innerText = `R$ ${total.toFixed(2)}`;
+    let total = 0;
+
+    // Itera sobre os pedidos no array `data`
+    data.forEach((pedido) => {
+      const horaPedido = new Date(pedido.data).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      // Itera sobre os itens do pedido
+      pedido.itens.forEach((item) => {
+        const subtotalItem = item.quantidade * item.preco_unitario;
+        total += subtotalItem;
+
+        // Cria um elemento para o item do pedido
+        const itemElement = document.createElement('div');
+        itemElement.className = 'card-iten';
+        itemElement.innerHTML = `
+          <div class="esquerda">
+            <div class="hora">
+              <p>${horaPedido}</p>
+            </div>
+            <div class="qtde">
+              <p>${item.quantidade}x</p>
+            </div>
+            <div class="item">
+              <p>${item.nome}</p>
+            </div>
+          </div>
+          <div class="direita">
+            <div class="unidade">
+              <p>R$ ${item.preco_unitario.toFixed(2)}</p>
+            </div>
+            <div class="valor">
+              <p>R$ ${subtotalItem.toFixed(2)}</p>
+            </div>
+          </div>
+        `;
+
+        pedidosContainer.appendChild(itemElement);
+      });
+    });
+
+    // Atualiza o total no modal
+    const totalElement = document.getElementById('total-pedidos');
+    resultadoPessoaElement.innerText = `R$ ${total.toFixed(2)}`;
+    totalElement.innerText = `R$ ${total.toFixed(2)}`;
+  } catch (error) {
+    console.error('Erro ao exibir pedidos no modal:', error);
+    showToast('Erro ao exibir pedidos no modal.', 'error');
+  }
 }
 
 // Adiciona o evento para fechar o modal ao clicar no botão de fechar
@@ -726,25 +892,66 @@ async function pedirConta() {
       return;
     }
 
-    // Use o ID da mesa logada (mesaId) na URL
+    // Primeiro verifica o status atual da mesa
+    const responseMesa = await fetch(`/api/mesas/${mesaId}`);
+    if (!responseMesa.ok) {
+      throw new Error('Erro ao verificar status da mesa.');
+    }
+
+    const mesa = await responseMesa.json();
+    console.log('Status da mesa:', mesa.mes_status);
+
+    if (mesa.mes_status === 2) {
+      showToast('A conta já foi solicitada. Aguarde o garçom.', 'info');
+      // Atualiza o título do modal
+      const tituloConta = document.querySelector('.modal-pedidos .titulo h1');
+      tituloConta.textContent = 'MINHA CONTA - AGUARDE O GARÇOM';
+      openModalPedidos(); // Abre o modal de pedidos
+      return;
+    }
+
+    // Verifica se existem pedidos ativos para esta mesa
+    const responsePedidos = await fetch(
+      `/api/comandas/mesas/${mesaId}/pedidos-ativos`
+    );
+    if (!responsePedidos.ok) {
+      throw new Error('Erro ao verificar pedidos ativos.');
+    }
+
+    const { success, data: pedidosAtivos } = await responsePedidos.json();
+
+    if (!success || !pedidosAtivos || pedidosAtivos.length === 0) {
+      showToast(
+        'Adicione pedidos ao carrinho antes de solicitar a conta.',
+        'info'
+      );
+      return;
+    }
+
+    // Continua com o processo de pedir a conta
     const response = await fetch(`/api/mesas/${mesaId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ status: 2 }), // Atualiza o status da mesa para 2
+      body: JSON.stringify({ status: 2 }),
     });
 
     if (!response.ok) {
       throw new Error('Erro ao atualizar o status da mesa.');
     }
 
-    const data = await response.json();
-    console.log('Status da mesa atualizado com sucesso:', data);
-    showToast('Conta solicitada com sucesso!', 'success');
+    const mesaAtualizada = await response.json();
+    console.log('Status da mesa atualizado com sucesso:', mesaAtualizada);
 
-    // Fecha o modal de pedidos
-    closeModalPedidos();
+    comandaAtivaId = null;
+
+    // Trava o modal e adiciona a mensagem
+    const tituloConta = document.querySelector('.modal-pedidos .titulo h1');
+    tituloConta.textContent = 'MINHA CONTA - AGUARDE O GARÇOM';
+    openModalPedidos(); // Abre o modal de pedidos
+
+    showToast('Conta solicitada com sucesso! Aguarde o garçom.', 'success');
   } catch (error) {
     console.error('Erro ao solicitar a conta:', error);
     showToast('Erro ao solicitar a conta.', 'error');
