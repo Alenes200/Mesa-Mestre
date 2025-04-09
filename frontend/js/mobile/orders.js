@@ -1,12 +1,9 @@
-import { fetchProdutosComanda, getPedidosAtivos } from './api.js';
+import { getPedidosAtivos } from './api.js';
 
 export function initOrders() {
     const resumoBtn = document.getElementById('resumoBtn');
     const historicoBtn = document.getElementById('historicoBtn');
-    const resumoContainer = document.querySelector('.mesa-content-container');
-    const historicoContainer = document.getElementById('historicoContainer');
 
-    // Toggle entre resumo e histórico
     resumoBtn.addEventListener('click', () => toggleTab('resumo'));
     historicoBtn.addEventListener('click', () => toggleTab('historico'));
 }
@@ -31,10 +28,10 @@ export function toggleTab(tab) {
     }
 }
 
-// Torna a função acessível globalmente para o HTML
 window.toggleTab = toggleTab;
 
 export async function carregarPedidosComandaAtiva() {
+    document.getElementById('totalPedidos').textContent = "Pedidos (0)"
     try {
         const mesaTitle = document.getElementById('mesaTitle');
         const mesaId = mesaTitle.textContent.match(/Mesa (\d+)/)?.[1];

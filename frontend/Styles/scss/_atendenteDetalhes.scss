@@ -5,7 +5,8 @@ $colors: (
   danger: #e74c3c,
   light-gray: #f5f5f5,
   dark-gray: #333,
-  border: #eee
+  border: #eee,
+  transparent: transparent,
 );
 
 $spacing: (
@@ -170,7 +171,7 @@ $breakpoints: (
 }
 
 .mesa-actions {
-  @include flex-center(space-between);
+  // @include flex-center(space-between);
   padding: map-get($spacing, medium);
   background-color: white;
   border-top: 1px solid map-get($colors, border);
@@ -184,6 +185,7 @@ $breakpoints: (
     display: flex;
 
     .action-button {
+      border: 1px solid black;
       flex: 1;
       padding: map-get($spacing, small);
       margin: 0 5px;
@@ -197,7 +199,7 @@ $breakpoints: (
   }
 
   .back-button {
-    @include button-style(map-get($colors, light-gray), map-get($colors, dark-gray));
+    @include button-style(map-get($colors, transparent), map-get($colors, dark-gray));
   }
 
   .add-button {
@@ -242,13 +244,15 @@ $breakpoints: (
 }
 
 #pagarBtn {
-  display: none; /* Inicia escondido */
+  display: none;
+  /* Inicia escondido */
   /* Use flex para manter consistência com outros botões */
   @include button-style(map-get($colors, secondary));
-  
+
   /* Quando visível */
-  &.visible, &[style*="display: flex"] {
-      display: flex !important;
+  &.visible,
+  &[style*="display: flex"] {
+    display: flex !important;
   }
 }
 
@@ -262,10 +266,12 @@ $breakpoints: (
         text-align: left;
         padding-left: 15px;
       }
+
       &:nth-child(2) {
         flex: 2;
         text-align: center;
       }
+
       &:nth-child(3) {
         flex: 1;
         text-align: right;
@@ -299,7 +305,7 @@ $breakpoints: (
     &.expandido {
       background-color: lighten(map-get($colors, light-gray), 2%);
       margin-bottom: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 
       .detalhes-pedido {
         display: block;
@@ -327,17 +333,22 @@ $breakpoints: (
     }
 
     span {
-      &:nth-child(1) { /* Data/Hora */
+      &:nth-child(1) {
+        /* Data/Hora */
         flex: 3;
         font-size: 0.85rem;
         color: map-get($colors, text-secondary);
       }
-      &:nth-child(2) { /* Número do Pedido */
+
+      &:nth-child(2) {
+        /* Número do Pedido */
         flex: 2;
         font-weight: 600;
         color: map-get($colors, primary);
       }
-      &:nth-child(3) { /* Valor Total */
+
+      &:nth-child(3) {
+        /* Valor Total */
         flex: 2;
         text-align: right;
         font-weight: 700;
@@ -353,8 +364,8 @@ $breakpoints: (
     padding: map-get($spacing, small);
     background-color: white;
     border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
     /* Cabeçalho dos detalhes */
     &::before {
       content: "Itens do Pedido";
@@ -399,20 +410,25 @@ $breakpoints: (
     background-color: lighten(map-get($colors, light-gray), 2%);
     padding: 5px 15px;
     border-top: 2px solid map-get($colors, border);
-    
+
     span {
       font-weight: 600;
-      
-      &:nth-child(1) { /* Total de Pedidos */
+
+      &:nth-child(1) {
+        /* Total de Pedidos */
         flex: 1;
         text-align: left;
         color: map-get($colors, text);
       }
-      &:nth-child(2) { /* Espaço vazio */
+
+      &:nth-child(2) {
+        /* Espaço vazio */
         flex: 2;
         display: none;
       }
-      &:nth-child(3) { /* Valor Total */
+
+      &:nth-child(3) {
+        /* Valor Total */
         flex: 1;
         text-align: right;
         color: map-get($colors, primary);
@@ -422,12 +438,20 @@ $breakpoints: (
 
   /* Animações */
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* Mensagens de estado */
-  .no-results, .error-message {
+  .no-results,
+  .error-message {
     text-align: center;
     padding: 30px;
     color: map-get($colors, dark-gray);
@@ -459,7 +483,7 @@ $breakpoints: (
   }
 
   .mesa-content-container {
-    height: calc(85vh - 180px);
+    height: calc(87vh - 180px);
   }
 
   .mesa-actions {

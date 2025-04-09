@@ -1,25 +1,282 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="Styles/main.css" />
+    <link rel="stylesheet" href="styles/main.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-    <title>Document</title>
+    <title>Mesa Mestre</title>
   </head>
   <body>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="./pages/login_adm.html">Login</a>
-      <a href="pages/register.html">Registro</a>
-      <a href="./pages/pagina_adm.html">Adm</a>
-      <a href="./pages/cardapio.html">Cardapio</a>
-      <a href="./pages/cozinha.html">Cozinha</a>
-    </nav>
+    <!-- Header Fixo -->
+    <header class="inicio-header">
+      <nav class="inicio-nav">
+        <div class="inicio-logo">
+          <a href="#"><img src="./images/Logo.svg" alt="Logo Mesa Mestre" /></a>
+          <h2>Mesa Mestre</h2>
+        </div>
+        <ul class="inicio-nav-links">
+          <li><a href="#" class="inicio-nav-link inicio-active">Home</a></li>
+          <li><a href="#sobre" class="inicio-nav-link">Sobre</a></li>
+          <li>
+            <a href="#funcionalidades" class="inicio-nav-link"
+              >Funcionalidades</a
+            >
+          </li>
+          <li>
+            <a href="#demonstracao" class="inicio-nav-link">Demonstração</a>
+          </li>
+          <li><a href="#contato" class="inicio-nav-link">Contato</a></li>
+          <li>
+            <a
+              href="./pages/login_adm.html"
+              class="inicio-nav-link inicio-login"
+              >Login</a
+            >
+          </li>
+        </ul>
+        <div class="inicio-hamburger">
+          <span class="inicio-bar"></span>
+          <span class="inicio-bar"></span>
+          <span class="inicio-bar"></span>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Seção Hero -->
+    <section id="home" class="inicio-hero">
+      <div class="inicio-hero-content">
+        <!-- <h1 class="inicio-hero-title">Conheça nosso produto inovador</h1> -->
+        <!-- <p class="inicio-hero-subtitle">Solução perfeita para suas necessidades</p> -->
+        <a href="#sobre" class="inicio-hero-cta">Saiba mais</a>
+      </div>
+    </section>
+
+    <!-- Seção Sobre -->
+    <section id="sobre" class="inicio-sobre">
+      <div class="inicio-container">
+        <h2 class="inicio-section-title">Por que escolher nosso produto?</h2>
+        <div class="inicio-sobre-content">
+          <div class="inicio-sobre-text">
+            <p>
+              Texto explicativo sobre o produto e seus benefícios. Destaque os
+              pontos principais que fazem seu produto ser único e valioso para
+              os clientes.
+            </p>
+            <ul class="inicio-benefits">
+              <li class="inicio-benefit-item">Benefício 1</li>
+              <li class="inicio-benefit-item">Benefício 2</li>
+              <li class="inicio-benefit-item">Benefício 3</li>
+            </ul>
+          </div>
+          <div class="inicio-sobre-image">
+            <!-- Você pode substituir por uma imagem real do seu produto -->
+            <img
+              src="assets/product-image.jpg"
+              alt="Imagem do produto"
+              class="inicio-img"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção Funcionalidades -->
+    <section id="funcionalidades" class="inicio-funcionalidades">
+      <div class="inicio-container">
+        <h2 class="inicio-section-title">Funcionalidades Principais</h2>
+        <div class="inicio-features">
+          <div class="inicio-feature">
+            <div class="inicio-feature-icon">
+              <img src="./images/img01.svg" alt="" />
+            </div>
+            <h3 class="inicio-feature-title">Automação de pedidos</h3>
+            <p class="inicio-feature-desc">
+              Ao finalizar o pedido, eles são encaminhados automaticamente para
+              a produção.
+            </p>
+          </div>
+          <div class="inicio-feature">
+            <div class="inicio-feature-icon">
+              <img src="./images/img02.svg" alt="" />
+            </div>
+            <h3 class="inicio-feature-title">Controle de mesas e comandas</h3>
+            <p class="inicio-feature-desc">
+              É possível acompanhar quais estão abertas, aguardando pedido ou a
+              conta por meio do aplicativo.
+            </p>
+          </div>
+          <div class="inicio-feature">
+            <div class="inicio-feature-icon">
+              <img src="./images/img03.svg" alt="" />
+            </div>
+            <h3 class="inicio-feature-title">Atualização em tempo real</h3>
+            <p class="inicio-feature-desc">
+              Atualiza o status de preparo e notifica quando os pedidos estão
+              prontos.
+            </p>
+          </div>
+          <div class="inicio-feature">
+            <div class="inicio-feature-icon">
+              <img src="./images/img04.svg" alt="" />
+            </div>
+            <h3 class="inicio-feature-title">Comunicação eficiente</h3>
+            <p class="inicio-feature-desc">
+              Com a digitalização não é mais preciso lidar com palavras
+              ilegíveis ou erros nas anotações.
+            </p>
+          </div>
+          <div class="inicio-feature">
+            <div class="inicio-feature-icon">
+              <img src="./images/img05.svg" alt="" />
+            </div>
+            <h3 class="inicio-feature-title">Digitalização do atendimento</h3>
+            <p class="inicio-feature-desc">
+              Sistema para o clientes fazer o pedido totalmente integrado.
+            </p>
+          </div>
+          <div class="inicio-feature">
+            <div class="inicio-feature-icon">
+              <img src="./images/img06.svg" alt="" />
+            </div>
+            <h3 class="inicio-feature-title">Pratos salvos no sistema</h3>
+            <p class="inicio-feature-desc">
+              Não é mais preciso lidar com palavras ilegíveis ou erros nas
+              anotações.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção Demonstração -->
+    <section id="demonstracao" class="inicio-demo">
+      <div class="inicio-container">
+        <h2 class="inicio-section-title">Veja nosso produto em ação</h2>
+        <div class="inicio-demo-content">
+          <div class="inicio-demo-video">
+            <!-- Substitua pelo seu vídeo -->
+            <video controls class="inicio-video">
+              <source src="assets/demo-video.mp4" type="video/mp4" />
+              Seu navegador não suporta o elemento de vídeo.
+            </video>
+          </div>
+          <div class="inicio-demo-text">
+            <h3 class="inicio-demo-title">Título da demonstração</h3>
+            <p class="inicio-demo-desc">
+              Descrição do que está sendo mostrado no vídeo e como isso
+              beneficia o usuário.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção Contato -->
+    <section id="contato" class="inicio-contato">
+      <div class="inicio-container">
+        <h2 class="inicio-section-title">Entre em contato</h2>
+        <div class="inicio-contato-content">
+          <form class="inicio-contact-form">
+            <div class="inicio-form-group">
+              <label for="name" class="inicio-form-label">Nome</label>
+              <input type="text" id="name" class="inicio-form-input" required />
+            </div>
+            <div class="inicio-form-group">
+              <label for="email" class="inicio-form-label">Email</label>
+              <input
+                type="email"
+                id="email"
+                class="inicio-form-input"
+                required
+              />
+            </div>
+            <div class="inicio-form-group">
+              <label for="message" class="inicio-form-label">Mensagem</label>
+              <textarea
+                id="message"
+                class="inicio-form-textarea"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" class="inicio-form-submit">Enviar</button>
+          </form>
+          <div class="inicio-contact-info">
+            <h3 class="inicio-contact-title">Outras formas de contato</h3>
+            <ul class="inicio-contact-list">
+              <li class="inicio-contact-item">Email: contato@produto.com</li>
+              <li class="inicio-contact-item">Telefone: (00) 0000-0000</li>
+              <li class="inicio-contact-item">
+                Endereço: Rua Exemplo, 123 - Cidade/Estado
+              </li>
+            </ul>
+            <div class="inicio-social-links">
+              <a href="#" class="inicio-social-link">Instagram</a>
+              <a href="#" class="inicio-social-link">Facebook</a>
+              <a href="#" class="inicio-social-link">LinkedIn</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="inicio-footer">
+      <div class="inicio-container">
+        <div class="inicio-footer-content">
+          <div class="inicio-footer-logo">
+            <div class="inicio-logo">
+              <a href="#"
+                ><img src="./images/Logo.svg" alt="Logo Mesa Mestre"
+              /></a>
+              <h2>Mesa Mestre</h2>
+            </div>
+            <p class="inicio-footer-text">
+              Mesa Mestre é um gerenciador de restaurantes, prático e fácil de
+              usar, possibilitando realizar várias tarefas em um só lugar.
+              Estando por dentro de tudo o que acontece dentro do restaurante,
+              em várias etapas diferentes.
+            </p>
+          </div>
+          <div class="inicio-footer-links">
+            <h4 class="inicio-footer-title">Links</h4>
+            <ul>
+              <li><a href="#home" class="inicio-footer-link">Home</a></li>
+              <li><a href="#sobre" class="inicio-footer-link">Sobre</a></li>
+              <li>
+                <a href="#funcionalidades" class="inicio-footer-link"
+                  >Funcionalidades</a
+                >
+              </li>
+              <li>
+                <a href="#demonstracao" class="inicio-footer-link"
+                  >Demonstração</a
+                >
+              </li>
+              <li><a href="#contato" class="inicio-footer-link">Contato</a></li>
+            </ul>
+          </div>
+          <div class="inicio-footer-contact">
+            <h4 class="inicio-footer-title">Contato</h4>
+            <ul>
+              <li class="inicio-footer-contact-item">contato@produto.com</li>
+              <li class="inicio-footer-contact-item">(00) 0000-0000</li>
+            </ul>
+          </div>
+        </div>
+        <div class="inicio-footer-bottom">
+          <p class="inicio-copyright">
+            &copy; 2023 Nome do Produto. Todos os direitos reservados.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="scripts/main.js"></script>
   </body>
 </html>

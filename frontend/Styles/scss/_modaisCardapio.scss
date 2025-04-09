@@ -623,6 +623,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                margin-right: 13px;
 
                 .esquerda {
                     display: flex;
@@ -646,6 +647,35 @@
             margin-top: 21px;
             padding-top: 13px;
             border-top: 1px solid rgba(0, 0, 0, 0.23);
+            padding-right: 5px;
+
+            /* Adiciona o scroll */
+            overflow-y: auto; // Permite rolagem vertical
+            max-height: 360px; // Define uma altura máxima para o scroll funcionar
+
+            /* Estiliza a barra de rolagem para navegadores modernos */
+            scrollbar-width: thin; // Firefox
+            scrollbar-color: #c6c5ce #F1F0F5; // Cor da barra e do fundo no Firefox
+
+            &::-webkit-scrollbar {
+                width: 8px; // Largura da barra de rolagem
+            }
+
+            &::-webkit-scrollbar-track {
+                background: #F1F0F5; // Cor do fundo da barra
+                border-radius: 10px; // Bordas arredondadas
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background-color: #c6c5ce; // Cor da barra de rolagem
+                border-radius: 10px; // Bordas arredondadas
+                border: 2px solid #F1F0F5; // Espaço entre a barra e o fundo
+            }
+
+            /* Remove setas de rolagem em navegadores baseados no WebKit */
+            &::-webkit-scrollbar-button {
+                display: none;
+            }
 
             .card-iten {
                 display: flex;
@@ -665,10 +695,10 @@
                 }
 
                 .direita {
-                    width: 50%;
+                    width: 75%;
                     display: flex;
                     justify-content: flex-end;
-                    gap: 55px;
+                    gap: 34px;
                 }
             }
         }
@@ -798,5 +828,105 @@
         font-size: 40px;
         line-height: 120%;
         color: #FFFFFF;
+    }
+}
+
+.modal-login-mesas {
+    position: fixed; // Alterado para fixed para garantir que o modal fique fixo na tela
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transform: translateX(-100%); // Posição inicial fora da tela (à esquerda)
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0; // Inicialmente invisível
+
+    &.ativo {
+        transform: translateX(0); // Posição final (centralizada)
+        opacity: 1; // Visível
+        pointer-events: all;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    .conteudo {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 450px;
+        padding: 55px 55px;
+        background: white;
+
+        border-radius: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        h2 {
+            margin-bottom: 89px;
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 32px;
+            line-height: 39px;
+            color: #000000;
+        }
+
+        input {
+            width: 100%;
+            background: #c6c5ce;
+            border-radius: 80px;
+            padding: 13px 0;
+
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 21px;
+            line-height: 39px;
+            color: rgba(0, 0, 0, 0.55);
+            text-align: center;
+        }
+
+        .btn {
+            padding: 13px 0;
+            width: 100%;
+            margin-top: 34px;
+            background: #ff0000;
+            border-radius: 80px;
+
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 21px;
+            line-height: 39px;
+            color: #faf7f7;
+        }
+    }
+
+    .fechar-modal {
+        position: absolute;
+        top: -55px;
+        left: -34px;
+        width: 55px;
+        height: 55px;
+        background: #d91a1a;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 3;
     }
 }

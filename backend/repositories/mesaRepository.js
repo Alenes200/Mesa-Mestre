@@ -224,6 +224,48 @@ const mesasRepository = {
       throw error;
     }
   },
+
+  getByCode: async (codigo) => {
+    try {
+      const query = `
+        SELECT * 
+        FROM TBL_MESA 
+        WHERE MES_CODIGO = $1 AND MES_STATUS >= 0
+      `;
+      const result = await client.query(query, [codigo]);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Erro ao buscar mesa pelo código:', error);
+      throw error;
+    }
+  },
+
+  setMesaLogado: async (id, status) => {
+    try {
+      const query = `
+        UPDATE TBL_MESA
+        SET MES_LOGADO = $1
+        WHERE MES_ID = $2
+        RETURNING *;
+      `;
+      const result = await client.query(query, [status, id]);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Erro ao atualizar status de login da mesa:', error);
+      throw error;
+    }
+  },
+
+  getMesaLogado: async (id) => {
+    try {
+      const query = 'SELECT MES_LOGADO FROM TBL_MESA WHERE MES_ID = $1';
+      const result = await client.query(query, [id]);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Erro ao verificar status de login da mesa:', error);
+      throw error;
+    }
+  },
 };
 
 module.exports = mesasRepository;

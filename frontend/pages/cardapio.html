@@ -16,10 +16,10 @@
     />
     <title>Cardapio</title>
   </head>
-  <body>
+  <body class="body-cardapio">
     <header class="header-cardapio">
-      <div class="mesa">
-        <h1>MESA</h1>
+      <div class="mesa" onclick="openLoginModal()">
+        <h1 id="mesa-logada">MESA</h1>
       </div>
       <nav>
         <div class="pedidos" onclick="openModalPedidos()">
@@ -230,7 +230,19 @@
         <img src="../images/icon-fechar.svg" alt="" />
       </button>
     </div>
-
+    <div class="modal-login-mesas">
+      <div class="overlay"></div>
+      <div class="conteudo">
+        <h2>Configurar mesa</h2>
+        <input type="text" placeholder="Codigo da mesa" id="codigo-mesa" />
+        <button class="btn" id="entrar-mesa">ENTRAR</button>
+        <button id="logout-button" style="display: none;">Sair da Mesa</button>
+        <button class="fechar-modal close">
+          <img src="../images/icon-fechar.svg" alt="" />
+        </button>
+      </div>
+    </div>
+  </div>
     <script src="../js/cardapio.js"></script>
   </body>
 </html>

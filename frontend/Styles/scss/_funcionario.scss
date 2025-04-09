@@ -139,6 +139,10 @@ $cor-hover: #f1f1f1;
   .form-title {
     background-color: $cor-primaria;
     padding: 12px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
   }
 }
 
@@ -214,6 +218,16 @@ $cor-hover: #f1f1f1;
         }
       }
     }
+
+    .flex span {
+      color: #fff;
+    }
+
+    h2 {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+    }
   }
 }
 
@@ -224,4 +238,95 @@ $cor-hover: #f1f1f1;
 
 #search-button-func {
   cursor: pointer;
+}
+
+/* ====================================================================================== */
+/* ESTILOS ESPECÍFICOS PARA SELECTS DA TELA DE FUNCIONÁRIOS */
+.func-select {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: 1px solid $cor-borda;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: $cor-texto;
+  background-color: white;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  &:focus {
+    outline: none;
+    border-color: $cor-primaria;
+    box-shadow: 0 0 0 2px rgba($cor-primaria, 0.2);
+  }
+
+  &:hover {
+    border-color: darken($cor-borda, 10%);
+  }
+}
+
+/* Container para selects com ícone personalizado */
+.func-select-wrapper {
+  position: relative;
+  margin-bottom: 1rem;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid $cor-texto;
+    pointer-events: none;
+  }
+}
+
+/* Estilo para options dentro dos selects de funcionários */
+.func-select option {
+  padding: 0.5rem;
+  background-color: white;
+  color: $cor-texto;
+
+  &:checked {
+    background-color: lighten($cor-primaria, 40%);
+    color: darken($cor-primaria, 10%);
+  }
+
+  &:hover {
+    background-color: $cor-hover !important;
+  }
+}
+
+/* Estilos específicos para o formulário de funcionário */
+.funcionario-form-container {
+  .func-select {
+    border-radius: 8px;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($cor-primaria, 0.1);
+    }
+  }
+}
+
+/* Estilos específicos para o modal de edição */
+#editar-funcionario-modal {
+  .func-select {
+    border-radius: 8px;
+    transition: all 0.2s;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($cor-primaria, 0.1);
+    }
+  }
 }

@@ -3,6 +3,17 @@ import { showModal } from './modal.js';
 // Variável global para armazenar a lista completa de funcionários
 let funcionarios = [];
 
+// Função para converter o tipo de usuário numérico para texto
+export function getTipoUsuarioTexto(tipo) {
+  const tipos = {
+    1: 'Admin',
+    2: 'Atendente',
+    3: 'Cardápio',
+    4: 'Cozinha'
+  };
+  return tipos[tipo] || 'Desconhecido';
+}
+
 // Função para renderizar a tabela de funcionários
 function renderizarFuncionarios(listaFuncionarios) {
   const tabelaFuncionarios = document.getElementById('funcionarios-table-body');
@@ -20,7 +31,7 @@ function renderizarFuncionarios(listaFuncionarios) {
       <td class="email-column">${funcionario.usr_email}</td>
       <td class="telefone-column">${funcionario.usr_telefone || 'N/A'}</td>
       <td class="data-column">${new Date(funcionario.usr_created_at).toLocaleDateString()}</td>
-      <td class="funcao-column">${funcionario.usr_funcao || 'N/A'}</td>
+      <td class="funcao-column">${getTipoUsuarioTexto(funcionario.usr_tipo)}</td>
       <td class="status-column ${statusClass}">${funcionario.usr_status === 1 ? 'Ativo' : 'Inativo'}</td>
       <td class="opcoes-column">
           <span class="editar-funcionario" data-id="${funcionario.usr_id}">✏️</span>

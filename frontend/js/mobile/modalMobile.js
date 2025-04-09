@@ -1,6 +1,4 @@
-// Modal Service
 export const ModalService = {
-    // Modal de Alerta
     alert: (message) => {
       return new Promise((resolve) => {
         const modal = document.getElementById('alertModal');
