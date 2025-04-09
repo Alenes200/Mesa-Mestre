@@ -30,7 +30,7 @@ const chartRepository = {
         LEFT JOIN comandas_filtradas cf ON ds.dia_numero = cf.dia_numero
         ORDER BY ds.dia_numero
       `;
-
+      
       const params = [];
       if (dataInicio && dataFim) {
         params.push(dataInicio, dataFim);
@@ -38,7 +38,9 @@ const chartRepository = {
 
       const result = await client.query(query, params);
       return result.rows;
+
     } catch (error) {
+      console.error('Erro no chartRepository.getComandasPorDiaSemana:', error);
       throw error;
     }
   },
@@ -60,7 +62,7 @@ const chartRepository = {
         ORDER BY quantidade_vendida DESC
         LIMIT 10
       `;
-
+      
       const params = [];
       if (dataInicio && dataFim) {
         params.push(dataInicio, dataFim);
@@ -68,7 +70,9 @@ const chartRepository = {
 
       const result = await client.query(query, params);
       return result.rows;
+
     } catch (error) {
+      console.error('Erro no chartRepository.getTopProdutos:', error);
       throw error;
     }
   },
@@ -86,7 +90,7 @@ const chartRepository = {
         GROUP BY DATE_TRUNC('day', ped.ped_created_at)
         ORDER BY data
       `;
-
+      
       const params = [];
       if (dataInicio && dataFim) {
         params.push(dataInicio, dataFim);
@@ -94,7 +98,9 @@ const chartRepository = {
 
       const result = await client.query(query, params);
       return result.rows;
+
     } catch (error) {
+      console.error('Erro no chartRepository.getFaturamentoDiario:', error);
       throw error;
     }
   },
@@ -116,15 +122,17 @@ const chartRepository = {
         GROUP BY fp.fpa_descricao
         ORDER BY quantidade_pedidos DESC
       `;
-
+      
       const params = [];
       if (dataInicio && dataFim) {
         params.push(dataInicio, dataFim);
       }
-
+  
       const result = await client.query(query, params);
       return result.rows;
+  
     } catch (error) {
+      console.error('Erro no chartRepository.getFormasPagamento:', error);
       throw error;
     }
   },
@@ -144,7 +152,7 @@ const chartRepository = {
         GROUP BY DATE_TRUNC('day', c.com_data_inicio)
         ORDER BY data
       `;
-
+      
       const params = [];
       if (dataInicio && dataFim) {
         params.push(dataInicio, dataFim);
@@ -152,7 +160,9 @@ const chartRepository = {
 
       const result = await client.query(query, params);
       return result.rows;
+
     } catch (error) {
+      console.error('Erro no chartRepository.getMediaComanda:', error);
       throw error;
     }
   },
@@ -174,7 +184,7 @@ const chartRepository = {
         GROUP BY l.loc_descricao  -- Agrupando pela descrição
         ORDER BY total_comandas DESC
       `;
-
+      
       const params = [];
       if (dataInicio && dataFim) {
         params.push(dataInicio, dataFim, dataInicio, dataFim);
@@ -182,7 +192,9 @@ const chartRepository = {
 
       const result = await client.query(query, params);
       return result.rows;
+
     } catch (error) {
+      console.error('Erro no chartRepository.getOcupacaoMesas:', error);
       throw error;
     }
   },
@@ -202,7 +214,7 @@ const chartRepository = {
         GROUP BY p.pro_tipo
         ORDER BY faturamento DESC
       `;
-
+      
       const params = [];
       if (dataInicio && dataFim) {
         params.push(dataInicio, dataFim);
@@ -210,10 +222,12 @@ const chartRepository = {
 
       const result = await client.query(query, params);
       return result.rows;
+
     } catch (error) {
+      console.error('Erro no chartRepository.getVendasPorCategoria:', error);
       throw error;
     }
-  },
+  }
 };
 
 module.exports = chartRepository;

@@ -7,6 +7,7 @@ const pedidoController = {
       const pedidos = await pedidoRepository.getAll();
       res.json(pedidos);
     } catch (error) {
+      console.error('Erro ao listar todos os pedidos:', error);
       res.status(500).json({ error: 'Erro ao listar todos os pedidos.' });
     }
   },
@@ -17,27 +18,22 @@ const pedidoController = {
       const pedidos = await pedidoRepository.getActive();
       res.json(pedidos);
     } catch (error) {
+      console.error('Erro ao listar pedidos ativos:', error);
       res.status(500).json({ error: 'Erro ao listar pedidos ativos.' });
     }
   },
 
   // Busca um pedido pelo ID
   get: async (req, res) => {
-    const id = parseInt(req.params.id, 10);
-    if (isNaN(id) || id <= 0) {
-      return res
-        .status(400)
-        .json({ error: 'ID inválido. Deve ser um número inteiro positivo.' });
-    }
-
     try {
-      const pedido = await pedidoRepository.getById(id);
+      const pedido = await pedidoRepository.getById(req.params.id);
       if (pedido) {
         res.json(pedido);
       } else {
         res.status(404).json({ error: 'Pedido não encontrado.' });
       }
     } catch (error) {
+      console.error('Erro ao buscar pedido:', error);
       res.status(500).json({ error: 'Erro ao buscar pedido.' });
     }
   },
@@ -50,74 +46,35 @@ const pedidoController = {
 
       // Validação dos campos obrigatórios
       if (!com_id || !ped_descricao || !ped_preco_total) {
-        return res.status(400).json({
-          error:
-            'Campos obrigatórios faltando: com_id, ped_descricao e ped_preco_total.',
-        });
-      }
-
-      // Validação do preco_total
-      const preco = Number(ped_preco_total);
-      if (isNaN(preco) || preco <= 0) {
-        return res
-          .status(400)
-          .json({ error: 'ped_preco_total deve ser um número positivo.' });
-      }
-
-      if (!/^\d+(\.\d{1,2})?$/.test(ped_preco_total.toString())) {
-        return res
-          .status(400)
-          .json({ error: 'ped_preco_total deve ter até duas casas decimais.' });
+        return res.status(400).json({ error: 'Campos obrigatórios faltando.' });
       }
 
       const novoPedido = await pedidoRepository.create({
         com_id,
-        ped_descricao: ped_descricao.trim(),
-        ped_status: ped_status ?? 1,
-        ped_preco_total: preco,
+        ped_descricao,
+        ped_status: ped_status || 1,
+        ped_preco_total,
         fpa_id,
       });
 
       res.status(201).json(novoPedido);
     } catch (error) {
+      console.error('Erro ao criar pedido:', error);
       res.status(500).json({ error: 'Erro ao criar pedido.' });
     }
   },
 
   // Atualiza um pedido (nenhum campo obrigatório)
   update: async (req, res) => {
-    const id = parseInt(req.params.id, 10);
-    if (isNaN(id) || id <= 0) {
-      return res
-        .status(400)
-        .json({ error: 'ID inválido. Deve ser um número inteiro positivo.' });
-    }
-
     try {
+      const { id } = req.params;
       const updates = req.body;
 
+      // Verifica se há campos para atualizar
       if (Object.keys(updates).length === 0) {
         return res
           .status(400)
           .json({ error: 'Nenhum campo fornecido para atualização.' });
-      }
-
-      // Validações se `ped_preco_total` estiver presente
-      if (updates.ped_preco_total !== undefined) {
-        const preco = Number(updates.ped_preco_total);
-        if (isNaN(preco) || preco <= 0) {
-          return res
-            .status(400)
-            .json({ error: 'ped_preco_total deve ser um número positivo.' });
-        }
-
-        if (!/^\d+(\.\d{1,2})?$/.test(updates.ped_preco_total.toString())) {
-          return res.status(400).json({
-            error: 'ped_preco_total deve ter até duas casas decimais.',
-          });
-        }
-
-        updates.ped_preco_total = preco;
       }
 
       const pedidoAtualizado = await pedidoRepository.update(id, updates);
@@ -128,21 +85,15 @@ const pedidoController = {
         res.status(404).json({ error: 'Pedido não encontrado.' });
       }
     } catch (error) {
+      console.error('Erro ao atualizar pedido:', error);
       res.status(500).json({ error: 'Erro ao atualizar pedido.' });
     }
   },
 
   // Deleta logicamente um pedido
   delete: async (req, res) => {
-    const id = parseInt(req.params.id, 10);
-    if (isNaN(id) || id <= 0) {
-      return res
-        .status(400)
-        .json({ error: 'ID inválido. Deve ser um número inteiro positivo.' });
-    }
-
     try {
-      const pedidoDeletado = await pedidoRepository.delete(id);
+      const pedidoDeletado = await pedidoRepository.delete(req.params.id);
 
       if (pedidoDeletado) {
         res.json({
@@ -153,6 +104,7 @@ const pedidoController = {
         res.status(404).json({ error: 'Pedido não encontrado.' });
       }
     } catch (error) {
+      console.error('Erro ao deletar pedido:', error);
       res.status(500).json({ error: 'Erro ao deletar pedido.' });
     }
   },

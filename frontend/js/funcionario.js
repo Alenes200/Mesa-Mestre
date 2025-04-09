@@ -1,5 +1,4 @@
 import { showModal } from './modal.js';
-import { escapeHTML } from '../utils/sanitizacao.js';
 
 // Variável global para armazenar a lista completa de funcionários
 let funcionarios = [];
@@ -10,7 +9,7 @@ export function getTipoUsuarioTexto(tipo) {
     1: 'Admin',
     2: 'Atendente',
     3: 'Cardápio',
-    4: 'Cozinha',
+    4: 'Cozinha'
   };
   return tipos[tipo] || 'Desconhecido';
 }
@@ -28,15 +27,15 @@ function renderizarFuncionarios(listaFuncionarios) {
       funcionario.usr_status === 1 ? 'status-ativo' : 'status-inativo';
 
     linha.innerHTML = `
-      <td class="nome-column">${escapeHTML(funcionario.usr_nome)}</td>
-      <td class="email-column">${escapeHTML(funcionario.usr_email)}</td>
-      <td class="telefone-column">${escapeHTML(funcionario.usr_telefone || 'N/A')}</td>
-      <td class="data-column">${escapeHTML(new Date(funcionario.usr_created_at).toLocaleDateString())}</td>
-      <td class="funcao-column">${getTipoUsuarioTexto(escapeHTML(funcionario.usr_tipo))}</td>
-      <td class="status-column ${statusClass}">${escapeHTML(funcionario.usr_status === 1 ? 'Ativo' : 'Inativo')}</td>
+      <td class="nome-column">${funcionario.usr_nome}</td>
+      <td class="email-column">${funcionario.usr_email}</td>
+      <td class="telefone-column">${funcionario.usr_telefone || 'N/A'}</td>
+      <td class="data-column">${new Date(funcionario.usr_created_at).toLocaleDateString()}</td>
+      <td class="funcao-column">${getTipoUsuarioTexto(funcionario.usr_tipo)}</td>
+      <td class="status-column ${statusClass}">${funcionario.usr_status === 1 ? 'Ativo' : 'Inativo'}</td>
       <td class="opcoes-column">
-          <span class="editar-funcionario" data-id="${escapeHTML(funcionario.usr_id)}">✏️</span>
-          <span class="deletar-funcionario" data-id="${escapeHTML(funcionario.usr_id)}">🗑️</span>
+          <span class="editar-funcionario" data-id="${funcionario.usr_id}">✏️</span>
+          <span class="deletar-funcionario" data-id="${funcionario.usr_id}">🗑️</span>
       </td>
     `;
 
@@ -65,9 +64,11 @@ export async function listarFuncionarios(token, userId, termoBusca = null) {
       renderizarFuncionarios(funcionarios);
     } else {
       const errorData = await response.json();
+      console.error('Erro ao buscar funcionários:', errorData);
       showModal('Erro ao buscar funcionários.', 'error');
     }
   } catch (error) {
+    console.error('Erro na requisição:', error);
     showModal(
       'Erro ao buscar funcionários. Tente novamente mais tarde.',
       'error'
@@ -77,17 +78,6 @@ export async function listarFuncionarios(token, userId, termoBusca = null) {
 
 // Função para buscar funcionários (será chamada pelo evento de pesquisa)
 export async function buscarFuncionarios(token, userId) {
-  const searchInput = document.getElementById('search-input-func');
-  const searchTerm = searchInput.value.trim();
-
-  // Validação básica
-  if (searchTerm.length > 100) {
-    showModal('O termo de busca deve ter no máximo 100 caracteres', 'warning');
-    return;
-  }
-
-  // Sanitização adicional
-  const termoSanitizado = searchTerm.replace(/[^\w\sÀ-ú\-]/gi, '');
-
-  await listarFuncionarios(token, userId, termoSanitizado);
+  const searchTerm = document.getElementById('search-input-func').value.trim();
+  await listarFuncionarios(token, userId, searchTerm);
 }

@@ -2,10 +2,6 @@ let allProdutos = [];
 let carrinho = [];
 let mesaId; // Defina o ID da mesa dinamicamente
 let comandaAtivaId = null;
-
-import { escapeHTML } from '../utils/sanitizacao.js';
-import { showModal } from './modal.js';
-
 let contaPedida = false;
 
 // Função para buscar os produtos do backend
@@ -18,7 +14,8 @@ async function fetchProdutos() {
     allProdutos = await response.json();
     displayProdutos(allProdutos);
   } catch (error) {
-    showModal('Erro ao obter produtos.', 'error');
+    console.error('Erro ao obter produtos:', error);
+    alert('Erro ao obter produtos. Verifique o console para mais detalhes.');
   }
 }
 
@@ -38,12 +35,12 @@ function displayProdutos(produtos) {
 
     produtoElement.innerHTML = `
     <div class="descricao">
-      <h2>${escapeHTML(produto.pro_nome)} <span>${preco}</span></h2>
-      <p>${escapeHTML(produto.pro_descricao)}</p>
+      <h2>${produto.pro_nome} <span>${preco}</span></h2>
+      <p>${produto.pro_descricao}</p>
       <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
     </div>
     <div class="imagem-produto">
-      <img src="${escapeHTML(imagemSrc)}" alt="Imagem de ${escapeHTML(produto.pro_nome)}" />
+      <img src="${imagemSrc}" alt="Imagem de ${produto.pro_nome}" />
     </div>
   `;
 
@@ -73,8 +70,8 @@ function displayProdutosPorTipo(tipo) {
 
     produtoElement.innerHTML = `
       <div class="descricao">
-        <h2>${escapeHTML(produto.pro_nome)} <span>${preco}</span></h2>
-        <p>${escapeHTML(produto.pro_descricao)}</p>
+        <h2>${produto.pro_nome} <span>${preco}</span></h2>
+        <p>${produto.pro_descricao}</p>
         <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
       </div>
       <div class="imagem-produto">
@@ -152,6 +149,8 @@ function addToCart(produto, quantidade) {
       return response.json();
     })
     .then((mesa) => {
+      console.log('Status atual da mesa:', mesa.mes_status);
+
       // Se o status da mesa for 2, impede adicionar itens ao carrinho
       if (mesa.mes_status === 2) {
         showToast(
@@ -181,8 +180,11 @@ function addToCart(produto, quantidade) {
           'success'
         );
       }
+
+      console.log('Carrinho:', carrinho);
     })
     .catch((error) => {
+      console.error('Erro ao verificar o status da mesa:', error);
       showToast('Erro ao verificar o status da mesa.', 'error');
     });
 }
@@ -206,32 +208,32 @@ function openCarrinho() {
         src="../images/icon-fechar-cinza.svg"
         alt="Remover produto"
         class="tirar-produto"
-        data-index="${escapeHTML(index)}"
+        data-index="${index}"
       />
       <div class="produto">
         <div class="E-descricao">
           <img
-            src="/uploads/${escapeHTML(item.pro_imagem)}"
-            alt="${escapeHTML(item.pro_nome)}"
+            src="/uploads/${item.pro_imagem}"
+            alt="${item.pro_nome}"
             class="imagem-produto"
           />
           <div class="text-produto">
-            <h2>${escapeHTML(item.pro_nome)}</h2>
-            <p>${escapeHTML(item.pro_descricao)}</p>
+            <h2>${item.pro_nome}</h2>
+            <p>${item.pro_descricao}</p>
           </div>
         </div>
         <div class="D-descricao">
           <div class="quantidade">
-            <button class="btn-quantidade menos" data-index="${escapeHTML(index)}">
+            <button class="btn-quantidade menos" data-index="${index}">
               <img src="../images/icon-menos.svg" alt="Diminuir quantidade" />
             </button>
-            <span>${escapeHTML(item.quantidade)}</span>
-            <button class="btn-quantidade mais" data-index="${escapeHTML(index)}">
+            <span>${item.quantidade}</span>
+            <button class="btn-quantidade mais" data-index="${index}">
               <img src="../images/icon-mais.svg" alt="Aumentar quantidade" />
             </button>
           </div>
           <div class="total-produto">
-            <span>R$ ${escapeHTML(subtotal.toFixed(2))}</span>
+            <span>R$ ${subtotal.toFixed(2)}</span>
           </div>
         </div>
       </div>
@@ -242,7 +244,7 @@ function openCarrinho() {
 
   // Atualiza o subtotal no rodapé do carrinho
   const totalElement = document.querySelector('.total-pedido span');
-  totalElement.innerText = `R$ ${escapeHTML(total.toFixed(2))}`;
+  totalElement.innerText = `R$ ${total.toFixed(2)}`;
 
   // Exibe o modal do carrinho
   carrinhoOffcanvas.classList.add('aberto');
@@ -335,6 +337,7 @@ async function enviarPedidos() {
     }
 
     const mesa = await response.json();
+    console.log('Status atual da mesa:', mesa.mes_status);
 
     // Se o status da mesa for 2, impede novos pedidos e abre o modal de pedidos
     if (mesa.mes_status === 2) {
@@ -354,11 +357,14 @@ async function enviarPedidos() {
 
     // Continua com o envio dos pedidos
     mesaId = obterMesaId();
+    console.log('Mesa ID obtido:', mesaId);
 
     // Usa a comanda ativa existente ou cria uma nova
     comandaAtivaId = comandaAtivaId || (await verificarOuCriarComanda());
+    console.log('Usando comanda ID:', comandaAtivaId);
 
     const pedidoId = await criarPedido(comandaAtivaId);
+    console.log('Pedido ID criado:', pedidoId);
 
     // Adiciona os produtos ao pedido usando o carrinho atualizado
     await adicionarProdutosAoPedido(pedidoId);
@@ -373,6 +379,7 @@ async function enviarPedidos() {
     carrinho = []; // Limpa o carrinho
     closeCarrinho(); // Fecha o modal do carrinho
   } catch (error) {
+    console.error('Erro detalhado ao enviar pedidos:', error);
     showToast(`Erro ao enviar pedidos: ${error.message}`, 'error');
   }
 }
@@ -392,19 +399,24 @@ async function atualizarStatusMesa(status) {
     }
 
     const data = await response.json();
+    console.log(`Status da mesa atualizado para ${status}:`, data);
   } catch (error) {
+    console.error('Erro ao atualizar o status da mesa:', error);
     showToast('Erro ao atualizar o status da mesa.', 'error');
   }
 }
 
 async function verificarOuCriarComanda() {
   try {
+    console.log('Verificando comandas ativas para a mesa:', mesaId);
+
     const responseComandas = await fetch('/api/comandas/active');
     if (!responseComandas.ok) {
       throw new Error('Erro ao buscar comandas ativas.');
     }
 
     const comandas = await responseComandas.json();
+    console.log('Comandas ativas encontradas:', comandas);
 
     // Filtra comandas da mesa atual e ordena por data de início (mais recente primeiro)
     const comandasAtivas = comandas
@@ -420,10 +432,12 @@ async function verificarOuCriarComanda() {
 
     if (comandasAtivas.length > 0) {
       const comandaMaisRecente = comandasAtivas[0];
+      console.log('Comanda mais recente encontrada:', comandaMaisRecente);
       return parseInt(comandaMaisRecente.com_id);
     }
 
     // Se não encontrar comanda ativa, cria uma nova
+    console.log('Nenhuma comanda ativa encontrada. Criando nova comanda...');
     const responseNovaComanda = await fetch('/api/comandas', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -442,13 +456,16 @@ async function verificarOuCriarComanda() {
     }
 
     const novaComanda = await responseNovaComanda.json();
+    console.log('Nova comanda criada com sucesso:', novaComanda);
     return parseInt(novaComanda.com_id);
   } catch (error) {
+    console.error('Erro ao verificar/criar comanda:', error);
     throw new Error(`Erro ao gerenciar comanda: ${error.message}`);
   }
 }
 
 async function criarPedido(comandaId) {
+  console.log('Criando pedido para comandaId:', comandaId);
   const pedidoData = {
     com_id: comandaId,
     ped_descricao: 'Pedido do carrinho', // Alterado de 'descricao' para 'ped_descricao'
@@ -459,6 +476,7 @@ async function criarPedido(comandaId) {
     ),
     ped_data: new Date().toISOString(),
   };
+  console.log('Dados do pedido:', pedidoData);
 
   try {
     const responsePedido = await fetch('/api/pedidos', {
@@ -469,12 +487,14 @@ async function criarPedido(comandaId) {
 
     if (!responsePedido.ok) {
       const error = await responsePedido.json();
+      console.error('Resposta do servidor:', error);
       throw new Error(
         `Erro ao criar pedido: ${error.error || 'Erro desconhecido'}`
       );
     }
 
     const pedido = await responsePedido.json();
+    console.log('Pedido criado:', pedido);
 
     if (!pedido.ped_id) {
       throw new Error('ID do pedido não retornado pelo servidor');
@@ -482,19 +502,31 @@ async function criarPedido(comandaId) {
 
     return pedido.ped_id;
   } catch (error) {
+    console.error('Erro ao criar pedido:', error);
     throw error;
   }
 }
 
 async function adicionarProdutosAoPedido(pedidoId) {
   try {
+    console.log('Iniciando adição de produtos ao pedido:', pedidoId);
+    console.log('Carrinho atual:', JSON.stringify(carrinho, null, 2));
+
     for (const item of carrinho) {
+      console.log('----------------------');
+      console.log('Processando item:', item.pro_nome);
+
       // A tabela TBL_PEDIDO_PRODUTO espera apenas esses campos
       const produtoData = {
         ped_id: parseInt(pedidoId),
         pro_id: parseInt(item.pro_id),
         ppr_quantidade: parseInt(item.quantidade), // Usa a quantidade atualizada
       };
+
+      console.log(
+        'Dados do produto a ser enviado:',
+        JSON.stringify(produtoData, null, 2)
+      );
 
       const responseProduto = await fetch('/api/pedidos-produtos', {
         method: 'POST',
@@ -506,16 +538,19 @@ async function adicionarProdutosAoPedido(pedidoId) {
 
       if (!responseProduto.ok) {
         const errorData = await responseProduto.json();
+        console.error('Erro na resposta:', errorData);
         throw new Error(
           `Erro ao adicionar produto: ${JSON.stringify(errorData)}`
         );
       }
 
       const resultado = await responseProduto.json();
+      console.log('Produto adicionado com sucesso:', resultado);
     }
 
     return true;
   } catch (error) {
+    console.error('Erro ao adicionar produtos:', error);
     throw error;
   }
 }
@@ -560,7 +595,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Configura a mesaId global
       mesaId = parseInt(savedMesaId, 10);
-
 
       // Atualiza a UI
       const mesaLogadaElement = document.getElementById('mesa-logada');
@@ -687,6 +721,7 @@ async function logarNaMesa() {
     }
 
     const mesa = await response.json();
+    console.log('Mesa encontrada:', mesa);
 
     const mesaSalva = localStorage.getItem('mesaId');
 
@@ -754,10 +789,9 @@ async function logarNaMesa() {
 
     // Atualiza o texto do elemento com o ID "mesa-logada"
     const mesaLogadaElement = document.getElementById('mesa-logada');
-    mesaLogadaElement.innerHTML = escapeHTML(mesa.mes_nome)
-      ? escapeHTML(mesa.mes_nome.toUpperCase())
+    mesaLogadaElement.innerHTML = mesa.mes_nome
+      ? mesa.mes_nome.toUpperCase()
       : `MESA ${String(mesaId).padStart(2, '0')}`;
-
 
     showToast(
       `Logado na mesa ${mesa.mes_descricao || mesa.mes_id} com sucesso!`,
@@ -765,6 +799,7 @@ async function logarNaMesa() {
     );
     closeLoginModal();
   } catch (error) {
+    console.error('Erro ao logar na mesa:', error);
     showToast(error.message || 'Erro ao logar na mesa.', 'error');
   }
 }
@@ -819,6 +854,7 @@ async function openModalPedidos() {
 
     modalPedidos.classList.add('ativo');
   } catch (error) {
+    console.error('Erro ao abrir modal de pedidos:', error);
     showToast('Erro ao abrir modal de pedidos.', 'error');
   }
 }
@@ -834,6 +870,7 @@ async function closeModalPedidos() {
     }
     modalPedidos.classList.remove('ativo');
   } catch (error) {
+    console.error('Erro ao fechar modal de pedidos:', error);
     showToast('Erro ao verificar status da mesa.', 'error');
   }
 }
@@ -860,6 +897,8 @@ async function exibirPedidosNoModal() {
     if (!success) {
       throw new Error('Erro ao buscar pedidos.');
     }
+
+    console.log('Pedidos ativos obtidos:', data);
 
     // Atualiza o modal com os pedidos obtidos
     const pedidosContainer = document.getElementById('itens-pedidos');
@@ -889,18 +928,18 @@ async function exibirPedidosNoModal() {
               <p>${horaPedido}</p>
             </div>
             <div class="qtde">
-              <p>${escapeHTML(item.quantidade)}x</p>
+              <p>${item.quantidade}x</p>
             </div>
             <div class="item">
-              <p>${escapeHTML(item.nome)}</p>
+              <p>${item.nome}</p>
             </div>
           </div>
           <div class="direita">
             <div class="unidade">
-              <p>R$ ${escapeHTML(item.preco_unitario.toFixed(2))}</p>
+              <p>R$ ${item.preco_unitario.toFixed(2)}</p>
             </div>
             <div class="valor">
-              <p>R$ ${escapeHTML(subtotalItem.toFixed(2))}</p>
+              <p>R$ ${subtotalItem.toFixed(2)}</p>
             </div>
           </div>
         `;
@@ -914,6 +953,7 @@ async function exibirPedidosNoModal() {
     resultadoPessoaElement.innerText = `R$ ${total.toFixed(2)}`;
     totalElement.innerText = `R$ ${total.toFixed(2)}`;
   } catch (error) {
+    console.error('Erro ao exibir pedidos no modal:', error);
     showToast('Erro ao exibir pedidos no modal.', 'error');
   }
 }
@@ -973,6 +1013,7 @@ document.getElementById('menos-divisao').addEventListener('click', () => {
 async function pedirConta() {
   try {
     if (!mesaId) {
+      console.error('ID da mesa não definido.');
       showToast('Erro: ID da mesa não definido.', 'error');
       return;
     }
@@ -984,6 +1025,7 @@ async function pedirConta() {
     }
 
     const mesa = await responseMesa.json();
+    console.log('Status da mesa:', mesa.mes_status);
 
     if (mesa.mes_status === 2) {
       showToast('A conta já foi solicitada. Aguarde o garçom.', 'info');
@@ -1026,6 +1068,7 @@ async function pedirConta() {
     }
 
     const mesaAtualizada = await response.json();
+    console.log('Status da mesa atualizado com sucesso:', mesaAtualizada);
 
     comandaAtivaId = null;
 
@@ -1036,6 +1079,7 @@ async function pedirConta() {
 
     showToast('Conta solicitada com sucesso! Aguarde o garçom.', 'success');
   } catch (error) {
+    console.error('Erro ao solicitar a conta:', error);
     showToast('Erro ao solicitar a conta.', 'error');
   }
 }

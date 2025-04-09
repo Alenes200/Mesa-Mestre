@@ -2,8 +2,7 @@ INSERT INTO TBL_LOCAL (LOC_DESCRICAO) VALUES
     ('Área Externa'),
     ('Área Interna'),
     ('Área VIP'),
-    ('Todas');
-
+    ('Locais');
 
 INSERT INTO TBL_MESA (MES_NOME, MES_CODIGO, MES_CAPACIDADE, MES_DESCRICAO, LOC_ID, MES_STATUS)
 VALUES

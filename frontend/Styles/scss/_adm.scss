@@ -193,32 +193,6 @@
           border-radius: 10px;
           text-align: center;
 
-          .corpo-modal {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-
-            .tabelaLocais {
-              width: 100%;
-
-              tbody {
-                tr {
-                  td {
-                    border-top: 1px solid black;
-                  }
-
-                  td.opcoes {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 10px;
-                  }
-                }
-              }
-            }
-          }
-
           .topo {
             display: flex;
             justify-content: space-between;
