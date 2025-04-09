@@ -51,7 +51,7 @@
                 />
                 <h3>Dashboard</h3>
               </div>
-              <div id="op_configuracao" class="opcao">
+              <div id="op_configuracao" class="opcao" style="display: none;">
                 <img
                   src="../images/icon-configuracao.svg"
                   alt="ícone de Configurações"
@@ -401,8 +401,13 @@
                   <input type="text" id="telefone-funcionario" />
                 </div>
                 <div class="form-group">
-                  <label for="funcao-funcionario">Função:</label>
-                  <input type="text" id="funcao-funcionario" />
+                  <label for="tipo-funcionario">Tipo:</label>
+                  <select class="func-select" id="tipo-funcionario">
+                    <option value="1">Admin</option>
+                    <option value="2">Atendente</option>
+                    <option value="3">Cardápio</option>
+                    <option value="4">Cozinha</option>
+                  </select>
                 </div>
                 <div class="form-group">
                   <label for="senha-funcionario">Senha:</label>
@@ -540,8 +545,13 @@
           <input type="text" id="editar-telefone-funcionario" />
         </div>
         <div class="form-group">
-          <label for="editar-funcao-funcionario">Função:</label>
-          <input type="text" id="editar-funcao-funcionario" />
+          <label for="editar-tipo-funcionario">Tipo:</label>
+          <select class="func-select" id="editar-tipo-funcionario">
+            <option value="1">Admin</option>
+            <option value="2">Atendente</option>
+            <option value="3">Cardápio</option>
+            <option value="4">Cozinha</option>
+          </select>
         </div>
         <div class="form-group">
           <label for="editar-status-funcionario">Status</label>

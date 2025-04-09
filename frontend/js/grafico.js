@@ -588,27 +588,27 @@ export async function carregarGraficoComandas(token) {
         });
 
         // Depois de criar todos os gráficos, verifique se foram criados
-        console.log('Gráficos criados:', {
-          comandas: !!graficos.comandas,
-          topProdutos: !!graficos.topProdutos,
-          faturamento: !!graficos.faturamento,
-          pagamentos: !!graficos.pagamentos,
-          mediaComanda: !!graficos.mediaComanda,
-          ocupacao: !!graficos.ocupacao,
-          categorias: !!graficos.categorias,
-        });
+        // console.log('Gráficos criados:', {
+        //   comandas: !!graficos.comandas,
+        //   topProdutos: !!graficos.topProdutos,
+        //   faturamento: !!graficos.faturamento,
+        //   pagamentos: !!graficos.pagamentos,
+        //   mediaComanda: !!graficos.mediaComanda,
+        //   ocupacao: !!graficos.ocupacao,
+        //   categorias: !!graficos.categorias,
+        // });
 
         // Verifique as dimensões dos canvas
-        document.querySelectorAll('canvas').forEach((canvas) => {
-          console.log(`Canvas ${canvas.id}:`, {
-            width: canvas.width,
-            height: canvas.height,
-            clientWidth: canvas.clientWidth,
-            clientHeight: canvas.clientHeight,
-            offsetWidth: canvas.offsetWidth,
-            offsetHeight: canvas.offsetHeight,
-          });
-        });
+        // document.querySelectorAll('canvas').forEach((canvas) => {
+        //   console.log(`Canvas ${canvas.id}:`, {
+        //     width: canvas.width,
+        //     height: canvas.height,
+        //     clientWidth: canvas.clientWidth,
+        //     clientHeight: canvas.clientHeight,
+        //     offsetWidth: canvas.offsetWidth,
+        //     offsetHeight: canvas.offsetHeight,
+        //   });
+        // });
       } catch (error) {
         console.error('Erro ao carregar gráficos:', error);
         showModal('Erro ao carregar gráficos: ' + error.message, 'error');

@@ -17,6 +17,13 @@
             <button class="menu-btn">
                 <img src="../images/icone-menu-sanduiche.svg"></img>
             </button>
+            <div id="mobileMenu" class="mobile-menu hidden">
+                <div class="mobile-menu-item sair-mobile">
+                    <img src="../images/logout-branco.svg" alt="ícone de saída" />
+                    <h3>Sair</h3>
+                </div>
+                <!-- Você pode adicionar outros itens de menu aqui se necessário -->
+            </div>
         </header>
 
         <div class="main-content">
@@ -111,7 +118,7 @@
                         <button class="action-button back-button" id="voltarBtn">
                             <i class="fas fa-arrow-left"></i> Voltar
                         </button>
-                        <button class="action-button add-button" id="addProdutoBtn">
+                        <button class="action-button add-button" id="addProdutoBtn" style="display: none;">
                             <i class="fas fa-plus"></i> Add. Produto
                         </button>
                         <button class="action-button pay-button" id="pagarBtn">
@@ -134,7 +141,17 @@
                             <span>R$</span>
                             <input type="number" id="valorRecebido" placeholder="0,00" step="0.01" min="0">
                         </div>
-                        <div id="valorFaltante" class="payment-info">Faltam: R$ 13,50</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div id="valorFaltante" class="payment-info">Faltam: R$ 13,50</div>
+                            <label class="service-fee-container">
+                                <input type="checkbox" id="taxaServico" checked>
+                                Taxa de Serviço (10%)
+                            </label>
+                        </div>
+                        <div class="payment-info">
+                            <span>Taxa de Serviço:</span>
+                            <span id="valorTaxa">R$ 0,00</span>
+                        </div>
                     </div>
 
                     <div class="payment-info-group">
@@ -167,9 +184,8 @@
 
                 <div class="payment-actions">
                     <button id="voltarPagamentoBtn" class="payment-action-button back-button">Voltar</button>
-                    <button id="addProdutoPagamentoBtn" class="payment-action-button add-button">Add. Produto</button>
-                    <button id="adicionarPagamentoBtn" class="payment-action-button pay-button">Adicionar
-                        Pagamento</button>
+                    <button id="addProdutoPagamentoBtn" class="payment-action-button add-button" style="display: none;">Add. Produto</button>
+                    <button id="adicionarPagamentoBtn" class="payment-action-button pay-button">Adicionar Pagamento</button>
                 </div>
             </div>
 
