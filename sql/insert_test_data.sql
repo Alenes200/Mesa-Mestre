@@ -1,20 +1,21 @@
 INSERT INTO TBL_LOCAL (LOC_DESCRICAO) VALUES 
     ('Área Externa'),
     ('Área Interna'),
-    ('Área VIP');
+    ('Área VIP'),
+    ('Locais');
 
 INSERT INTO TBL_MESA (MES_NOME, MES_CODIGO, MES_CAPACIDADE, MES_DESCRICAO, LOC_ID, MES_STATUS)
 VALUES
     ('Mesa 01', 'CodM01', 5, 'Mesa 1', 2, 0),
-    ('Mesa 02', 'CodM02', 5, 'Mesa 2', 1, 2),
+    ('Mesa 02', 'CodM02', 5, 'Mesa 2', 1, 0),
     ('Mesa 03', 'CodM03', 5, 'Mesa 3', 2, 0),
-    ('Mesa 04', 'CodM04', 5, 'Mesa 4', 2, 1),
+    ('Mesa 04', 'CodM04', 5, 'Mesa 4', 2, 0),
     ('Mesa 05', 'CodM05', 5, 'Mesa 5', 1, 0),
     ('Mesa 06', 'CodM06', 5, 'Mesa 6', 2, 0),
-    ('Mesa 07', 'CodM07', 4, 'Mesa 7', 1, 2),
-    ('Mesa 08', 'CodM08', 6, 'Mesa 8', 2, 2),
+    ('Mesa 07', 'CodM07', 4, 'Mesa 7', 1, 0),
+    ('Mesa 08', 'CodM08', 6, 'Mesa 8', 2, 0),
     ('Mesa 09', 'CodM09', 2, 'Mesa 9', 3, 0),
-    ('Mesa 10', 'CodM10', 8, 'Mesa 10', 2, 1),
+    ('Mesa 10', 'CodM10', 8, 'Mesa 10', 2, 0),
     ('Mesa 11', 'CodM11', 4, 'Mesa 11', 1, 0),
     ('Mesa 12', 'CodM12', 6, 'Mesa 12', 3, 0);
 
