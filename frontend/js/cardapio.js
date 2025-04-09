@@ -696,18 +696,41 @@ document
   .querySelector('.modal-login-mesas .fechar-modal')
   .addEventListener('click', closeLoginModal);
 
-function openModalPedidos() {
-  exibirPedidosNoModal();
-  const modalPedidos = document.querySelector('.modal-pedidos');
-  const numeroPessoasElement = document.getElementById('pessoas-divisao');
+async function openModalPedidos() {
+  try {
+    // Primeiro verifica o status da mesa
+    const responseMesa = await fetch(`/api/mesas/${mesaId}`);
+    if (!responseMesa.ok) {
+      throw new Error('Erro ao verificar status da mesa.');
+    }
 
-  // Redefine o número de pessoas para 1 ao abrir o modal
-  numeroPessoasElement.innerText = '1';
+    const mesa = await responseMesa.json();
+    const tituloConta = document.querySelector('.modal-pedidos .titulo h1');
 
-  // Atualiza a divisão da conta com o valor inicial
-  atualizarDivisaoConta();
+    // Define o título com base no status da mesa
+    if (mesa.mes_status === 2) {
+      tituloConta.textContent = 'MINHA CONTA - AGUARDE O GARÇOM';
+    } else {
+      tituloConta.textContent = 'MINHA CONTA';
+    }
 
-  modalPedidos.classList.add('ativo'); // Adiciona a classe ativo para abrir o modal
+    // Atualiza os pedidos no modal
+    await exibirPedidosNoModal();
+
+    const modalPedidos = document.querySelector('.modal-pedidos');
+    const numeroPessoasElement = document.getElementById('pessoas-divisao');
+
+    // Redefine o número de pessoas para 1 ao abrir o modal
+    numeroPessoasElement.innerText = '1';
+
+    // Atualiza a divisão da conta com o valor inicial
+    atualizarDivisaoConta();
+
+    modalPedidos.classList.add('ativo');
+  } catch (error) {
+    console.error('Erro ao abrir modal de pedidos:', error);
+    showToast('Erro ao abrir modal de pedidos.', 'error');
+  }
 }
 
 async function closeModalPedidos() {
@@ -869,7 +892,43 @@ async function pedirConta() {
       return;
     }
 
-    // Atualiza o status da mesa para 2 (conta pedida)
+    // Primeiro verifica o status atual da mesa
+    const responseMesa = await fetch(`/api/mesas/${mesaId}`);
+    if (!responseMesa.ok) {
+      throw new Error('Erro ao verificar status da mesa.');
+    }
+
+    const mesa = await responseMesa.json();
+    console.log('Status da mesa:', mesa.mes_status);
+
+    if (mesa.mes_status === 2) {
+      showToast('A conta já foi solicitada. Aguarde o garçom.', 'info');
+      // Atualiza o título do modal
+      const tituloConta = document.querySelector('.modal-pedidos .titulo h1');
+      tituloConta.textContent = 'MINHA CONTA - AGUARDE O GARÇOM';
+      openModalPedidos(); // Abre o modal de pedidos
+      return;
+    }
+
+    // Verifica se existem pedidos ativos para esta mesa
+    const responsePedidos = await fetch(
+      `/api/comandas/mesas/${mesaId}/pedidos-ativos`
+    );
+    if (!responsePedidos.ok) {
+      throw new Error('Erro ao verificar pedidos ativos.');
+    }
+
+    const { success, data: pedidosAtivos } = await responsePedidos.json();
+
+    if (!success || !pedidosAtivos || pedidosAtivos.length === 0) {
+      showToast(
+        'Adicione pedidos ao carrinho antes de solicitar a conta.',
+        'info'
+      );
+      return;
+    }
+
+    // Continua com o processo de pedir a conta
     const response = await fetch(`/api/mesas/${mesaId}`, {
       method: 'PUT',
       headers: {
@@ -882,16 +941,15 @@ async function pedirConta() {
       throw new Error('Erro ao atualizar o status da mesa.');
     }
 
-    const data = await response.json();
-    console.log('Status da mesa atualizado com sucesso:', data);
+    const mesaAtualizada = await response.json();
+    console.log('Status da mesa atualizado com sucesso:', mesaAtualizada);
+
+    comandaAtivaId = null;
 
     // Trava o modal e adiciona a mensagem
-    contaPedida = true;
     const tituloConta = document.querySelector('.modal-pedidos .titulo h1');
     tituloConta.textContent = 'MINHA CONTA - AGUARDE O GARÇOM';
-
-    // Desabilita o botão de pedir conta
-    document.getElementById('pedir-conta').disabled = true;
+    openModalPedidos(); // Abre o modal de pedidos
 
     showToast('Conta solicitada com sucesso! Aguarde o garçom.', 'success');
   } catch (error) {
