@@ -139,6 +139,10 @@ $cor-hover: #f1f1f1;
   .form-title {
     background-color: $cor-primaria;
     padding: 12px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
   }
 }
 
@@ -214,6 +218,16 @@ $cor-hover: #f1f1f1;
         }
       }
     }
+
+    .flex span {
+      color: #fff;
+    }
+
+    h2 {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+    }
   }
 }
 
@@ -246,13 +260,13 @@ $cor-hover: #f1f1f1;
   transition: all 0.3s ease;
   cursor: pointer;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  
+
   &:focus {
     outline: none;
     border-color: $cor-primaria;
     box-shadow: 0 0 0 2px rgba($cor-primaria, 0.2);
   }
-  
+
   &:hover {
     border-color: darken($cor-borda, 10%);
   }
@@ -262,7 +276,7 @@ $cor-hover: #f1f1f1;
 .func-select-wrapper {
   position: relative;
   margin-bottom: 1rem;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -283,12 +297,12 @@ $cor-hover: #f1f1f1;
   padding: 0.5rem;
   background-color: white;
   color: $cor-texto;
-  
+
   &:checked {
     background-color: lighten($cor-primaria, 40%);
     color: darken($cor-primaria, 10%);
   }
-  
+
   &:hover {
     background-color: $cor-hover !important;
   }
@@ -298,7 +312,7 @@ $cor-hover: #f1f1f1;
 .funcionario-form-container {
   .func-select {
     border-radius: 8px;
-    
+
     &:focus {
       box-shadow: 0 0 0 3px rgba($cor-primaria, 0.1);
     }
@@ -310,7 +324,7 @@ $cor-hover: #f1f1f1;
   .func-select {
     border-radius: 8px;
     transition: all 0.2s;
-    
+
     &:focus {
       box-shadow: 0 0 0 3px rgba($cor-primaria, 0.1);
     }

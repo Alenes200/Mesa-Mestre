@@ -72,7 +72,7 @@
         h3 {
           font-family: 'Poppins';
           font-style: normal;
-          font-weight: 700;
+          font-weight: 600;
           font-size: 20px;
           line-height: 112%;
           /* or 22px */
@@ -626,7 +626,7 @@
 }
 
 .pesquisa {
-  margin-top: 34px;
+  margin-top: 55px;
   display: flex;
   justify-content: flex-end;
 
@@ -696,7 +696,7 @@
         font-family: 'Poppins';
         font-style: normal;
         font-weight: 600;
-        font-size: 31px;
+        font-size: 20px;
         line-height: 112%;
         /* identical to box height, or 35px */
         text-align: center;
@@ -713,8 +713,8 @@
     h2 {
       font-family: 'Poppins';
       font-style: normal;
-      font-weight: 500;
-      font-size: 20px;
+      font-weight: 600;
+      font-size: 17px;
       line-height: 112%;
       /* or 22px */
       letter-spacing: -1px;
@@ -725,7 +725,7 @@
     }
 
     .text {
-      margin-top: 34px;
+      margin-top: 21px;
       width: 100%;
       padding: 0px 34px;
 
@@ -767,7 +767,6 @@
     }
 
     .botoes {
-      margin-top: 44.84px;
       display: flex;
       align-items: end;
       justify-content: right;
@@ -778,6 +777,7 @@
         height: 33.82px;
         border-radius: 5px;
         background-color: #FF9090;
+        font-weight: 500;
       }
 
       .botaoAdicionar {
@@ -785,11 +785,12 @@
         height: 33.82px;
         border-radius: 5px;
         background-color: #90FF98;
+        font-weight: 500;
       }
     }
 
     .opcoes {
-      margin-top: 34px;
+      margin-top: 21px;
       width: 100%;
       padding: 0px 34px;
       padding-bottom: 34px;
@@ -859,6 +860,27 @@
     }
   }
 }
+
+.esquerda-funcionarios {
+  .top-pesquisa {
+    display: flex;
+    align-items: center;
+  }
+
+  .pesquisa {
+    width: 100%;
+
+    .pesquisa-funcionarios {
+      background: #FFFFFF;
+      border: 1px solid rgba(0, 0, 0, 0.26);
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+
+    }
+  }
+}
+
+
 
 #upload-button {
   margin-top: 8px;
