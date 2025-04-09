@@ -3,6 +3,7 @@ import { showPaymentView } from './payment.js';
 import { appState } from './state.js';
 import { ModalService } from './modalMobile.js';
 import { logoutAtendimento } from './api.js';
+import { escapeHTML } from '../../utils/sanitizacao.js';
 
 export function initUI() {
   const voltarBtn = document.getElementById('voltarBtn');
@@ -26,8 +27,8 @@ export function initUI() {
       botaoLogoutMobile.addEventListener('click', () => {
         logoutAtendimento();
         if (appState.pollingInterval) {
-            clearInterval(appState.pollingInterval);
-            appState.pollingInterval = null;
+          clearInterval(appState.pollingInterval);
+          appState.pollingInterval = null;
         }
       });
     }
@@ -84,8 +85,6 @@ export async function showMesaDetail(mesaId) {
 
     mesaTitle.textContent = `Mesa ${mesaId} - Comanda`;
   } catch (error) {
-    console.error('Erro ao carregar detalhes da mesa:', error);
-
     produtosContainer.innerHTML = `
             <div class="error-message">
                 <i class="fas fa-exclamation-triangle"></i>
@@ -124,7 +123,7 @@ export function renderProdutos(produtos) {
     const item = document.createElement('div');
     item.className = 'produto-item';
     item.innerHTML = `
-            <span>${produto.nome || 'Produto sem nome'}</span>
+            <span>${escapeHTML(produto.nome) || 'Produto sem nome'}</span>
             <span>${quantidade}</span>
             <span>R$ ${valorTotal.toFixed(2)}</span>
         `;

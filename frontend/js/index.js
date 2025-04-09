@@ -10,9 +10,12 @@ import {
   desativar,
   abrirModal,
   fecharModal,
+  adicionarLocal,
 } from './mesas.js';
 import { listarFuncionarios, buscarFuncionarios } from './funcionario.js';
 import { carregarGraficoComandas, destruirGrafico } from './grafico.js';
+
+import { escapeHTML } from '../utils/sanitizacao.js';
 
 const token = localStorage.getItem('token');
 
@@ -31,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   conteudoGraficos.style.display = 'block';
 
   carregarLocais();
-  carregarMesasModal(carregarMesas, 'Externa');
+  carregarMesasModal(carregarTodasMesasAtivas);
 
   if (!token) {
     window.location.href = '../pages/login_adm.html';
@@ -61,7 +64,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       await carregarGraficoComandas(token);
     } catch (error) {
-      console.error('Erro ao carregar gráficos:', error);
       showModal(
         'Erro ao carregar gráficos. Tente novamente mais tarde.',
         'error'
@@ -75,23 +77,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         buscarFuncionarios(token, userId);
       });
   } catch (error) {
-    console.error('Erro ao carregar dados do usuário:', error);
     localStorage.removeItem('token'); // Remove o token inválido
     window.location.href = '../pages/login_adm.html'; // Redireciona para login
     return;
   }
-
-  // Modal functionality remains the same
-  // const cardMesas = document.querySelectorAll('.card-mesa');
-  // const modal = document.querySelector('.modal-mesa');
-  // const closeIcon = document.querySelector('#fechar-modal-mesas');
-  // const overlay = document.querySelector('.overlay');
-
-  // cardMesas.forEach((card) => {
-  //   card.addEventListener('click', () => {
-  //     modal.style.display = 'flex';
-  //   });
-  // });
 
   const configuracao = document.getElementById('configuracao');
   configuracao.addEventListener('click', function () {
@@ -106,8 +95,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     .getElementById('overlayGenerico')
     .addEventListener('click', fecharModal);
   document
-    .getElementById('botaoFecharModal')
-    .addEventListener('click', fecharModal);
+    .getElementById('botaoAdicionarLocal')
+    .addEventListener('click', adicionarLocal);
 
   const botaoSalvar = document.getElementById('salvar-alteracoes');
 
@@ -147,14 +136,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = '../pages/login_adm.html';
       } else {
         const errorData = await response.json();
-        console.error('Erro ao fazer logout:', errorData);
         showModal(
           'Erro ao fazer logout. Tente novamente.' + errorData.error,
           'error'
         );
       }
     } catch (error) {
-      console.error('Erro na requisição:', error);
       showModal('Erro ao fazer logout. Tente novamente.', 'error');
     }
   });
@@ -251,7 +238,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       await carregarGraficoComandas(token);
       conteudoGraficos.style.opacity = '1'; // Mostrar gradualmente
     } catch (error) {
-      console.error('Erro ao carregar gráficos:', error);
       conteudoGraficos.innerHTML = `
         <div class="graficos-error">
           <p>Erro ao carregar gráficos. Tente novamente.</p>
@@ -284,28 +270,75 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 const btnSalvarFuncionario = document.getElementById('btn-salvar-funcionario');
 
-btnSalvarFuncionario.addEventListener('click', async () => {
-  const nome = document.getElementById('nome-funcionario').value.trim();
-  const email = document.getElementById('email-funcionario').value.trim();
-  const telefone = document.getElementById('telefone-funcionario').value.trim();
-  const tipo = document.getElementById('tipo-funcionario').value;
-  const senha = document.getElementById('senha-funcionario').value.trim();
-  const funcionarioFormContainer = document.getElementById(
-    'funcionario-form-container'
-  );
+aplicarMascaraTelefone('telefone-funcionario');
 
-  if (!nome || !email || !senha) {
-    showModal('Por favor, preencha todos os campos obrigatórios.', 'warning');
+btnSalvarFuncionario.addEventListener('click', async () => {
+  // Sanitização dos dados
+  const nome = sanitizarTexto(
+    document.getElementById('nome-funcionario').value.trim()
+  );
+  const email = sanitizarTexto(
+    document.getElementById('email-funcionario').value.trim().toLowerCase()
+  );
+  const telefone = document
+    .getElementById('telefone-funcionario')
+    .value.replace(/\D/g, '');
+
+  const funcao = sanitizarTexto(
+    document.getElementById('funcao-funcionario').value
+  );
+  const senha = document.getElementById('senha-funcionario').value.trim();
+
+  // Validações
+  const erros = [];
+
+  // Validação do nome (3-100 caracteres)
+  if (!nome || nome.length < 3 || nome.length > 100) {
+    erros.push('Nome deve ter entre 3 e 100 caracteres, ');
+  }
+
+  // Validação de e-mail
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    erros.push('Formato de e-mail inválido,');
+  }
+
+  // Validação de telefone (opcional, mas se preenchido 10 ou 11 dígitos)
+  if (telefone && (telefone.length < 10 || telefone.length > 11)) {
+    erros.push('Telefone deve ter 10 ou 11 dígitos (com DDD),');
+  }
+
+  // Validação de função (opcional, até 50 caracteres)
+  if (funcao && funcao.length > 50) {
+    erros.push('Função deve ter no máximo 50 caracteres,');
+  }
+
+  // Validação de senha (mínimo 8 caracteres, 1 letra maiúscula, 1 número)
+  const senhaRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+  if (!senhaRegex.test(senha)) {
+    erros.push(
+      'Senha deve ter pelo menos 8 caracteres, 1 letra maiúscula e 1 número'
+    );
+  }
+
+  // Exibir erros se houver
+  if (erros.length > 0) {
+    showModal(erros.join('\n\n'), 'warning');
     return;
   }
 
+  // Montar objeto com dados sanitizados
   const novoFuncionario = {
     nome: nome,
     email: email,
-    telefone: telefone,
-    tipo: parseInt(tipo),
+    telefone: telefone || null, // Enviar null se vazio
+    funcao: funcao,
     senha: senha,
   };
+
+  const funcionarioFormContainer = document.getElementById(
+    'funcionario-form-container'
+  );
 
   try {
     const response = await fetch('/api/users', {
@@ -318,23 +351,81 @@ btnSalvarFuncionario.addEventListener('click', async () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log('Funcionário adicionado com sucesso:', data);
       showModal('Funcionário adicionado com sucesso!', 'success');
       listarFuncionarios(token, userId); // Atualiza a lista de funcionários
       funcionarioFormContainer.classList.remove('aberto'); // Fecha o formulário
     } else {
       const errorData = await response.json();
-      console.error('Erro ao adicionar funcionário:', errorData);
-      showModal('Erro ao adicionar funcionário: ' + errorData.error, 'error');
+      showModal(
+        'Erro ao adicionar funcionário: ' +
+          (errorData.message || 'Erro desconhecido'),
+        'error'
+      );
     }
   } catch (error) {
-    console.error('Erro na requisição:', error);
     showModal(
       'Erro ao adicionar funcionário. Tente novamente mais tarde.',
       'error'
     );
   }
 });
+
+// Função de máscara para telefone
+function aplicarMascaraTelefone(inputId = 'editar-telefone-funcionario') {
+  const telefoneInput = document.getElementById(inputId);
+
+  telefoneInput.addEventListener('input', function (e) {
+    let valor = e.target.value.replace(/\D/g, '');
+    let formato = '';
+
+    if (valor.length > 10) {
+      formato = valor.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    } else if (valor.length > 5) {
+      formato = valor.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+    } else if (valor.length > 2) {
+      formato = valor.replace(/(\d{0,2})(\d{0,4})/, '($1) $2');
+    } else {
+      formato = valor.replace(/(\d{0,2})/, '($1');
+    }
+
+    // Remove parênteses vazios
+    formato = formato.replace(/\(\)/g, '').replace(/\(-\)/g, '');
+
+    // Mantém o cursor na posição correta
+    const posicaoOriginal = e.target.selectionStart;
+    const posicaoAtual = Math.max(
+      posicaoOriginal + (formato.length - e.target.value.length),
+      1
+    );
+
+    e.target.value = formato;
+    e.target.setSelectionRange(posicaoAtual, posicaoAtual);
+  });
+
+  // Validação melhorada
+  telefoneInput.addEventListener('blur', function (e) {
+    const valor = e.target.value.replace(/\D/g, '');
+    if (valor.length === 0) {
+      e.target.value = '';
+      return;
+    }
+
+    const valido = valor.length === 10 || valor.length === 11;
+    e.target.classList.toggle('input-error', !valido);
+
+    if (!valido) {
+      showModal(
+        'Telefone inválido! Formato esperado: (00) 0000-0000 ou (00) 00000-0000',
+        'warning',
+        3000
+      );
+    }
+  });
+}
+
+function sanitizarTexto(texto) {
+  return texto.replace(/<[^>]*>?/gm, ''); // Remove tags HTML
+}
 
 // Abrir modal de edição
 document.addEventListener('click', (event) => {
@@ -357,49 +448,114 @@ async function abrirModalEdicao(funcionarioId) {
       const funcionario = await response.json();
 
       // Preenche o modal com os dados do funcionário
-      document.getElementById('editar-nome-funcionario').value = funcionario.usr_nome;
-      document.getElementById('editar-email-funcionario').value = funcionario.usr_email;
-      document.getElementById('editar-telefone-funcionario').value = funcionario.usr_telefone || '';
-      document.getElementById('editar-tipo-funcionario').value = funcionario.usr_tipo || '';
-      document.getElementById('editar-status-funcionario').value = funcionario.usr_status;
+      document.getElementById('editar-nome-funcionario').value =
+        funcionario.usr_nome;
+      document.getElementById('editar-email-funcionario').value =
+        funcionario.usr_email;
+      document.getElementById('editar-telefone-funcionario').value =
+        funcionario.usr_telefone || '';
+      document.getElementById('editar-funcao-funcionario').value =
+        funcionario.usr_tipo || '';
+      document.getElementById('editar-status-funcionario').value =
+        funcionario.usr_status;
 
       // Exibe o modal
       const modalEdicao = document.getElementById('editar-funcionario-modal');
       modalEdicao.style.display = 'flex';
 
+      // Aplicar máscara ao campo de telefone
+      aplicarMascaraTelefone();
+
+      // Aplicar máscara ao campo de telefone
+      const telefone = funcionario.usr_telefone || '';
+      document.getElementById('editar-telefone-funcionario').value =
+        telefone.replace(/(\d{2})(\d{4,5})(\d{4})/, '($1) $2-$3');
+
       // Remove eventos anteriores
-      document.getElementById('btn-cancelar-edicao').removeEventListener('click', closeModalEdicao);
+      document
+        .getElementById('btn-cancelar-edicao')
+        .removeEventListener('click', closeModalEdicao);
       modalEdicao.removeEventListener('click', closeModalEdicaoOutside);
-      document.getElementById('btn-salvar-edicao').removeEventListener('click', salvarEdicao);
+      document
+        .getElementById('btn-salvar-edicao')
+        .removeEventListener('click', salvarEdicao);
 
       // Fechar modal ao clicar no botão de cancelar ou fora do modal
-      document.getElementById('btn-cancelar-edicao').addEventListener('click', closeModalEdicao);
-      document.getElementById('close-modal-editar').addEventListener('click', closeModalEdicao);
+      document
+        .getElementById('btn-cancelar-edicao')
+        .addEventListener('click', closeModalEdicao);
+      document
+        .getElementById('close-modal-editar')
+        .addEventListener('click', closeModalEdicao);
       modalEdicao.addEventListener('click', closeModalEdicaoOutside);
 
       // Salvar edição
-      document.getElementById('btn-salvar-edicao').addEventListener('click', salvarEdicao);
+      document
+        .getElementById('btn-salvar-edicao')
+        .addEventListener('click', salvarEdicao);
 
       async function salvarEdicao() {
-        const nome = document.getElementById('editar-nome-funcionario').value.trim();
-        const email = document.getElementById('editar-email-funcionario').value.trim();
-        const telefone = document.getElementById('editar-telefone-funcionario').value.trim();
-        const tipo = parseInt(document.getElementById('editar-tipo-funcionario').value);
-        const status = parseInt(document.getElementById('editar-status-funcionario').value);
+        // Sanitização dos campos
+        const nome = sanitizarTexto(
+          document.getElementById('editar-nome-funcionario').value.trim()
+        );
+        const email = sanitizarTexto(
+          document
+            .getElementById('editar-email-funcionario')
+            .value.trim()
+            .toLowerCase()
+        );
+        const telefone = document
+          .getElementById('editar-telefone-funcionario')
+          .value.replace(/\D/g, '');
+        const funcao = sanitizarTexto(
+          document.getElementById('editar-funcao-funcionario').value
+        );
+        const status = parseInt(
+          document.getElementById('editar-status-funcionario').value
+        );
 
-        if (!nome || !email) {
-          showModal(
-            'Por favor, preencha todos os campos obrigatórios.',
-            'warning'
-          );
+        // Validações
+        const erros = [];
+
+        // Validação do nome
+        if (!nome || nome.length < 3 || nome.length > 100) {
+          erros.push('Nome deve ter entre 3 e 100 caracteres');
+        }
+
+        // Validação do email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          erros.push('E-mail inválido');
+        }
+
+        // Validação do telefone (se preenchido)
+        if (telefone.length > 0) {
+          if (telefone.length < 10 || telefone.length > 11) {
+            erros.push('Telefone inválido');
+          }
+        }
+
+        // Validação da função
+        if (funcao && funcao.length > 50) {
+          erros.push('Função deve ter no máximo 50 caracteres');
+        }
+
+        // Validação do status
+        if (isNaN(status) || ![0, 1].includes(status)) {
+          erros.push('Status inválido');
+        }
+
+        if (erros.length > 0) {
+          showModal(erros.join('\n'), 'warning');
           return;
         }
 
         const dadosAtualizados = {
           nome: nome,
           email: email,
-          telefone: telefone,
-          tipo: tipo,
+          telefone: telefone || null, // Enviar null se vazio
+          funcao: funcao,
           status: status,
         };
 
@@ -414,20 +570,17 @@ async function abrirModalEdicao(funcionarioId) {
 
           if (response.ok) {
             const data = await response.json();
-            // console.log('Funcionário atualizado com sucesso:', data);
             showModal('Funcionário atualizado com sucesso!', 'success');
             listarFuncionarios(token, userId); // Atualiza a lista de funcionários
             closeModalEdicao(); // Fecha o modal
           } else {
             const errorData = await response.json();
-            console.error('Erro ao atualizar funcionário:', errorData);
             showModal(
-              'Erro ao atualizar funcionário: ' + errorData.error,
+              'Erro ao atualizar funcionário: ' + errorData.message,
               'error'
             );
           }
         } catch (error) {
-          console.error('Erro na requisição:', error);
           showModal(
             'Erro ao atualizar funcionário. Tente novamente mais tarde.',
             'error'
@@ -446,11 +599,9 @@ async function abrirModalEdicao(funcionarioId) {
       }
     } else {
       const errorData = await response.json();
-      console.error('Erro ao buscar funcionário:', errorData);
       showModal('Erro ao buscar funcionário.', 'error');
     }
   } catch (error) {
-    console.error('Erro na requisição:', error);
     showModal(
       'Erro ao buscar funcionário. Tente novamente mais tarde.',
       'error'
@@ -473,19 +624,16 @@ document.addEventListener('click', (event) => {
 
           if (response.ok) {
             const data = await response.json();
-            console.log('Funcionário deletado com sucesso:', data);
             showModal('Funcionário deletado com sucesso!', 'success');
             listarFuncionarios(token, userId); // Atualiza a lista de funcionários
           } else {
             const errorData = await response.json();
-            console.error('Erro ao deletar funcionário:', errorData);
             showModal(
               'Erro ao deletar funcionário: ' + errorData.error,
               'error'
             );
           }
         } catch (error) {
-          console.error('Erro na requisição:', error);
           showModal(
             'Erro ao deletar funcionário. Tente novamente mais tarde.',
             'error'
@@ -522,27 +670,61 @@ document
     const descricao = document.getElementById('descricao').value.trim();
     const local = document.getElementById('local').value.trim();
     const precoInput = document.getElementById('preco').value.trim();
-    const preco = parseFloat(precoInput.replace(',', '.')); // Substitui vírgula por ponto e converte para float
+    // Substitui vírgula por ponto e converte para float
+    const preco = parseFloat(precoInput.replace(',', '.'));
     const imagemInput = document.getElementById('imagem'); // Campo de upload de imagem
     const tipo = document.querySelector('.allergen-select').value.trim();
-    console.log(tipo);
 
-    // Verifica se uma imagem foi selecionada
-    if (
-      !nome ||
-      !descricao ||
-      !local ||
-      !preco ||
-      !imagemInput.files.length ||
-      !tipo
-    ) {
-      // alert(
-      //   'Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.'
-      // );
-      showModal(
-        'Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.',
-        'warning'
-      );
+    // Valida se os campos obrigatórios estão preenchidos
+    if (!nome) {
+      showModal('Nome é obrigatório.', 'warning');
+      return;
+    }
+    if (!descricao) {
+      showModal('Descrição é obrigatória.', 'warning');
+      return;
+    }
+    if (!local) {
+      showModal('Local é obrigatório.', 'warning');
+      return;
+    }
+    if (!precoInput || isNaN(preco) || preco <= 0) {
+      showModal('Preço deve ser um número positivo.', 'warning');
+      return;
+    }
+    if (!tipo) {
+      showModal('Tipo é obrigatório.', 'warning');
+      return;
+    }
+    if (!imagemInput.files.length) {
+      showModal('Imagem é obrigatória.', 'warning');
+      return;
+    }
+
+    // Validação de limite de caracteres
+    if (nome.length > 255) {
+      showModal('Nome não pode exceder 255 caracteres.', 'warning');
+      return;
+    }
+    // Aqui você pode adicionar validações similares para descrição e local, caso necessário
+
+    // Validação do formato do preço (até duas casas decimais)
+    const precoRegex = /^\d+(\.\d{1,2})?$/;
+    if (!precoRegex.test(preco.toString())) {
+      showModal('Preço deve ter até duas casas decimais.', 'warning');
+      return;
+    }
+
+    // Validação de arquivo de imagem: tipo e tamanho
+    const arquivo = imagemInput.files[0];
+    const mimeTypesPermitidos = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!mimeTypesPermitidos.includes(arquivo.type)) {
+      showModal('Tipo de imagem inválido. Use JPEG, PNG ou GIF.', 'warning');
+      return;
+    }
+    const tamanhoMaximo = 2 * 1024 * 1024; // 2MB
+    if (arquivo.size > tamanhoMaximo) {
+      showModal('Imagem excede o tamanho máximo permitido (2MB).', 'warning');
       return;
     }
 
@@ -553,7 +735,7 @@ document
     formData.append('local', local);
     formData.append('preco', preco);
     formData.append('tipo', tipo);
-    formData.append('imagem', imagemInput.files[0]); // Adiciona o arquivo de imagem
+    formData.append('imagem', arquivo); // Adiciona o arquivo de imagem
 
     try {
       // Faz a requisição POST para o backend
@@ -564,20 +746,14 @@ document
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Produto adicionado com sucesso:', data);
-        // alert('Produto adicionado com sucesso!');
         showModal('Produto adicionado com sucesso!', 'success');
         listarProdutos(); // Atualiza a lista de produtos após a adição
         limparFormulario();
       } else {
         const errorData = await response.json();
-        console.error('Erro ao adicionar produto:', errorData);
-        // alert('Erro ao adicionar produto: ' + errorData.error);
         showModal('Erro ao adicionar produto: ' + errorData.error, 'error');
       }
     } catch (error) {
-      console.error('Erro na requisição:', error);
-      // alert('Erro ao adicionar produto. Tente novamente mais tarde.');
       showModal(
         'Erro ao adicionar produto. Tente novamente mais tarde.',
         'error'
@@ -605,7 +781,6 @@ document.getElementById('imagem').addEventListener('change', (event) => {
   } else {
     // Caso não seja uma imagem, exibe o texto padrão
     placeholder.innerHTML = `<span class="placeholder-text">Foto do Produto</span>`;
-    // alert('Por favor, selecione um arquivo de imagem válido.');
     showModal('Por favor, selecione um arquivo de imagem válido.', 'warning');
   }
 });
@@ -642,7 +817,7 @@ function preencherFormulario(produto) {
 
   // Atualiza a pré-visualização da imagem
   const placeholder = document.querySelector('.image-placeholder');
-  placeholder.innerHTML = `<img src="/uploads/${produto.pro_imagem}" alt="Pré-visualização da imagem" class="preview-image" />`;
+  placeholder.innerHTML = `<img src="/uploads/${escapeHTML(produto.pro_imagem)}" alt="Pré-visualização da imagem" class="preview-image" />`;
 
   // Armazena o ID do produto em um atributo do botão "Salvar" para uso posterior
   document
@@ -669,13 +844,9 @@ async function buscarProdutoPorId(id) {
       const produto = await response.json();
       preencherFormulario(produto); // Preenche o formulário com os dados do produto
     } else {
-      console.error('Erro ao buscar produto:', response.statusText);
-      // alert('Erro ao buscar produto.');
       showModal('Erro ao buscar produto.', 'error');
     }
   } catch (error) {
-    console.error('Erro na requisição:', error);
-    // alert('Erro ao buscar produto. Tente novamente mais tarde.');
     showModal('Erro ao buscar produto. Tente novamente mais tarde.', 'error');
   }
 }
@@ -687,7 +858,6 @@ async function listarProdutos() {
     const response = await fetch('/api/produtos');
     if (response.ok) {
       const produtos = await response.json(); // Converte a resposta para JSON
-      // console.log('Produtos:', produtos);
 
       // Seleciona o corpo da tabela onde os produtos serão exibidos
       const tabelaProdutos = document.querySelector('.menu-table tbody');
@@ -696,11 +866,11 @@ async function listarProdutos() {
       // Itera sobre os produtos e cria as linhas da tabela
       produtos.forEach((produto) => {
         const linha = document.createElement('tr');
-        linha.setAttribute('data-id', produto.pro_id); // Armazena o ID do produto na linha
+        linha.setAttribute('data-id', escapeHTML(produto.pro_id)); // Armazena o ID do produto na linha
         linha.innerHTML = `
-          <td class="nome-column">${produto.pro_nome}</td>
+          <td class="nome-column">${escapeHTML(produto.pro_nome)}</td>
           <td class="local-column">
-            <span class="location-tag">${produto.pro_local}</span>
+            <span class="location-tag">${escapeHTML(produto.pro_local)}</span>
           </td>
         `;
         tabelaProdutos.appendChild(linha);
@@ -708,13 +878,9 @@ async function listarProdutos() {
 
       adicionarEventosTabela(); // Adiciona os eventos de clique às novas linhas
     } else {
-      console.error('Erro ao buscar produtos:', response.statusText);
-      // alert('Erro ao buscar produtos.');
       showModal('Erro ao buscar produtos.', 'error');
     }
   } catch (error) {
-    console.error('Erro na requisição:', error);
-    // alert('Erro ao buscar produtos. Tente novamente mais tarde.');
     showModal('Erro ao buscar produtos. Tente novamente mais tarde.', 'error');
   }
 }
@@ -729,7 +895,6 @@ document.querySelector('.btn-save').addEventListener('click', async () => {
     .getAttribute('data-id'); // Obtém o ID do produto
 
   if (!produtoId) {
-    // alert('Nenhum produto selecionado para atualizar.');
     showModal('Nenhum produto selecionado para atualizar.', 'warning');
     return;
   }
@@ -744,7 +909,6 @@ document.querySelector('.btn-save').addEventListener('click', async () => {
   const tipo = document.querySelector('.allergen-select').value.trim();
 
   if (!nome || !descricao || !local || !preco || !tipo) {
-    // alert('Por favor, preencha todos os campos obrigatórios.');
     showModal('Por favor, preencha todos os campos obrigatórios.', 'warning');
     return;
   }
@@ -770,20 +934,14 @@ document.querySelector('.btn-save').addEventListener('click', async () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log('Produto atualizado com sucesso:', data);
-      // alert('Produto atualizado com sucesso!');
       showModal('Produto atualizado com sucesso!', 'success');
       listarProdutos(); // Atualiza a lista de produtos
       limparFormulario();
     } else {
       const errorData = await response.json();
-      console.error('Erro ao atualizar produto:', errorData);
-      // alert('Erro ao atualizar produto: ' + errorData.error);
       showModal('Erro ao atualizar produto: ' + errorData.error, 'error');
     }
   } catch (error) {
-    console.error('Erro na requisição:', error);
-    // alert('Erro ao atualizar produto. Tente novamente mais tarde.');
     showModal(
       'Erro ao atualizar produto. Tente novamente mais tarde.',
       'error'
@@ -813,17 +971,14 @@ document.querySelector('.btn-delete').addEventListener('click', async () => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log('Produto deletado com sucesso:', data);
           showModal('Produto deletado com sucesso!', 'success');
           listarProdutos(); // Atualiza a lista de produtos
           limparFormulario();
         } else {
           const errorData = await response.json();
-          console.error('Erro ao deletar produto:', errorData);
           showModal('Erro ao deletar produto: ' + errorData.error, 'error');
         }
       } catch (error) {
-        console.error('Erro na requisição:', error);
         showModal(
           'Erro ao deletar produto. Tente novamente mais tarde.',
           'error'

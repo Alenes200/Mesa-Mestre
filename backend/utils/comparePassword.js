@@ -1,12 +1,14 @@
 const bcrypt = require('bcrypt');
 
 async function comparePassword(password, hashedPassword) {
-  try {
-    const match = await bcrypt.compare(password, hashedPassword);
+  if (typeof password !== 'string' || typeof hashedPassword !== 'string') {
+    return false;
+  }
 
-    return match;
-  } catch (error) {
-    console.error('Erro ao comparar as senhas', error);
+  try {
+    const result = await bcrypt.compare(password, hashedPassword);
+    return result;
+  } catch (err) {
     return false;
   }
 }
