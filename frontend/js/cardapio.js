@@ -573,29 +573,83 @@ async function atualizarPedidoComPrecoTotal(pedidoId) {
 }
 
 // Adiciona um event listener para carregar os produtos quando a página for carregada
-document.addEventListener('DOMContentLoaded', () => {
-  // Recupera o ID da mesa do Local Storage
+document.addEventListener('DOMContentLoaded', async () => {
+  fetchProdutos();
   const savedMesaId = localStorage.getItem('mesaId');
+
   if (savedMesaId) {
-    mesaId = parseInt(savedMesaId, 10);
-    console.log('Mesa recuperada do Local Storage:', mesaId);
+    try {
+      const mesaResponse = await fetch(`/api/mesas/${savedMesaId}`);
+      const mesaData = await mesaResponse.json();
 
-    // Atualiza o texto do elemento com o ID "mesa-logada"
-    const mesaLogadaElement = document.getElementById('mesa-logada');
-    mesaLogadaElement.innerHTML = `MESA ${String(mesaId).padStart(2, '0')}`;
+      // Verifica se a mesa ainda está logada
+      const logadoResponse = await fetch(`/api/mesas/${savedMesaId}/logado`);
+      const logadoData = await logadoResponse.json();
 
-    showToast(
-      `Bem-vindo de volta à mesa ${String(mesaId).padStart(2, '0')}!`,
-      'success'
-    );
+      if (mesaData.mes_status === 0 || !logadoData.mes_logado) {
+        localStorage.removeItem('mesaId');
+        await deslogarDaMesa();
+        openLoginModal();
+        return;
+      }
+
+      // Configura a mesaId global
+      mesaId = parseInt(savedMesaId, 10);
+
+      // Atualiza a UI
+      const mesaLogadaElement = document.getElementById('mesa-logada');
+      mesaLogadaElement.innerHTML = mesaData.mes_nome
+        ? mesaData.mes_nome.toUpperCase()
+        : `MESA ${String(mesaId).padStart(2, '0')}`;
+
+        // Mostra o botão de logout
+      // document.getElementById('logout-button').style.display = 'block';
+
+      showToast(
+        `Bem-vindo de volta à mesa ${mesaData.mes_descricao || mesaId}!`,
+        'success'
+      );
+    } catch (error) {
+      console.error('Erro ao verificar status da mesa:', error);
+      localStorage.removeItem('mesaId');
+      openLoginModal();
+    }
   } else {
-    // Se não houver mesa salva, abre o modal de login
     openLoginModal();
   }
-
-  // Carrega os produtos
-  fetchProdutos();
 });
+
+async function deslogarDaMesa() {
+  if (!mesaId) return;
+
+  try {
+    const response = await fetch(`/api/mesas/${mesaId}/logado`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: false }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao deslogar da mesa.');
+    }
+
+    // Limpa os dados locais
+    mesaId = null;
+    comandaAtivaId = null;
+    carrinho = [];
+    localStorage.removeItem('mesaId');
+
+    // Atualiza a UI
+    const mesaLogadaElement = document.getElementById('mesa-logada');
+    mesaLogadaElement.innerHTML = 'MESA NÃO LOGADA';
+
+    console.log('Deslogado da mesa com sucesso');
+    return true;
+  } catch (error) {
+    console.error('Erro ao deslogar da mesa:', error);
+    return false;
+  }
+}
 
 // Adiciona event listeners para os itens do menu lateral
 document.querySelectorAll('.card-nav').forEach((navItem) => {
@@ -649,6 +703,7 @@ function closeLoginModal() {
 }
 
 // Função para logar na mesa
+// Modifique a função logarNaMesa
 async function logarNaMesa() {
   const codigoMesaInput = document.getElementById('codigo-mesa');
   const codigoMesa = codigoMesaInput.value.trim();
@@ -659,7 +714,7 @@ async function logarNaMesa() {
   }
 
   try {
-    // Faz a requisição para buscar a mesa pelo código
+    // Busca a mesa pelo código
     const response = await fetch(`/api/mesas/codigo/${codigoMesa}`);
     if (!response.ok) {
       throw new Error('Mesa não encontrada ou código inválido.');
@@ -668,33 +723,104 @@ async function logarNaMesa() {
     const mesa = await response.json();
     console.log('Mesa encontrada:', mesa);
 
-    // Define o ID da mesa globalmente
+    const mesaSalva = localStorage.getItem('mesaId');
+
+    // Verifica se a mesa já está logada (independentemente de ser a mesma ou não)
+    const mesaLogadoResponse = await fetch(`/api/mesas/${mesa.mes_id}/logado`);
+    const mesaLogadoData = await mesaLogadoResponse.json();
+
+    // Se a mesa já está logada E não é a mesma que está salva localmente
+    if (mesaLogadoData.mes_logado && (!mesaSalva || parseInt(mesaSalva) !== mesa.mes_id)) {
+      throw new Error('Esta mesa já está em uso.');
+    }
+
+    // Se tiver uma mesa salva no localStorage e for a mesma mesa, permite acesso
+    if (mesaSalva && parseInt(mesaSalva) === mesa.mes_id) {
+      mesaId = mesa.mes_id;
+      // Atualiza o texto do elemento com o ID "mesa-logada"
+      const mesaLogadaElement = document.getElementById('mesa-logada');
+      mesaLogadaElement.innerHTML = mesa.mes_nome
+        ? mesa.mes_nome.toUpperCase()
+        : `MESA ${String(mesaId).padStart(2, '0')}`;
+
+      showToast(
+        `Bem-vindo de volta à mesa ${mesa.mes_descricao || mesa.mes_id}!`,
+        'success'
+      );
+      closeLoginModal();
+      return;
+    }
+
+    // Se estiver logado em outra mesa, primeiro desloga da mesa anterior
+    if (mesaSalva && parseInt(mesaSalva) !== mesa.mes_id) {
+      try {
+        await fetch(`/api/mesas/${mesaSalva}/logado`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: false }),
+        });
+        console.log(`Mesa ${mesaSalva} deslogada com sucesso`);
+      } catch (error) {
+        console.error(`Erro ao deslogar da mesa ${mesaSalva}:`, error);
+        // Continua mesmo com erro, pois pode ser que a mesa já tenha sido deslogada
+      }
+    }
+
+    // Verifica se a mesa já está logada
+    // const mesaLogadoResponse = await fetch(`/api/mesas/${mesa.mes_id}/logado`);
+    // const mesaLogadoData = await mesaLogadoResponse.json();
+
+    if (mesaLogadoData.mes_logado && !mesaSalva) {
+      throw new Error('Esta mesa já está em uso.');
+    }
+
+    // Mesa não está logada ou é a mesma do localStorage, pode prosseguir
     mesaId = mesa.mes_id;
-    console.log('ID da mesa logado:', mesaId);
+
+    // Marca a mesa como logada
+    await fetch(`/api/mesas/${mesaId}/logado`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: true }),
+    });
 
     // Salva o ID da mesa no Local Storage
     localStorage.setItem('mesaId', mesaId);
 
     // Atualiza o texto do elemento com o ID "mesa-logada"
     const mesaLogadaElement = document.getElementById('mesa-logada');
-    mesaLogadaElement.innerHTML = mesa.mes_nome.toUpperCase();
+    mesaLogadaElement.innerHTML = mesa.mes_nome
+      ? mesa.mes_nome.toUpperCase()
+      : `MESA ${String(mesaId).padStart(2, '0')}`;
 
     showToast(
       `Logado na mesa ${mesa.mes_descricao || mesa.mes_id} com sucesso!`,
       'success'
     );
-    closeLoginModal(); // Fecha o modal após o login
+    closeLoginModal();
   } catch (error) {
     console.error('Erro ao logar na mesa:', error);
     showToast(error.message || 'Erro ao logar na mesa.', 'error');
   }
 }
 
+// Adiciona evento para o botão de logout
+document.getElementById('logout-button').addEventListener('click', async () => {
+  const confirmacao = confirm('Deseja realmente sair desta mesa?');
+  if (confirmacao) {
+    await deslogarDaMesa();
+    openLoginModal();
+    document.getElementById('logout-button').style.display = 'none';
+  }
+});
+
+// Modifique a função logarNaMesa para mostrar o botão de logout quando logado
+// Adicione esta linha no final da função logarNaMesa, antes do closeLoginModal():
+// document.getElementById('logout-button').style.display = 'block';
+
 // Adiciona eventos para abrir e fechar o modal de login
 document.getElementById('entrar-mesa').addEventListener('click', logarNaMesa);
-document
-  .querySelector('.modal-login-mesas .fechar-modal')
-  .addEventListener('click', closeLoginModal);
+document.querySelector('.modal-login-mesas .fechar-modal').addEventListener('click', closeLoginModal);
 
 async function openModalPedidos() {
   try {
