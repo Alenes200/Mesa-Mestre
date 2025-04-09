@@ -446,12 +446,10 @@ export function salvar() {
           ) {
             carregarMesasModal(carregarTodasMesasAtivas);
             retornou = true;
+          } else if (estiloElemento.color === 'rgb(255, 99, 71)') {
+            carregarMesasModal(carregarMesas, elemento.dataset.local);
           }
         });
-
-        if (!retornou) {
-          carregarMesasModal(carregarMesas, localJson.loc_descricao);
-        }
       }
     })
     .catch((error) => {
