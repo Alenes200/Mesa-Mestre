@@ -7,7 +7,6 @@ const formaPagamentoRepository = {
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar formas de pagamento:', error);
       throw error;
     }
   },
@@ -18,7 +17,6 @@ const formaPagamentoRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao buscar forma de pagamento por ID:', error);
       throw error;
     }
   },
@@ -33,7 +31,6 @@ const formaPagamentoRepository = {
       const result = await client.query(query, [descricao]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao criar forma de pagamento:', error);
       throw error;
     }
   },
@@ -49,21 +46,20 @@ const formaPagamentoRepository = {
       const result = await client.query(query, [descricao, id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao atualizar forma de pagamento:', error);
       throw error;
     }
   },
 
   delete: async (id) => {
     try {
-      const query = 'DELETE FROM TBL_FORMA_PAGAMENTO WHERE FPA_ID = $1 RETURNING *';
+      const query =
+        'DELETE FROM TBL_FORMA_PAGAMENTO WHERE FPA_ID = $1 RETURNING *';
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao deletar forma de pagamento:', error);
       throw error;
     }
-  }
+  },
 };
 
 module.exports = formaPagamentoRepository;

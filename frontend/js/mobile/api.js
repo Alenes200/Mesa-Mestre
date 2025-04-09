@@ -11,9 +11,8 @@ export async function logoutAtendimento() {
     if (response.ok) {
       localStorage.removeItem('token');
       window.location.href = '../pages/login_adm.html';
-    } 
+    }
   } catch (error) {
-    console.error('Erro na requisição:', error);
     showModal('Erro ao fazer logout. Tente novamente.', 'error');
   }
 }
@@ -24,7 +23,6 @@ export async function fetchMesas() {
     if (!response.ok) throw new Error('Erro ao buscar mesas');
     return await response.json();
   } catch (error) {
-    console.error('Erro:', error);
     return [];
   }
 }
@@ -35,7 +33,6 @@ export async function fetchMesasPorLocal(local) {
     if (!response.ok) throw new Error('Erro ao buscar mesas por local');
     return await response.json();
   } catch (error) {
-    console.error('Erro:', error);
     return [];
   }
 }
@@ -43,6 +40,7 @@ export async function fetchMesasPorLocal(local) {
 export async function fetchProdutosComanda(mesaId) {
   try {
     const response = await fetch(`/api/comandas/mesa/${mesaId}/produtos`);
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => null);
       const errorMsg = errorData?.message || response.statusText;
@@ -54,7 +52,6 @@ export async function fetchProdutosComanda(mesaId) {
       throw new Error('Formato de dados inválido - esperado array');
     return data;
   } catch (error) {
-    console.error('Erro na requisição:', error);
     return [];
   }
 }
@@ -65,7 +62,6 @@ export async function fetchFormasPagamento() {
     if (!response.ok) throw new Error('Erro ao buscar formas de pagamento');
     return await response.json();
   } catch (error) {
-    console.error('Erro:', error);
     return [];
   }
 }
@@ -93,7 +89,6 @@ export async function getComandaAtivaPorMesaId(mesaId) {
       (comanda) => comanda.mes_id && comanda.mes_id.toString() === mesaId
     );
   } catch (error) {
-    console.error('Erro ao buscar comanda:', error);
     throw error;
   }
 }

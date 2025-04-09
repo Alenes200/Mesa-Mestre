@@ -108,25 +108,14 @@
                 </div>
             
                 <div class="botoes">
-                  <button id="botaoFecharModal">Fechar</button>
+                  <button id="botaoAdicionarLocal">Adicionar</button>
                 </div>
               </div>
             </div>
             
           </div>
-          <!-- <div class="pesquisa">
-            <div class="box-pesquisa">
-              <input type="text" placeholder="Pesquisar" id="pesquisar" />
-              <img src="../images/icon-pesquisa.svg" alt="ícone de pesquisa" />
-            </div>
-          </div> -->
+
           <div class="mesas">
-            <!-- <div class="card-mesa">
-              <p>mesa 01</p>
-            </div>
-            <div class="card-mesa">
-              <p>mesa 02</p>
-            </div> -->
             <div class="mesas-container">
               <div class="card-mesa adicionar-mesa">
                 <p>+</p>
@@ -202,7 +191,6 @@
                   <div class="codigo">
                     <h2>Status</h2>
                     <select name="setor" id="statusInputAdicionar">
-                      <option value="selecionar">Selecionar</option>
                       <option value="0">0</option>
                       <option value="1">1</option>
                       <option value="2">2</option>
@@ -298,19 +286,19 @@
                   <div class="form-column">
                     <label for="local">Local:</label>
                     <select id="local">
-                      <option>Cozinha Principal</option>
-                      <option>Chapa/Grill</option>
-                      <option>Fritadeira</option>
-                      <option>Forno/Pizzaria</option>
-                      <option>Sushi Bar</option>
-                      <option>Saladeira</option>
-                      <option>Bar/Bebidas</option>
+                      <option value="Cozinha Principal">Cozinha Principal</option>
+                      <option value="Chapa/Grill">Chapa/Grill</option>
+                      <option value="Fritadeira">Fritadeira</option>
+                      <option value="Forno/Pizzaria">Forno/Pizzaria</option>
+                      <option value="Sushi Bar">Sushi Bar</option>
+                      <option value="Saladeira">Saladeira</option>
+                      <option value="Bar/Bebidas">Bar/Bebidas</option>
                     </select>
                   </div>
 
                   <div class="form-column">
                     <label for="preco">Preço:</label>
-                    <input type="text" id="preco" placeholder="R$ 0,00" />
+                    <input type="number" min="0" step="0.01" id="preco" placeholder="R$ 0,00" />
                   </div>
                 </div>
 
@@ -334,10 +322,10 @@
                     <div class="allergen-group">
                       <span class="allergen-label">Tipo:</span>
                       <select class="allergen-select">
-                        <option>Entradas</option>
-                        <option>Combos</option>
-                        <option>Bebidas</option>
-                        <option>Sobremesas</option>
+                        <option value="Entradas">Entradas</option>
+                        <option value="Combos">Combos</option>
+                        <option value="Bebidas">Bebidas</option>
+                        <option value="Sobremesas">Sobremesas</option>
                       </select>
                     </div>
                   </div>
@@ -398,7 +386,12 @@
                 </div>
                 <div class="form-group">
                   <label for="telefone-funcionario">Telefone:</label>
-                  <input type="text" id="telefone-funcionario" />
+                  <input type="tel" 
+                  id="telefone-funcionario"
+                  pattern="(\(\d{2}\)\s)?\d{4,5}-\d{4}"
+                  maxlength="15"
+                  placeholder="(00) 0000-0000"
+                  title="Formato: (00) 0000-0000 ou (00) 00000-0000"  />
                 </div>
                 <div class="form-group">
                   <label for="tipo-funcionario">Tipo:</label>
@@ -542,7 +535,12 @@
         </div>
         <div class="form-group">
           <label for="editar-telefone-funcionario">Telefone:</label>
-          <input type="text" id="editar-telefone-funcionario" />
+          <input type="tel" 
+          id="editar-telefone-funcionario" 
+          pattern="(\(\d{2}\)\s)?\d{4,5}-\d{4}"
+          maxlength="15"
+          placeholder="(00) 0000-0000"
+          title="Formato: (00) 0000-0000 ou (00) 00000-0000" />
         </div>
         <div class="form-group">
           <label for="editar-tipo-funcionario">Tipo:</label>

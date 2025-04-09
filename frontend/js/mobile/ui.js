@@ -3,6 +3,7 @@ import { showPaymentView } from './payment.js';
 import { appState } from './state.js';
 import { ModalService } from './modalMobile.js';
 import { logoutAtendimento } from './api.js';
+import { escapeHTML } from '../../utils/sanitizacao.js';
 
 export function initUI() {
   const voltarBtn = document.getElementById('voltarBtn');
@@ -51,6 +52,13 @@ export async function showMesaDetail(mesaId) {
   const totalProdutos = document.getElementById('totalProdutos');
   const totalQuantidade = document.getElementById('totalQuantidade');
   const totalValor = document.getElementById('totalValor');
+  const mesaDetailView = document.getElementById('mesaDetailView');
+  const mainView = document.getElementById('mainView');
+  const mesaTitle = document.getElementById('mesaTitle');
+  const produtosContainer = document.getElementById('produtosContainer');
+  const totalProdutos = document.getElementById('totalProdutos');
+  const totalQuantidade = document.getElementById('totalQuantidade');
+  const totalValor = document.getElementById('totalValor');
 
   try {
     totalProdutos.textContent = `Produtos (0)`;
@@ -84,7 +92,6 @@ export async function showMesaDetail(mesaId) {
 
     mesaTitle.textContent = `Mesa ${mesaId} - Comanda`;
   } catch (error) {
-    console.error('Erro ao carregar detalhes da mesa:', error);
 
     produtosContainer.innerHTML = `
             <div class="error-message">
@@ -96,6 +103,15 @@ export async function showMesaDetail(mesaId) {
 }
 
 export function renderProdutos(produtos) {
+  const produtosContainer = document.getElementById('produtosContainer');
+  const totalProdutos = document.getElementById('totalProdutos');
+  const totalQuantidade = document.getElementById('totalQuantidade');
+  const totalValor = document.getElementById('totalValor');
+
+  produtosContainer.innerHTML = '';
+
+  if (produtos.length === 0) {
+    produtosContainer.innerHTML = `
   const produtosContainer = document.getElementById('produtosContainer');
   const totalProdutos = document.getElementById('totalProdutos');
   const totalQuantidade = document.getElementById('totalQuantidade');
@@ -133,6 +149,11 @@ export function renderProdutos(produtos) {
     total += valorTotal;
     quantidadeTotal += quantidade;
   });
+    produtosContainer.appendChild(item);
+
+    total += valorTotal;
+    quantidadeTotal += quantidade;
+  });
 
   appState.totalComanda = total;
 
@@ -142,6 +163,13 @@ export function renderProdutos(produtos) {
 }
 
 export function backToMainView() {
+  const mainView = document.getElementById('mainView');
+  const mesaDetailView = document.getElementById('mesaDetailView');
+  const pagarBtn = document.getElementById('pagarBtn');
+
+  appState.mesaStatusAtual = 0;
+  if (pagarBtn) pagarBtn.style.display = 'none';
+  window.toggleTab('resumo');
   const mainView = document.getElementById('mainView');
   const mesaDetailView = document.getElementById('mesaDetailView');
   const pagarBtn = document.getElementById('pagarBtn');
@@ -159,6 +187,11 @@ export function backToMainView() {
 }
 
 export function backToDetailView() {
+  const paymentView = document.getElementById('paymentView');
+  const mesaDetailView = document.getElementById('mesaDetailView');
+
+  paymentView.classList.add('hidden');
+  mesaDetailView.classList.remove('hidden');
   const paymentView = document.getElementById('paymentView');
   const mesaDetailView = document.getElementById('mesaDetailView');
 

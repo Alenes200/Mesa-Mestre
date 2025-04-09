@@ -6,6 +6,23 @@ const loginController = {
   login: async (req, res) => {
     const { email, senha } = req.body;
 
+    // Validação dos dados
+    const errors = [];
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email || !senha) {
+      errors.push('Por favor, preencha todos os campos.');
+    }
+
+    if (!emailRegex.test(email)) {
+      errors.push('Formato de e-mail inválido.');
+    }
+
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
+
+    // Lógica de autenticação
     try {
       const user = await loginRepository.getUserByEmail(email);
       if (!user) {
@@ -15,7 +32,6 @@ const loginController = {
       }
 
       const match = await comparePassword(senha, user.usr_senha);
-
       if (!match) {
         return res.status(400).json({
           error: 'E-mail ou senha incorretos.',
@@ -40,6 +56,7 @@ const loginController = {
         httpOnly: true,
         maxAge: 3600000,
       });
+
       res.status(200).json({
         message: 'Login realizado com sucesso.',
         token,

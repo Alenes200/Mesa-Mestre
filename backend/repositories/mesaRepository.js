@@ -14,7 +14,6 @@ const mesasRepository = {
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar mesas:', error);
       throw error;
     }
   },
@@ -26,7 +25,6 @@ const mesasRepository = {
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar mesas:', error);
       throw error;
     }
   },
@@ -50,7 +48,6 @@ const mesasRepository = {
       const result = await client.query(query, values);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar mesas:', error);
       throw error;
     }
   },
@@ -66,7 +63,6 @@ const mesasRepository = {
       const result = await client.query(query, values);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar mesas:', error);
       throw error;
     }
   },
@@ -82,7 +78,6 @@ const mesasRepository = {
       const result = await client.query(query, values);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar mesas:', error);
       throw error;
     }
   },
@@ -93,7 +88,6 @@ const mesasRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao buscar mesa por ID:', error);
       throw error;
     }
   },
@@ -101,11 +95,10 @@ const mesasRepository = {
   getLocaisRestritos: async () => {
     try {
       const query =
-        "SELECT LOC_DESCRICAO FROM TBL_LOCAL WHERE LOC_DESCRICAO != 'Todas' AND LOC_DESCRICAO != 'Inativas' ORDER BY LOC_ID";
+        "SELECT LOC_ID, LOC_DESCRICAO FROM TBL_LOCAL WHERE LOC_DESCRICAO != 'Todas' AND LOC_DESCRICAO != 'Inativas' ORDER BY LOC_ID";
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar os locais:', error);
       throw error;
     }
   },
@@ -116,7 +109,6 @@ const mesasRepository = {
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar os locais:', error);
       throw error;
     }
   },
@@ -136,7 +128,6 @@ const mesasRepository = {
 
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao criar mesa no banco de dados:', error);
       throw error;
     }
   },
@@ -162,7 +153,6 @@ const mesasRepository = {
 
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao atualizar mesa:', error);
       throw error;
     }
   },
@@ -180,7 +170,6 @@ const mesasRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao realizar delete lógico:', error);
       throw error;
     }
   },
@@ -191,7 +180,6 @@ const mesasRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao buscar mesa por ID (ignorando status):', error);
       throw error;
     }
   },
@@ -209,7 +197,6 @@ const mesasRepository = {
       const result = await client.query(query, [`%${local}%`]);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar mesas por tipo:', error);
       throw error;
     }
   },
@@ -220,7 +207,6 @@ const mesasRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao buscar local por ID:', error);
       throw error;
     }
   },
@@ -235,7 +221,6 @@ const mesasRepository = {
       const result = await client.query(query, [codigo]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao buscar mesa pelo código:', error);
       throw error;
     }
   },

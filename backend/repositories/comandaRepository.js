@@ -8,7 +8,6 @@ const comandaRepository = {
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar todas as comandas:', error);
       throw error;
     }
   },
@@ -20,7 +19,6 @@ const comandaRepository = {
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar comandas ativas:', error);
       throw error;
     }
   },
@@ -32,7 +30,6 @@ const comandaRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao buscar comanda por ID:', error);
       throw error;
     }
   },
@@ -50,7 +47,6 @@ const comandaRepository = {
       const result = await client.query(query, values);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao criar comanda:', error);
       throw error;
     }
   },
@@ -73,7 +69,6 @@ const comandaRepository = {
       const result = await client.query(query, values);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao atualizar comanda:', error);
       throw error;
     }
   },
@@ -89,7 +84,6 @@ const comandaRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao deletar comanda:', error);
       throw error;
     }
   },
@@ -120,11 +114,10 @@ const comandaRepository = {
         ORDER BY 
           pp.ped_id
       `;
-      
+
       const result = await client.query(query, [mesaId]);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar produtos da mesa:', error);
       throw error;
     }
   },
@@ -165,29 +158,22 @@ const comandaRepository = {
     `;
 
     try {
-        if (!mesaId || isNaN(mesaId)) {
-            throw new Error('ID da mesa inválido');
-        }
+      if (!mesaId || isNaN(mesaId)) {
+        throw new Error('ID da mesa inválido');
+      }
 
-        const result = await client.query(queryText, [parseInt(mesaId)]);
-        
-        return result.rows.map(row => ({
-            pedido_id: row.pedido_id,
-            data: row.data_pedido,
-            total: row.total,
-            itens: row.itens
-        }));
-        
+      const result = await client.query(queryText, [parseInt(mesaId)]);
+
+      return result.rows.map((row) => ({
+        pedido_id: row.pedido_id,
+        data: row.data_pedido,
+        total: row.total,
+        itens: row.itens,
+      }));
     } catch (error) {
-        console.error('Erro detalhado ao buscar pedidos:', {
-            message: error.message,
-            stack: error.stack,
-            query: queryText,  // Agora queryText está definida
-            params: [mesaId]
-        });
-        throw new Error(`Falha ao buscar pedidos: ${error.message}`);
+      throw new Error(`Falha ao buscar pedidos: ${error.message}`);
     }
-  }
+  },
 };
 
 module.exports = comandaRepository;

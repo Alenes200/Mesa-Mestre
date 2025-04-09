@@ -8,7 +8,6 @@ const pedidoRepository = {
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar todos os pedidos:', error);
       throw error;
     }
   },
@@ -20,7 +19,6 @@ const pedidoRepository = {
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar pedidos ativos:', error);
       throw error;
     }
   },
@@ -33,7 +31,6 @@ const pedidoRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao buscar pedido por ID:', error);
       throw error;
     }
   },
@@ -61,7 +58,6 @@ const pedidoRepository = {
       const result = await client.query(query, values);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao criar pedido:', error);
       throw error;
     }
   },
@@ -93,7 +89,6 @@ const pedidoRepository = {
       const result = await client.query(query, values);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao atualizar pedido:', error);
       throw error;
     }
   },
@@ -110,7 +105,6 @@ const pedidoRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao deletar pedido:', error);
       throw error;
     }
   },

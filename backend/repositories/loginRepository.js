@@ -8,7 +8,6 @@ const loginRepository = {
       const result = await client.query(query, [email]);
       return result.rows[0];
     } catch (err) {
-      console.error('Erro ao buscar usuário por email:', err);
       throw err;
     }
   },

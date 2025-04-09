@@ -7,7 +7,6 @@ const produtosRepository = {
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar produtos:', error);
       throw error;
     }
   },
@@ -19,7 +18,6 @@ const produtosRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao buscar produto por ID:', error);
       throw error;
     }
   },
@@ -39,7 +37,6 @@ const produtosRepository = {
 
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao criar produto no banco de dados:', error);
       throw error;
     }
   },
@@ -66,7 +63,6 @@ const produtosRepository = {
 
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao atualizar produto:', error);
       throw error;
     }
   },
@@ -82,7 +78,6 @@ const produtosRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao realizar delete lógico:', error);
       throw error;
     }
   },
@@ -93,7 +88,6 @@ const produtosRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao buscar produto por ID (ignorando status):', error);
       throw error;
     }
   },
@@ -105,7 +99,6 @@ const produtosRepository = {
       const result = await client.query(query, [tipo]);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar produtos por tipo:', error);
       throw error;
     }
   },
