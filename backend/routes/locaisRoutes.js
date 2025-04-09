@@ -7,7 +7,7 @@ const router = express.Router();
  * @swagger
  * tags:
  *   name: Locais
- *   description: Gerenciamento de locais
+ *   description: Gerenciamento de locais (áreas do estabelecimento)
  */
 
 /**
@@ -95,6 +95,7 @@ router.get('/:id', locaisController.get);
  *               descricao:
  *                 type: string
  *                 description: Descrição do local
+
  *     responses:
  *       201:
  *         description: Local criado com sucesso

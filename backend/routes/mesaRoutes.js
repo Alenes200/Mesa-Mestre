@@ -230,6 +230,71 @@ router.get('/local/descricao/:local', mesasController.getByLocal);
 
 /**
  * @swagger
+ * /api/mesas/{id}/logado:
+ *   put:
+ *     summary: Atualiza o status de login de uma mesa
+ *     tags: [Mesas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID da mesa
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: boolean
+ *                 description: Status de login da mesa
+ *     responses:
+ *       200:
+ *         description: Status de login atualizado com sucesso
+ *       400:
+ *         description: Status inválido
+ *       404:
+ *         description: Mesa não encontrada
+ *       500:
+ *         description: Erro ao atualizar status de login
+ */
+router.put('/:id/logado', mesasController.setMesaLogado);
+
+/**
+ * @swagger
+ * /api/mesas/{id}/logado:
+ *   get:
+ *     summary: Obtém o status de login de uma mesa
+ *     tags: [Mesas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID da mesa
+ *     responses:
+ *       200:
+ *         description: Status de login da mesa
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 mes_logado:
+ *                   type: boolean
+ *       404:
+ *         description: Mesa não encontrada
+ *       500:
+ *         description: Erro ao verificar status de login
+ */
+router.get('/:id/logado', mesasController.getMesaLogado);
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Mesa:
