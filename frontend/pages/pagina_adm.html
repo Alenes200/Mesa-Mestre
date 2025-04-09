@@ -51,7 +51,7 @@
                 />
                 <h3>Dashboard</h3>
               </div>
-              <div id="op_configuracao" class="opcao" style="display: none;">
+              <div id="op_configuracao" class="opcao" style="display: none">
                 <img
                   src="../images/icon-configuracao.svg"
                   alt="ícone de Configurações"
@@ -71,7 +71,7 @@
         </div>
       </div>
       <div class="direita">
-        <div class="conteudo-mesas" style="display: none;">
+        <div class="conteudo-mesas" style="display: none">
           <div class="locais-mesas">
             <div class="opcoes" id="locais">
               <!-- <h2>Sala Principal</h2>
@@ -94,25 +94,32 @@
               </thead>
               <tbody></tbody>
             </table>
-          
-            <div class="modal-generico" id="modalGenerico" style="display: none">
+
+            <div
+              class="modal-generico"
+              id="modalGenerico"
+              style="display: none"
+            >
               <div class="overlay" id="overlayGenerico"></div>
               <div class="conteudo-modal">
                 <div class="topo">
                   <h1 id="tituloModalGenerico">Título do Modal</h1>
-                  <img src="../images/icon-fechar.svg" alt="Fechar" id="fecharModalGenerico" />
+                  <img
+                    src="../images/icon-fechar.svg"
+                    alt="Fechar"
+                    id="fecharModalGenerico"
+                  />
                 </div>
-            
+
                 <div class="corpo-modal" id="conteudoModalGenerico">
                   <!-- Aqui o conteúdo será injetado dinamicamente -->
                 </div>
-            
+
                 <div class="botoes">
                   <button id="botaoFecharModal">Fechar</button>
                 </div>
               </div>
             </div>
-            
           </div>
           <!-- <div class="pesquisa">
             <div class="box-pesquisa">
@@ -155,7 +162,7 @@
               </div>
 
               <div class="text">
-                <h2>ID - <span id="idText"></span> </h2>
+                <h2>ID - <span id="idText"></span></h2>
               </div>
 
               <div class="text">
@@ -354,15 +361,29 @@
 
         <div class="conteudo-funcionarios" style="display: none">
           <div class="esquerda-funcionarios">
-            <div class="pesquisa">
-              <div style="display: flex;">
-                <input id="search-input-func" type="text" placeholder="Pesquisar" />
-                <img id="search-button-func" src="../images/icon-pesquisa.svg" alt="ícone de pesquisa" />
+            <div class="top-pesquisa">
+              <div class="pesquisa">
+                <div class="box-pesquisa">
+                  <input
+                    type="text"
+                    placeholder="Pesquisar"
+                    id="search-input-func"
+                  />
+                  <img
+                    id="search-button-func"
+                    src="../images/icon-pesquisa.svg"
+                    alt="ícone de pesquisa"
+                  />
+                </div>
+                <button
+                  class="btn-adicionar-funcionario"
+                  id="btn-adicionar-funcionario"
+                >
+                  Adicionar Funcionário
+                </button>
               </div>
-              <button class="btn-adicionar-funcionario" id="btn-adicionar-funcionario">
-                Adicionar Funcionário
-              </button>
             </div>
+
             <div class="funcionarios-table-container">
               <div class="funcionarios-table-wrapper">
                 <table class="funcionarios-table">
@@ -385,7 +406,10 @@
             </div>
           </div>
           <div class="direita-funcionarios">
-            <div class="funcionario-form-container" id="funcionario-form-container">
+            <div
+              class="funcionario-form-container"
+              id="funcionario-form-container"
+            >
               <h2 class="form-title">Adicionar Funcionário</h2>
               <div class="form-content">
                 <div class="form-group">
@@ -414,8 +438,12 @@
                   <input type="password" id="senha-funcionario" />
                 </div>
                 <div class="form-actions">
-                  <button class="btn-salvar" id="btn-salvar-funcionario">Salvar</button>
-                  <button class="btn-cancelar" id="btn-cancelar-funcionario">Cancelar</button>
+                  <button class="btn-salvar" id="btn-salvar-funcionario">
+                    Salvar
+                  </button>
+                  <button class="btn-cancelar" id="btn-cancelar-funcionario">
+                    Cancelar
+                  </button>
                 </div>
               </div>
             </div>
@@ -428,11 +456,11 @@
             <div class="filtros-grafico">
               <div class="data-filtro">
                 <label for="data-inicio">Data Início:</label>
-                <input type="date" id="data-inicio">
+                <input type="date" id="data-inicio" />
               </div>
               <div class="data-filtro">
                 <label for="data-fim">Data Fim:</label>
-                <input type="date" id="data-fim">
+                <input type="date" id="data-fim" />
               </div>
               <button id="btn-atualizar-grafico">Atualizar</button>
             </div>
@@ -442,56 +470,82 @@
               <!-- Gráfico 1 - Comandas por dia da semana -->
               <div class="grafico-card grafico-grande">
                 <div class="grafico-wrapper">
-                  <canvas id="graficoComandas" width="400" height="400"></canvas>
+                  <canvas
+                    id="graficoComandas"
+                    width="400"
+                    height="400"
+                  ></canvas>
                 </div>
               </div>
 
               <!-- Gráfico 4 - Formas de pagamento -->
               <div class="grafico-card">
                 <div class="grafico-wrapper">
-                  <canvas id="graficoPagamentos" width="400" height="400"></canvas>
+                  <canvas
+                    id="graficoPagamentos"
+                    width="400"
+                    height="400"
+                  ></canvas>
                 </div>
               </div>
-              
+
               <!-- Gráfico 2 - Top 10 produtos -->
               <div class="grafico-card grafico-grande">
                 <div class="grafico-wrapper">
-                  <canvas id="graficoTopProdutos" width="400" height="400"></canvas>
+                  <canvas
+                    id="graficoTopProdutos"
+                    width="400"
+                    height="400"
+                  ></canvas>
                 </div>
               </div>
 
               <!-- Gráfico 7 - Vendas por categoria -->
               <div class="grafico-card">
                 <div class="grafico-wrapper">
-                  <canvas id="graficoCategorias" width="400" height="400"></canvas>
+                  <canvas
+                    id="graficoCategorias"
+                    width="400"
+                    height="400"
+                  ></canvas>
                 </div>
               </div>
-              
+
               <!-- Gráfico 3 - Faturamento diário -->
-              <div class="grafico-card ">
+              <div class="grafico-card">
                 <div class="grafico-wrapper">
-                  <canvas id="graficoFaturamento" width="400" height="400"></canvas>
+                  <canvas
+                    id="graficoFaturamento"
+                    width="400"
+                    height="400"
+                  ></canvas>
                 </div>
               </div>
-              
+
               <!-- Gráfico 5 - Média por comanda -->
               <div class="grafico-card">
                 <div class="grafico-wrapper">
-                  <canvas id="graficoMediaComanda" width="400" height="400"></canvas>
+                  <canvas
+                    id="graficoMediaComanda"
+                    width="400"
+                    height="400"
+                  ></canvas>
                 </div>
               </div>
-              
+
               <!-- Gráfico 6 - Ocupação de mesas -->
               <div class="grafico-card">
                 <div class="grafico-wrapper">
-                  <canvas id="graficoOcupacao" width="400" height="400"></canvas>
+                  <canvas
+                    id="graficoOcupacao"
+                    width="400"
+                    height="400"
+                  ></canvas>
                 </div>
               </div>
-              
             </div>
           </div>
         </div>
-
       </div>
     </main>
 
@@ -522,52 +576,54 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Modal de edição de funcionário -->
-  <div id="editar-funcionario-modal">
-    <div class="custom-modal-content">
-      <div class="flex">
-        <h2>Editar Funcionário</h2>
-        <span id="close-modal-editar" class="custom-modal-close2">&times;</span>
-      </div>
-      <div class="form-content">
-        <div class="form-group">
-          <label for="editar-nome-funcionario">Nome:</label>
-          <input type="text" id="editar-nome-funcionario" />
+    <!-- Modal de edição de funcionário -->
+    <div id="editar-funcionario-modal">
+      <div class="custom-modal-content">
+        <div class="flex">
+          <h2>Editar Funcionário</h2>
+          <span id="close-modal-editar" class="custom-modal-close2"
+            >&times;</span
+          >
         </div>
-        <div class="form-group">
-          <label for="editar-email-funcionario">Email:</label>
-          <input type="email" id="editar-email-funcionario" />
-        </div>
-        <div class="form-group">
-          <label for="editar-telefone-funcionario">Telefone:</label>
-          <input type="text" id="editar-telefone-funcionario" />
-        </div>
-        <div class="form-group">
-          <label for="editar-tipo-funcionario">Tipo:</label>
-          <select class="func-select" id="editar-tipo-funcionario">
-            <option value="1">Admin</option>
-            <option value="2">Atendente</option>
-            <option value="3">Cardápio</option>
-            <option value="4">Cozinha</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="editar-status-funcionario">Status</label>
-          <select id="editar-status-funcionario" class="form-control">
-            <option value="1">Ativo</option>
-            <option value="0">Inativo</option>
-          </select>
-        </div>
-        <div class="form-actions">
-          <button class="btn-salvar" id="btn-salvar-edicao">Salvar</button>
-          <button class="btn-cancelar" id="btn-cancelar-edicao">Cancelar</button>
+        <div class="form-content">
+          <div class="form-group">
+            <label for="editar-nome-funcionario">Nome:</label>
+            <input type="text" id="editar-nome-funcionario" />
+          </div>
+          <div class="form-group">
+            <label for="editar-email-funcionario">Email:</label>
+            <input type="email" id="editar-email-funcionario" />
+          </div>
+          <div class="form-group">
+            <label for="editar-telefone-funcionario">Telefone:</label>
+            <input type="text" id="editar-telefone-funcionario" />
+          </div>
+          <div class="form-group">
+            <label for="editar-tipo-funcionario">Tipo:</label>
+            <select class="func-select" id="editar-tipo-funcionario">
+              <option value="1">Admin</option>
+              <option value="2">Atendente</option>
+              <option value="3">Cardápio</option>
+              <option value="4">Cozinha</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editar-status-funcionario">Status</label>
+            <select id="editar-status-funcionario" class="form-control">
+              <option value="1">Ativo</option>
+              <option value="0">Inativo</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button class="btn-salvar" id="btn-salvar-edicao">Salvar</button>
+            <button class="btn-cancelar" id="btn-cancelar-edicao">
+              Cancelar
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
   </body>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module" src="../js/grafico.js"></script>
