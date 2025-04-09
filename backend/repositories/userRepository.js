@@ -37,7 +37,7 @@ const getUserById = async (id) => {
   } catch (error) {
     throw new Error('Erro ao buscar usuário');
   }
-};
+}
 
 const getUserByIdIgnoreStatus = async (id) => {
   if (!Number.isInteger(id)) {
@@ -68,6 +68,7 @@ const addUser = async (name, email, password, telefone, funcao) => {
     );
     return result.rows[0];
   } catch (error) {
+    console.error('Erro ao adicionar usuário:', error);
     throw new Error('Erro ao adicionar usuário');
   }
 };
@@ -107,9 +108,10 @@ const updateUser = async (id, dadosAtualizados) => {
     const result = await client.query(query, values);
     return result.rows[0];
   } catch (error) {
+    console.error('Erro ao atualizar usuário:', error);
     throw new Error('Erro ao atualizar usuário');
   }
-};
+}
 
 const deleteUser = async (id) => {
   if (!Number.isInteger(id)) {
@@ -144,13 +146,4 @@ const searchUsers = async (searchTerm) => {
   }
 };
 
-module.exports = {
-  getAllUsers,
-  getUserById,
-  addUser,
-  updateUser,
-  deleteUser,
-  getUserByIdIgnoreStatus,
-  getAllUsersIgnoreStatus,
-  searchUsers,
-};
+module.exports = { getAllUsers, getUserById, addUser, updateUser, deleteUser, getUserByIdIgnoreStatus, getAllUsersIgnoreStatus, searchUsers };

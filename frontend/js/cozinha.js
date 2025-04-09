@@ -1,5 +1,3 @@
-import { escapeHTML } from '../utils/sanitizacao.js';
-
 document.addEventListener('DOMContentLoaded', async () => {
   // 1. Verifica se existe um token
   const token = localStorage.getItem('token');
@@ -30,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   } catch (error) {
     // 5. Em caso de erro, redireciona
+    console.error('Erro de autenticação:', error);
     window.location.href = '../pages/login_adm.html';
   }
 });
@@ -72,7 +71,12 @@ async function buscarPedidos() {
             pedido.mesa_id = comanda.mes_id;
             pedido.comanda_id = comanda.com_id;
           }
-        } catch (error) {}
+        } catch (error) {
+          console.error(
+            `Erro ao buscar comanda do pedido ${pedido.ped_id}:`,
+            error
+          );
+        }
       })
     );
 
@@ -108,6 +112,7 @@ async function buscarPedidos() {
     renderizarPedidos();
     primeiraCarga = false;
   } catch (error) {
+    console.error('Erro ao buscar pedidos:', error);
     showToast('Erro ao buscar pedidos', 'error');
   }
 }
@@ -123,6 +128,7 @@ async function buscarProdutosPedido(pedido) {
     }
     pedido.pedido_produtos = await response.json();
   } catch (error) {
+    console.error(`Erro ao buscar produtos do pedido ${pedido.ped_id}:`, error);
     pedido.pedido_produtos = [];
   }
 }
@@ -152,6 +158,7 @@ async function atualizarStatusPedido(pedidoId, novoStatus) {
 
     await buscarPedidos();
   } catch (error) {
+    console.error('Erro ao atualizar pedido:', error);
     showToast('Erro ao atualizar pedido', 'error');
   }
 }
@@ -190,9 +197,9 @@ function renderizarListaPedidos(containerId, pedidos, emPreparo) {
     card.innerHTML = `
     <div class="pedido-header">
       <div class="pedido-info">
-        <span class="pedido-id">Pedido #${escapeHTML(pedido.ped_id)}</span>
-        <span class="mesa">Mesa #${escapeHTML(pedido.mesa_id) || 'N/A'}</span>
-        <span class="comanda">Comanda #${escapeHTML(pedido.comanda_id) || 'N/A'}</span>
+        <span class="pedido-id">Pedido #${pedido.ped_id}</span>
+        <span class="mesa">Mesa #${pedido.mesa_id || 'N/A'}</span>
+        <span class="comanda">Comanda #${pedido.comanda_id || 'N/A'}</span>
       </div>
       <span class="pedido-hora">
         ${dataHora}

@@ -82,6 +82,7 @@ app.use('/api/formas-pagamento', formaPagamentoRoutes);
 
 // Middleware para capturar erros não tratados
 app.use((err, req, res, next) => {
+  console.error('Erro interno:', err);
   res.status(500).json({ message: 'Erro interno do servidor' });
 });
 
@@ -92,12 +93,14 @@ async function startServer() {
     await loginRepository.initializeTestUsers();
 
     server.listen(port, () => {
-      // console.log(`Servidor está rodando em http://localhost:${port}`);
-      // console.log(
-      //   `Documentação Swagger disponível em http://localhost:${port}/api-docs`
-      // );
+      console.log(`Servidor está rodando em http://localhost:${port}`);
+      console.log(
+        `Documentação Swagger disponível em http://localhost:${port}/api-docs`
+      );
     });
-  } catch (error) {}
+  } catch (error) {
+    console.error('Erro ao iniciar o servidor:', error);
+  }
 }
 
 startServer();
