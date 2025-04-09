@@ -5,6 +5,7 @@ let comandaAtivaId = null;
 
 import { escapeHTML } from '../utils/sanitizacao.js';
 import { showModal } from './modal.js';
+
 let contaPedida = false;
 
 // Função para buscar os produtos do backend

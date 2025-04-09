@@ -285,7 +285,7 @@ btnSalvarFuncionario.addEventListener('click', async () => {
     .value.replace(/\D/g, '');
 
   const funcao = sanitizarTexto(
-    document.getElementById('funcao-funcionario').value.trim()
+    document.getElementById('funcao-funcionario').value
   );
   const senha = document.getElementById('senha-funcionario').value.trim();
 
@@ -332,7 +332,7 @@ btnSalvarFuncionario.addEventListener('click', async () => {
     nome: nome,
     email: email,
     telefone: telefone || null, // Enviar null se vazio
-    tipo: parseInt(tipo),
+    funcao: funcao,
     senha: senha,
   };
 
@@ -454,7 +454,7 @@ async function abrirModalEdicao(funcionarioId) {
         funcionario.usr_email;
       document.getElementById('editar-telefone-funcionario').value =
         funcionario.usr_telefone || '';
-      document.getElementById('editar-tipo-funcionario').value =
+      document.getElementById('editar-funcao-funcionario').value =
         funcionario.usr_tipo || '';
       document.getElementById('editar-status-funcionario').value =
         funcionario.usr_status;
@@ -509,7 +509,7 @@ async function abrirModalEdicao(funcionarioId) {
           .getElementById('editar-telefone-funcionario')
           .value.replace(/\D/g, '');
         const funcao = sanitizarTexto(
-          document.getElementById('editar-funcao-funcionario').value.trim()
+          document.getElementById('editar-funcao-funcionario').value
         );
         const status = parseInt(
           document.getElementById('editar-status-funcionario').value
@@ -555,7 +555,7 @@ async function abrirModalEdicao(funcionarioId) {
           nome: nome,
           email: email,
           telefone: telefone || null, // Enviar null se vazio
-          tipo: tipo,
+          funcao: funcao,
           status: status,
         };
 
