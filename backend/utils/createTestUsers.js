@@ -13,7 +13,6 @@ async function createTestUser(client, nome, email, password, userType) {
   const userAlreadyExists = await userExists(client, email);
 
   if (userAlreadyExists) {
-    //   console.log(`Usuário com e-mail ${email} já existe.`);
     return;
   }
 
@@ -31,12 +30,10 @@ async function createTestUser(client, nome, email, password, userType) {
     hashedPassword,
     userType,
   ]);
-  console.log('Usuário criado:', result.rows[0]);
 }
 
 // Exporta a função principal para criar usuários de teste
 module.exports = async function createTestUsers(client) {
-  console.log('→ ENV SENHA_SECRETA_1 =', process.env.SENHA_SECRETA_1);
   try {
     // Cria um usuário admin (user_type = 1)
     await createTestUser(
@@ -72,7 +69,5 @@ module.exports = async function createTestUsers(client) {
       process.env.SENHA_SECRETA_4,
       4
     );
-  } catch (error) {
-    console.error('Erro ao criar usuários de teste:', error);
-  }
+  } catch (error) {}
 };

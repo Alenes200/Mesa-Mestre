@@ -5,7 +5,6 @@ export async function fetchMesas() {
     if (!response.ok) throw new Error('Erro ao buscar mesas');
     return await response.json();
   } catch (error) {
-    console.error('Erro:', error);
     return [];
   }
 }
@@ -16,7 +15,6 @@ export async function fetchMesasPorLocal(local) {
     if (!response.ok) throw new Error('Erro ao buscar mesas por local');
     return await response.json();
   } catch (error) {
-    console.error('Erro:', error);
     return [];
   }
 }
@@ -25,23 +23,17 @@ export async function fetchProdutosComanda(mesaId) {
   try {
     const response = await fetch(`/api/comandas/mesa/${mesaId}/produtos`);
 
-    console.log(response);
-
-    console.log('chegou aqui 1');
     if (!response.ok) {
       const errorData = await response.json().catch(() => null);
       const errorMsg = errorData?.message || response.statusText;
       throw new Error(errorMsg || `Erro ${response.status} ao buscar produtos`);
     }
 
-    console.log('chegou aqui 2');
-
     const data = await response.json();
     if (!Array.isArray(data))
       throw new Error('Formato de dados inválido - esperado array');
     return data;
   } catch (error) {
-    console.error('Erro na requisição:', error);
     return [];
   }
 }
@@ -52,7 +44,6 @@ export async function fetchFormasPagamento() {
     if (!response.ok) throw new Error('Erro ao buscar formas de pagamento');
     return await response.json();
   } catch (error) {
-    console.error('Erro:', error);
     return [];
   }
 }
@@ -80,7 +71,6 @@ export async function getComandaAtivaPorMesaId(mesaId) {
       (comanda) => comanda.mes_id && comanda.mes_id.toString() === mesaId
     );
   } catch (error) {
-    console.error('Erro ao buscar comanda:', error);
     throw error;
   }
 }

@@ -1,4 +1,5 @@
 import { showModal } from './modal.js';
+import { escapeHTML } from '../utils/sanitizacao.js';
 
 // Variável global para armazenar a lista completa de funcionários
 let funcionarios = [];
@@ -22,15 +23,15 @@ function renderizarFuncionarios(listaFuncionarios) {
       funcionario.usr_status === 1 ? 'status-ativo' : 'status-inativo';
 
     linha.innerHTML = `
-      <td class="nome-column">${sanitizarHTML(funcionario.usr_nome)}</td>
-      <td class="email-column">${sanitizarHTML(funcionario.usr_email)}</td>
-      <td class="telefone-column">${sanitizarHTML(funcionario.usr_telefone || 'N/A')}</td>
-      <td class="data-column">${sanitizarHTML(new Date(funcionario.usr_created_at).toLocaleDateString())}</td>
-      <td class="funcao-column">${sanitizarHTML(funcionario.usr_funcao || 'N/A')}</td>
-      <td class="status-column ${statusClass}">${sanitizarHTML(funcionario.usr_status === 1 ? 'Ativo' : 'Inativo')}</td>
+      <td class="nome-column">${escapeHTML(funcionario.usr_nome)}</td>
+      <td class="email-column">${escapeHTML(funcionario.usr_email)}</td>
+      <td class="telefone-column">${escapeHTML(funcionario.usr_telefone || 'N/A')}</td>
+      <td class="data-column">${escapeHTML(new Date(funcionario.usr_created_at).toLocaleDateString())}</td>
+      <td class="funcao-column">${escapeHTML(funcionario.usr_funcao || 'N/A')}</td>
+      <td class="status-column ${statusClass}">${escapeHTML(funcionario.usr_status === 1 ? 'Ativo' : 'Inativo')}</td>
       <td class="opcoes-column">
-          <span class="editar-funcionario" data-id="${sanitizarHTML(funcionario.usr_id)}">✏️</span>
-          <span class="deletar-funcionario" data-id="${sanitizarHTML(funcionario.usr_id)}">🗑️</span>
+          <span class="editar-funcionario" data-id="${escapeHTML(funcionario.usr_id)}">✏️</span>
+          <span class="deletar-funcionario" data-id="${escapeHTML(funcionario.usr_id)}">🗑️</span>
       </td>
     `;
 

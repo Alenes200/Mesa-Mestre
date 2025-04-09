@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get('/', locaisController.list);
 
+router.get('/Todasprimeiro', locaisController.listTodasPrimeiro);
+
 router.get('/:id', locaisController.get);
 
 router.post('/', locaisController.create);

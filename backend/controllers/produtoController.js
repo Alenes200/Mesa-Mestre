@@ -7,7 +7,6 @@ const { log } = require('console');
 const MAX_NOME = 255;
 const MAX_DESCRICAO = 1000;
 const MAX_LOCAL = 100;
-const TIPOS_PERMITIDOS = ['comida', 'bebida', 'sobremesa', 'outro'];
 const STATUS_PERMITIDOS = [0, 1]; // 0 = Inativo, 1 = Ativo
 
 const produtosController = {
@@ -71,10 +70,6 @@ const produtosController = {
           .json({ error: `Nome não pode exceder ${MAX_NOME} caracteres.` });
       }
 
-      if (!TIPOS_PERMITIDOS.includes(tipo)) {
-        return res.status(400).json({ error: 'Tipo de produto inválido.' });
-      }
-
       // Validação de preço
       const precoNumerico = Number(preco.replace(',', '.'));
       if (isNaN(precoNumerico) || precoNumerico <= 0) {
@@ -87,14 +82,6 @@ const produtosController = {
         return res
           .status(400)
           .json({ error: 'Preço deve ter até duas casas decimais.' });
-      }
-
-      // Verifica se nome já existe
-      const produtoExistente = await produtosRepository.getByName(nome);
-      if (produtoExistente) {
-        return res
-          .status(409)
-          .json({ error: 'Já existe um produto com este nome.' });
       }
 
       // Caminho relativo da imagem
@@ -169,7 +156,7 @@ const produtosController = {
         }
       }
 
-      if (tipo && !TIPOS_PERMITIDOS.includes(tipo)) {
+      if (tipo) {
         return res.status(400).json({ error: 'Tipo de produto inválido.' });
       }
 

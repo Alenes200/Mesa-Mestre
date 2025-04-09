@@ -18,18 +18,6 @@ const loginController = {
       errors.push('Formato de e-mail inválido.');
     }
 
-    if (senha.length < 8) {
-      errors.push('A senha deve ter no mínimo 8 caracteres.');
-    }
-
-    if (!/[A-Z]/.test(senha)) {
-      errors.push('A senha deve conter pelo menos uma letra maiúscula.');
-    }
-
-    if (!/\d/.test(senha)) {
-      errors.push('A senha deve conter pelo menos um número.');
-    }
-
     if (errors.length > 0) {
       return res.status(400).json({ errors });
     }
@@ -74,7 +62,6 @@ const loginController = {
         token,
       });
     } catch (error) {
-      console.error('Erro ao fazer login:', error);
       res.status(500).json({
         error: 'Erro ao fazer login.',
       });

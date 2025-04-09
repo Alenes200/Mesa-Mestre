@@ -9,9 +9,6 @@ const client = new Client({
   port: process.env.DB_PORT,
 });
 
-client
-  .connect()
-  .then(() => console.log('Conexão bem sucedida!'))
-  .catch((err) => console.error('Erro de conexão:', err.stack));
+client.connect();
 
 module.exports = client;

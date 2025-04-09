@@ -85,6 +85,14 @@ const mesasController = {
         });
       }
 
+      // Verificar se o código já está em uso
+      const mesaExistente = await mesasRepository.getByCode(codigo);
+      if (mesaExistente) {
+        return res
+          .status(409)
+          .json({ error: 'Já existe uma mesa com esse código.' });
+      }
+
       const novaMesa = await mesasRepository.create({
         nome,
         codigo,
@@ -115,6 +123,16 @@ const mesasController = {
       const mesaExistente = await mesasRepository.getByIdIgnoreStatus(id);
       if (!mesaExistente) {
         return res.status(404).json({ error: 'Mesa não encontrada.' });
+      }
+
+      // Se o código foi alterado, verificar se já existe outra mesa com esse mesmo código
+      if (codigo && codigo !== mesaExistente.mes_codigo) {
+        const mesaComMesmoCodigo = await mesasRepository.getByCode(codigo);
+        if (mesaComMesmoCodigo && mesaComMesmoCodigo.mes_id !== parseInt(id)) {
+          return res
+            .status(409)
+            .json({ error: 'Código já está em uso por outra mesa.' });
+        }
       }
 
       const atualizacao = {

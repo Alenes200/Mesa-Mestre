@@ -123,15 +123,12 @@ export async function carregarGraficoComandas(token) {
 
           if (!response.ok) {
             const errorDetails = await response.json();
-            console.error('Detalhes do erro:', url, errorDetails);
             throw new Error(`Erro ao carregar dados: ${url}`);
           }
 
           const dados = await response.json();
-          //   console.log('Dados recebidos:', url, dados);
 
           if (!Array.isArray(dados)) {
-            console.error('Dados inesperados (não é array):', url, dados);
             return [];
           }
 
@@ -191,13 +188,13 @@ export async function carregarGraficoComandas(token) {
                 text: 'Comandas por Dia da Semana',
                 font: {
                   size: 16,
-                  weight: 'bold'
+                  weight: 'bold',
                 },
                 padding: {
                   top: 10,
-                  bottom: 20
-                }
-              }
+                  bottom: 20,
+                },
+              },
             },
             scales: { y: { beginAtZero: true } },
           }
@@ -240,13 +237,13 @@ export async function carregarGraficoComandas(token) {
                 text: 'Top 10 Produtos (Quantidade e Faturamento)',
                 font: {
                   size: 16,
-                  weight: 'bold'
+                  weight: 'bold',
                 },
                 padding: {
                   top: 10,
-                  bottom: 20
-                }
-              }
+                  bottom: 20,
+                },
+              },
             },
             scales: {
               y: {
@@ -291,39 +288,39 @@ export async function carregarGraficoComandas(token) {
                 type: 'line',
               },
             ],
-              plugins: {
-                title: {
-                  display: true,
-                  text: 'Faturamento Diário e Comandas Atendidas',
-                  font: {
-                    size: 16,
-                    weight: 'bold'
-                  },
-                  padding: {
-                    top: 10,
-                    bottom: 20
-                  }
-                }
-              },          
-              scales: {
-                y: {
-                  type: 'linear',
-                  display: true,
-                  text: 'Faturamento (R$)',
+            plugins: {
+              title: {
+                display: true,
+                text: 'Faturamento Diário e Comandas Atendidas',
+                font: {
+                  size: 16,
+                  weight: 'bold',
+                },
+                padding: {
+                  top: 10,
+                  bottom: 20,
                 },
               },
-              y1: {
+            },
+            scales: {
+              y: {
                 type: 'linear',
                 display: true,
-                position: 'right',
-                title: {
-                  display: true,
-                  text: 'Comandas',
-                },
-                grid: {
-                  drawOnChartArea: false,
-                },
+                text: 'Faturamento (R$)',
               },
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              title: {
+                display: true,
+                text: 'Comandas',
+              },
+              grid: {
+                drawOnChartArea: false,
+              },
+            },
           }
         );
 
@@ -338,8 +335,16 @@ export async function carregarGraficoComandas(token) {
               {
                 data: dados[3].map((item) => item.quantidade_pedidos),
                 backgroundColor: [
-                  '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', 
-                  '#FF9F40', '#8AC24A', '#607D8B', '#E91E63', '#9C27B0'
+                  '#FF6384',
+                  '#36A2EB',
+                  '#FFCE56',
+                  '#4BC0C0',
+                  '#9966FF',
+                  '#FF9F40',
+                  '#8AC24A',
+                  '#607D8B',
+                  '#E91E63',
+                  '#9C27B0',
                 ],
               },
             ],
@@ -348,23 +353,26 @@ export async function carregarGraficoComandas(token) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-              legend: { 
+              legend: {
                 position: 'bottom',
                 labels: {
-                  padding: 20
-                }
+                  padding: 20,
+                },
               },
               title: {
                 display: true,
                 text: 'Distribuição por Forma de Pagamento',
-                font: { size: 16, weight: 'bold' }
+                font: { size: 16, weight: 'bold' },
               },
               tooltip: {
                 callbacks: {
                   label: function (context) {
                     const label = context.label || '';
                     const value = context.raw || 0;
-                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const total = context.dataset.data.reduce(
+                      (a, b) => a + b,
+                      0
+                    );
                     const percentage = Math.round((value / total) * 100);
                     return `${label}: ${value} pedidos (${percentage}%)`;
                   },
@@ -413,12 +421,12 @@ export async function carregarGraficoComandas(token) {
                 text: 'Média por Comanda e Total de Comandas',
                 font: {
                   size: 16,
-                  weight: 'bold'
+                  weight: 'bold',
                 },
                 padding: {
                   top: 10,
-                  bottom: 20
-                }
+                  bottom: 20,
+                },
               },
             },
             scales: { y: { beginAtZero: true } },
@@ -436,8 +444,16 @@ export async function carregarGraficoComandas(token) {
               {
                 data: dados[5].map((item) => item.percentual),
                 backgroundColor: [
-                  '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
-                  '#FF9F40', '#8AC24A', '#607D8B', '#E91E63', '#9C27B0'
+                  '#FF6384',
+                  '#36A2EB',
+                  '#FFCE56',
+                  '#4BC0C0',
+                  '#9966FF',
+                  '#FF9F40',
+                  '#8AC24A',
+                  '#607D8B',
+                  '#E91E63',
+                  '#9C27B0',
                 ],
               },
             ],
@@ -446,23 +462,25 @@ export async function carregarGraficoComandas(token) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-              legend: { 
+              legend: {
                 position: 'bottom',
                 labels: {
                   padding: 20,
-                  font: { size: 12 }
-                }
+                  font: { size: 12 },
+                },
               },
               tooltip: {
                 callbacks: {
                   label: function (context) {
                     const label = context.label || '';
                     const value = context.raw || 0;
-                    const comandas = dados[5].find(item => item.local_mesa === label)?.total_comandas || 0;
+                    const comandas =
+                      dados[5].find((item) => item.local_mesa === label)
+                        ?.total_comandas || 0;
                     return [
                       `Área: ${label}`,
                       `Percentual: ${value}%`,
-                      `Total comandas: ${comandas}`
+                      `Total comandas: ${comandas}`,
                     ];
                   },
                 },
@@ -472,12 +490,12 @@ export async function carregarGraficoComandas(token) {
                 text: 'Distribuição de Clientes por Área',
                 font: {
                   size: 16,
-                  weight: 'bold'
+                  weight: 'bold',
                 },
                 padding: {
                   top: 10,
-                  bottom: 20
-                }
+                  bottom: 20,
+                },
               },
             },
           }
@@ -536,20 +554,20 @@ export async function carregarGraficoComandas(token) {
                     }
 
                     return label;
-                  }
-                }
+                  },
+                },
               },
               title: {
                 display: true,
                 text: 'Vendas por Categoria',
                 font: {
                   size: 16,
-                  weight: 'bold'
+                  weight: 'bold',
                 },
                 padding: {
                   top: 10,
-                  bottom: 20
-                }
+                  bottom: 20,
+                },
               },
             },
             scales: {
@@ -586,31 +604,7 @@ export async function carregarGraficoComandas(token) {
           const canvas = wrapper.querySelector('canvas');
           if (canvas) canvas.style.display = 'block';
         });
-
-        // Depois de criar todos os gráficos, verifique se foram criados
-        console.log('Gráficos criados:', {
-          comandas: !!graficos.comandas,
-          topProdutos: !!graficos.topProdutos,
-          faturamento: !!graficos.faturamento,
-          pagamentos: !!graficos.pagamentos,
-          mediaComanda: !!graficos.mediaComanda,
-          ocupacao: !!graficos.ocupacao,
-          categorias: !!graficos.categorias,
-        });
-
-        // Verifique as dimensões dos canvas
-        document.querySelectorAll('canvas').forEach((canvas) => {
-          console.log(`Canvas ${canvas.id}:`, {
-            width: canvas.width,
-            height: canvas.height,
-            clientWidth: canvas.clientWidth,
-            clientHeight: canvas.clientHeight,
-            offsetWidth: canvas.offsetWidth,
-            offsetHeight: canvas.offsetHeight,
-          });
-        });
       } catch (error) {
-        console.error('Erro ao carregar gráficos:', error);
         showModal('Erro ao carregar gráficos: ' + error.message, 'error');
 
         // Esconder loadings mesmo em caso de erro
@@ -629,7 +623,6 @@ export async function carregarGraficoComandas(token) {
     await carregarTodosGraficos();
     setupResizeObserver();
   } catch (error) {
-    console.error('Erro ao configurar gráficos:', error);
     showModal('Erro ao configurar gráficos', 'error');
   }
 }

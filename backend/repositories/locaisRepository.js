@@ -8,7 +8,17 @@ const locaisRepository = {
       const result = await client.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro ao buscar locais:', error);
+      throw error;
+    }
+  },
+
+  getAllTodasPrimeiro: async () => {
+    try {
+      const query =
+        "SELECT * FROM tbl_local ORDER BY CASE WHEN loc_descricao = 'Todas' THEN 0 ELSE 1 END,loc_id;";
+      const result = await client.query(query);
+      return result.rows;
+    } catch (error) {
       throw error;
     }
   },
@@ -19,7 +29,6 @@ const locaisRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao buscar local por ID:', error);
       throw error;
     }
   },
@@ -39,7 +48,6 @@ const locaisRepository = {
 
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao criar local no banco de dados:', error);
       throw error;
     }
   },
@@ -55,7 +63,6 @@ const locaisRepository = {
       const result = await client.query(query, [descricao, id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao atualizar local:', error);
       throw error;
     }
   },
@@ -66,7 +73,6 @@ const locaisRepository = {
       const result = await client.query(query, [id]);
       return result.rows[0];
     } catch (error) {
-      console.error('Erro ao deletar local:', error);
       throw error;
     }
   },

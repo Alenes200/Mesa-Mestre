@@ -286,19 +286,19 @@
                   <div class="form-column">
                     <label for="local">Local:</label>
                     <select id="local">
-                      <option>Cozinha Principal</option>
-                      <option>Chapa/Grill</option>
-                      <option>Fritadeira</option>
-                      <option>Forno/Pizzaria</option>
-                      <option>Sushi Bar</option>
-                      <option>Saladeira</option>
-                      <option>Bar/Bebidas</option>
+                      <option value="Cozinha Principal">Cozinha Principal</option>
+                      <option value="Chapa/Grill">Chapa/Grill</option>
+                      <option value="Fritadeira">Fritadeira</option>
+                      <option value="Forno/Pizzaria">Forno/Pizzaria</option>
+                      <option value="Sushi Bar">Sushi Bar</option>
+                      <option value="Saladeira">Saladeira</option>
+                      <option value="Bar/Bebidas">Bar/Bebidas</option>
                     </select>
                   </div>
 
                   <div class="form-column">
                     <label for="preco">Preço:</label>
-                    <input type="text" id="preco" placeholder="R$ 0,00" />
+                    <input type="number" min="0" step="0.01" id="preco" placeholder="R$ 0,00" />
                   </div>
                 </div>
 
@@ -322,10 +322,10 @@
                     <div class="allergen-group">
                       <span class="allergen-label">Tipo:</span>
                       <select class="allergen-select">
-                        <option>Entradas</option>
-                        <option>Combos</option>
-                        <option>Bebidas</option>
-                        <option>Sobremesas</option>
+                        <option value="Entradas">Entradas</option>
+                        <option value="Combos">Combos</option>
+                        <option value="Bebidas">Bebidas</option>
+                        <option value="Sobremesas">Sobremesas</option>
                       </select>
                     </div>
                   </div>

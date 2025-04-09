@@ -17,6 +17,19 @@ const locaisController = {
     }
   },
 
+  listTodasPrimeiro: async (req, res) => {
+    try {
+      const locais = await locaisRepository.getAllTodasPrimeiro();
+      const formattedData = locais.map((item) => ({
+        codigo: item.loc_id,
+        descricao: item.loc_descricao,
+      }));
+      res.json(formattedData);
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao listar locais.' });
+    }
+  },
+
   get: async (req, res) => {
     const { id } = req.params;
 
@@ -56,7 +69,6 @@ const locaisController = {
 
       res.status(201).json(novoLocal);
     } catch (error) {
-      console.error('Erro ao criar local:', error);
       res.status(500).json({ error: 'Erro ao criar local.' });
     }
   },

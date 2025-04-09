@@ -107,7 +107,6 @@ const updateUser = async (id, dadosAtualizados) => {
     const result = await client.query(query, values);
     return result.rows[0];
   } catch (error) {
-    console.error('Erro ao atualizar usuário:', error);
     throw new Error('Erro ao atualizar usuário');
   }
 };

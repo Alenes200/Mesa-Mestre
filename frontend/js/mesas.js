@@ -158,7 +158,6 @@ function adicionarEventosBotoes() {
 export async function adicionarLocal() {
   const tabela = document.querySelector('.tabelaLocais');
   if (!tabela) {
-    console.error('Tabela de locais não encontrada');
     return;
   }
 
@@ -203,6 +202,7 @@ export async function adicionarLocal() {
       showModal('Local adicionado com sucesso!', 'success');
       // Atualiza o modal para refletir a nova lista:
       abrirModal('Locais');
+      carregarLocais('Todas');
     } catch (error) {
       showModal('Erro ao adicionar local. Tente novamente.', 'error');
     }
@@ -224,6 +224,8 @@ export async function editarLocal(id, novoNome) {
 
     if (!response.ok) throw new Error('Erro ao editar local');
     showModal('Local atualizado com sucesso!', 'success');
+    carregarLocais();
+    carregarMesasModal(carregarTodasMesasAtivas);
   } catch (error) {
     showModal('Erro ao editar local. Tente novamente.', 'error');
   }
@@ -240,6 +242,8 @@ export async function deletarLocal(id) {
 
       showModal('Local excluído com sucesso!', 'success');
       abrirModal('Locais'); // ou configurarLocais() se preferir
+      carregarLocais();
+      carregarMesasModal(carregarTodasMesasAtivas);
     } catch (error) {
       showModal('Erro ao excluir local. Tente novamente.', 'error');
     }
@@ -271,7 +275,7 @@ export function adicionar() {
   const codigoAtual = sanitizarTexto(codigoInputAdicionar.value);
   const descricaoAtual = sanitizarTexto(descricao.value);
   const capacidadeAtual = sanitizarNumero(capacidade.value);
-  const localAtual = sanitizarSelect(setor.value, [1, 2, 3]);
+  const localAtual = setor.value;
   const status = sanitizarSelect(statusInput.value, [0, 1, 2]);
 
   // Validações
@@ -296,8 +300,11 @@ export function adicionar() {
       local: Number(localAtual),
     }),
   })
-    .then((response) => {
-      if (!response.ok) throw new Error('Erro ao criar mesa');
+    .then(async (response) => {
+      if (!response.ok) {
+        const erro = await response.json();
+        throw new Error(erro.error || 'Erro ao criar a mesa');
+      }
       return response.json();
     })
     .then(() => {
@@ -305,13 +312,16 @@ export function adicionar() {
       closeModal();
       carregarMesasModal(carregarTodasMesasAtivas);
     })
-    .catch(() => {
-      showModal('Erro ao criar a mesa. Verifique os dados e tente novamente.');
+    .catch((error) => {
+      showModal(
+        error.message ||
+          'Erro ao criar a mesa. Verifique os dados e tente novamente.'
+      );
     });
 }
 
 export function desativar() {
-  const mesaId = Number(tituloModal.innerText.match(/\d+/)?.[0]);
+  const mesaId = Number(idText.dataset.id);
   if (!mesaId) {
     showModal('Não foi possível identificar a mesa para desativar.');
     return;
@@ -327,12 +337,22 @@ export function desativar() {
     .then((data) => {
       showModal(data.message || 'Mesa desativada com sucesso');
 
-      if (data.mesa?.loc_descricao === 'Todas') {
-        carregarMesasModal(carregarTodasMesasAtivas);
-        return;
-      }
+      const locais = document.querySelectorAll('.locais');
 
-      carregarMesasModal(carregarMesas, data.mesa?.loc_descricao);
+      let todas = false;
+
+      locais.forEach(function (local) {
+        if (local.style.color == 'rgb(255, 99, 71)') {
+          if (local.innerText === 'Todas') {
+            carregarMesasModal(carregarTodasMesasAtivas);
+            todas = true;
+          }
+        }
+      });
+
+      if (!todas) {
+        carregarMesasModal(carregarMesas, data.mesa?.loc_descricao);
+      }
     })
     .catch(() => {
       showModal('Erro ao desativar mesa. Tente novamente.');
@@ -350,7 +370,7 @@ export function salvar() {
   const codigoAtual = sanitizarTexto(codigoInput.value);
   const descricaoAtual = sanitizarTexto(descricao.value);
   const capacidadeAtual = sanitizarNumero(capacidade.value);
-  const localAtual = sanitizarSelect(setor.value, [1, 2, 3]);
+  const localAtual = setor.value;
   const status = sanitizarSelect(statusInput.value, [0, 1, 2]);
 
   // Validações
@@ -394,10 +414,11 @@ export function salvar() {
         body: JSON.stringify(data),
       });
     })
-    .then((response) => {
+    .then(async (response) => {
       if (!response.ok) {
         deveFecharModal = false;
-        throw new Error('Erro ao atualizar a mesa');
+        const erro = await response.json();
+        throw new Error(erro.error || 'Erro ao atualizar a mesa');
       }
       showModal('Mesa atualizada com sucesso!');
       return response.json();
@@ -485,10 +506,10 @@ export function funcoesModal() {
           })
           .then((locaisSelect) => {
             setor.innerHTML = '<option value="selecionar">Selecionar</option>';
-            locaisSelect.forEach((local, index) => {
+            locaisSelect.forEach((local) => {
               const option = document.createElement('option');
-              option.value = index + 1;
-              option.textContent = local.loc_descricao;
+              option.value = local.loc_id;
+              option.textContent = escapeHTML(local.loc_descricao);
               setor.appendChild(option);
             });
           })
@@ -554,9 +575,9 @@ export async function buscarDadosMesa(mesaId) {
 
     setor.innerHTML = '';
 
-    locaisSelect.forEach((local, index) => {
+    locaisSelect.forEach((local) => {
       const option = document.createElement('option');
-      option.value = index + 1;
+      option.value = local.loc_id;
       option.textContent = local.loc_descricao;
 
       if (descricaoLocal === local.loc_descricao) {
@@ -581,7 +602,9 @@ export async function carregarMesas(local) {
 
     containerMesas.innerHTML = `
       <h2>Disponíveis</h2>
-      <div class="mesas-container" id="mesas-disponiveis"></div>
+      <div class="mesas-container" id="mesas-disponiveis">
+      <div><h2>Não há mesas disponíves neste local</h2></div>
+      </div>
       <h2>Ocupadas</h2>
       <div class="mesas-container" id="mesas-ocupadas"></div>
     `;
@@ -618,7 +641,8 @@ export async function carregarMesas(local) {
     showModal('Erro ao carregar mesas. Tente novamente.');
     containerMesas.innerHTML = `
       <h2>Disponíveis</h2>
-      <div class="mesas-container" id="mesas-disponiveis"></div>
+      <div class="mesas-container" id="mesas-disponiveis">
+      <div><h2>Não há mesas disponíves neste local</h2></div></div>
       <h2>Ocupadas</h2>
       <div class="mesas-container" id="mesas-ocupadas"></div>
     `;
@@ -635,7 +659,9 @@ export async function carregarTodasMesasAtivas() {
         <div class="card-mesa adicionar-mesa">+</div>
       </div>
       <h2>Disponíveis</h2>
-      <div class="mesas-container" id="mesas-disponiveis"></div>
+      <div class="mesas-container" id="mesas-disponiveis">
+      <div><h2>Não há mesas disponíves neste local</h2></div>
+      </div>
       <h2>Ocupadas</h2>
       <div class="mesas-container" id="mesas-ocupadas"></div>
     `;
@@ -652,7 +678,7 @@ export async function carregarTodasMesasAtivas() {
       const divMesa = document.createElement('div');
       divMesa.classList.add('card-mesa');
       divMesa.dataset.id = mesa.mes_id;
-      divMesa.innerHTML = `<p>${mesa.mes_nome}</p>`;
+      divMesa.innerHTML = `<p>${escapeHTML(mesa.mes_nome)}</p>`;
 
       switch (mesa.mes_status) {
         case 0:
@@ -675,7 +701,8 @@ export async function carregarTodasMesasAtivas() {
         <div class="card-mesa adicionar-mesa">+</div>
       </div>
       <h2>Disponíveis</h2>
-      <div class="mesas-container" id="mesas-disponiveis"></div>
+      <div class="mesas-container" id="mesas-disponiveis">
+      <div><h2>Não há mesas disponíves neste local</h2></div></div>
       <h2>Ocupadas</h2>
       <div class="mesas-container" id="mesas-ocupadas"></div>
     `;
@@ -709,7 +736,7 @@ export async function carregarTodasMesasInativas() {
 
 export async function carregarLocais() {
   try {
-    const response = await fetch('/api/mesas/local/locais/Todos');
+    const response = await fetch('/api/locais/Todasprimeiro');
     const locais = await response.json();
 
     const opcoesDiv = document.getElementById('locais');
@@ -720,8 +747,8 @@ export async function carregarLocais() {
     locais.forEach((local, index) => {
       const h2 = document.createElement('h2');
       h2.classList.add('locais');
-      h2.textContent = local.loc_descricao;
-      h2.dataset.local = local.loc_descricao;
+      h2.textContent = local.descricao;
+      h2.dataset.local = local.descricao;
 
       if (index === 0) {
         h2.style.color = '#FF6347';
@@ -735,12 +762,12 @@ export async function carregarLocais() {
 
         h2.style.color = '#FF6347';
 
-        if (local.loc_descricao === 'Todas') {
+        if (local.descricao === 'Todas') {
           carregarMesasModal(carregarTodasMesasAtivas);
           return;
         }
 
-        carregarMesasModal(carregarMesas, local.loc_descricao);
+        carregarMesasModal(carregarMesas, local.descricao);
       });
     });
   } catch (error) {

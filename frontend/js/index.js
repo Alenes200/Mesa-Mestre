@@ -15,6 +15,8 @@ import {
 import { listarFuncionarios, buscarFuncionarios } from './funcionario.js';
 import { carregarGraficoComandas, destruirGrafico } from './grafico.js';
 
+import { escapeHTML } from '../utils/sanitizacao.js';
+
 const token = localStorage.getItem('token');
 
 let userData;
@@ -62,7 +64,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       await carregarGraficoComandas(token);
     } catch (error) {
-      console.error('Erro ao carregar gráficos:', error);
       showModal(
         'Erro ao carregar gráficos. Tente novamente mais tarde.',
         'error'
@@ -669,26 +670,61 @@ document
     const descricao = document.getElementById('descricao').value.trim();
     const local = document.getElementById('local').value.trim();
     const precoInput = document.getElementById('preco').value.trim();
-    const preco = parseFloat(precoInput.replace(',', '.')); // Substitui vírgula por ponto e converte para float
+    // Substitui vírgula por ponto e converte para float
+    const preco = parseFloat(precoInput.replace(',', '.'));
     const imagemInput = document.getElementById('imagem'); // Campo de upload de imagem
     const tipo = document.querySelector('.allergen-select').value.trim();
 
-    // Verifica se uma imagem foi selecionada
-    if (
-      !nome ||
-      !descricao ||
-      !local ||
-      !preco ||
-      !imagemInput.files.length ||
-      !tipo
-    ) {
-      // alert(
-      //   'Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.'
-      // );
-      showModal(
-        'Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.',
-        'warning'
-      );
+    // Valida se os campos obrigatórios estão preenchidos
+    if (!nome) {
+      showModal('Nome é obrigatório.', 'warning');
+      return;
+    }
+    if (!descricao) {
+      showModal('Descrição é obrigatória.', 'warning');
+      return;
+    }
+    if (!local) {
+      showModal('Local é obrigatório.', 'warning');
+      return;
+    }
+    if (!precoInput || isNaN(preco) || preco <= 0) {
+      showModal('Preço deve ser um número positivo.', 'warning');
+      return;
+    }
+    if (!tipo) {
+      showModal('Tipo é obrigatório.', 'warning');
+      return;
+    }
+    if (!imagemInput.files.length) {
+      showModal('Imagem é obrigatória.', 'warning');
+      return;
+    }
+
+    // Validação de limite de caracteres
+    if (nome.length > 255) {
+      showModal('Nome não pode exceder 255 caracteres.', 'warning');
+      return;
+    }
+    // Aqui você pode adicionar validações similares para descrição e local, caso necessário
+
+    // Validação do formato do preço (até duas casas decimais)
+    const precoRegex = /^\d+(\.\d{1,2})?$/;
+    if (!precoRegex.test(preco.toString())) {
+      showModal('Preço deve ter até duas casas decimais.', 'warning');
+      return;
+    }
+
+    // Validação de arquivo de imagem: tipo e tamanho
+    const arquivo = imagemInput.files[0];
+    const mimeTypesPermitidos = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!mimeTypesPermitidos.includes(arquivo.type)) {
+      showModal('Tipo de imagem inválido. Use JPEG, PNG ou GIF.', 'warning');
+      return;
+    }
+    const tamanhoMaximo = 2 * 1024 * 1024; // 2MB
+    if (arquivo.size > tamanhoMaximo) {
+      showModal('Imagem excede o tamanho máximo permitido (2MB).', 'warning');
       return;
     }
 
@@ -699,7 +735,7 @@ document
     formData.append('local', local);
     formData.append('preco', preco);
     formData.append('tipo', tipo);
-    formData.append('imagem', imagemInput.files[0]); // Adiciona o arquivo de imagem
+    formData.append('imagem', arquivo); // Adiciona o arquivo de imagem
 
     try {
       // Faz a requisição POST para o backend
@@ -710,20 +746,14 @@ document
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Produto adicionado com sucesso:', data);
-        // alert('Produto adicionado com sucesso!');
         showModal('Produto adicionado com sucesso!', 'success');
         listarProdutos(); // Atualiza a lista de produtos após a adição
         limparFormulario();
       } else {
         const errorData = await response.json();
-        console.error('Erro ao adicionar produto:', errorData);
-        // alert('Erro ao adicionar produto: ' + errorData.error);
         showModal('Erro ao adicionar produto: ' + errorData.error, 'error');
       }
     } catch (error) {
-      console.error('Erro na requisição:', error);
-      // alert('Erro ao adicionar produto. Tente novamente mais tarde.');
       showModal(
         'Erro ao adicionar produto. Tente novamente mais tarde.',
         'error'
@@ -751,7 +781,6 @@ document.getElementById('imagem').addEventListener('change', (event) => {
   } else {
     // Caso não seja uma imagem, exibe o texto padrão
     placeholder.innerHTML = `<span class="placeholder-text">Foto do Produto</span>`;
-    // alert('Por favor, selecione um arquivo de imagem válido.');
     showModal('Por favor, selecione um arquivo de imagem válido.', 'warning');
   }
 });
@@ -788,7 +817,7 @@ function preencherFormulario(produto) {
 
   // Atualiza a pré-visualização da imagem
   const placeholder = document.querySelector('.image-placeholder');
-  placeholder.innerHTML = `<img src="/uploads/${produto.pro_imagem}" alt="Pré-visualização da imagem" class="preview-image" />`;
+  placeholder.innerHTML = `<img src="/uploads/${escapeHTML(produto.pro_imagem)}" alt="Pré-visualização da imagem" class="preview-image" />`;
 
   // Armazena o ID do produto em um atributo do botão "Salvar" para uso posterior
   document
@@ -815,13 +844,9 @@ async function buscarProdutoPorId(id) {
       const produto = await response.json();
       preencherFormulario(produto); // Preenche o formulário com os dados do produto
     } else {
-      console.error('Erro ao buscar produto:', response.statusText);
-      // alert('Erro ao buscar produto.');
       showModal('Erro ao buscar produto.', 'error');
     }
   } catch (error) {
-    console.error('Erro na requisição:', error);
-    // alert('Erro ao buscar produto. Tente novamente mais tarde.');
     showModal('Erro ao buscar produto. Tente novamente mais tarde.', 'error');
   }
 }
@@ -833,7 +858,6 @@ async function listarProdutos() {
     const response = await fetch('/api/produtos');
     if (response.ok) {
       const produtos = await response.json(); // Converte a resposta para JSON
-      // console.log('Produtos:', produtos);
 
       // Seleciona o corpo da tabela onde os produtos serão exibidos
       const tabelaProdutos = document.querySelector('.menu-table tbody');
@@ -842,11 +866,11 @@ async function listarProdutos() {
       // Itera sobre os produtos e cria as linhas da tabela
       produtos.forEach((produto) => {
         const linha = document.createElement('tr');
-        linha.setAttribute('data-id', produto.pro_id); // Armazena o ID do produto na linha
+        linha.setAttribute('data-id', escapeHTML(produto.pro_id)); // Armazena o ID do produto na linha
         linha.innerHTML = `
-          <td class="nome-column">${produto.pro_nome}</td>
+          <td class="nome-column">${escapeHTML(produto.pro_nome)}</td>
           <td class="local-column">
-            <span class="location-tag">${produto.pro_local}</span>
+            <span class="location-tag">${escapeHTML(produto.pro_local)}</span>
           </td>
         `;
         tabelaProdutos.appendChild(linha);
@@ -854,13 +878,9 @@ async function listarProdutos() {
 
       adicionarEventosTabela(); // Adiciona os eventos de clique às novas linhas
     } else {
-      console.error('Erro ao buscar produtos:', response.statusText);
-      // alert('Erro ao buscar produtos.');
       showModal('Erro ao buscar produtos.', 'error');
     }
   } catch (error) {
-    console.error('Erro na requisição:', error);
-    // alert('Erro ao buscar produtos. Tente novamente mais tarde.');
     showModal('Erro ao buscar produtos. Tente novamente mais tarde.', 'error');
   }
 }
@@ -875,7 +895,6 @@ document.querySelector('.btn-save').addEventListener('click', async () => {
     .getAttribute('data-id'); // Obtém o ID do produto
 
   if (!produtoId) {
-    // alert('Nenhum produto selecionado para atualizar.');
     showModal('Nenhum produto selecionado para atualizar.', 'warning');
     return;
   }
@@ -890,7 +909,6 @@ document.querySelector('.btn-save').addEventListener('click', async () => {
   const tipo = document.querySelector('.allergen-select').value.trim();
 
   if (!nome || !descricao || !local || !preco || !tipo) {
-    // alert('Por favor, preencha todos os campos obrigatórios.');
     showModal('Por favor, preencha todos os campos obrigatórios.', 'warning');
     return;
   }
@@ -916,20 +934,14 @@ document.querySelector('.btn-save').addEventListener('click', async () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log('Produto atualizado com sucesso:', data);
-      // alert('Produto atualizado com sucesso!');
       showModal('Produto atualizado com sucesso!', 'success');
       listarProdutos(); // Atualiza a lista de produtos
       limparFormulario();
     } else {
       const errorData = await response.json();
-      console.error('Erro ao atualizar produto:', errorData);
-      // alert('Erro ao atualizar produto: ' + errorData.error);
       showModal('Erro ao atualizar produto: ' + errorData.error, 'error');
     }
   } catch (error) {
-    console.error('Erro na requisição:', error);
-    // alert('Erro ao atualizar produto. Tente novamente mais tarde.');
     showModal(
       'Erro ao atualizar produto. Tente novamente mais tarde.',
       'error'
@@ -959,17 +971,14 @@ document.querySelector('.btn-delete').addEventListener('click', async () => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log('Produto deletado com sucesso:', data);
           showModal('Produto deletado com sucesso!', 'success');
           listarProdutos(); // Atualiza a lista de produtos
           limparFormulario();
         } else {
           const errorData = await response.json();
-          console.error('Erro ao deletar produto:', errorData);
           showModal('Erro ao deletar produto: ' + errorData.error, 'error');
         }
       } catch (error) {
-        console.error('Erro na requisição:', error);
         showModal(
           'Erro ao deletar produto. Tente novamente mais tarde.',
           'error'
