@@ -722,7 +722,7 @@ export async function carregarTodasMesasInativas() {
       const divMesa = document.createElement('div');
       divMesa.classList.add('card-mesa');
       divMesa.dataset.id = mesa.mes_id;
-      divMesa.innerHTML = `<p>Mesa ${mesa.mes_id}</p>`;
+      divMesa.innerHTML = `<p>Mesa ${escapeHTML(mesa.mes_id)}</p>`;
       containerInativas.appendChild(divMesa);
     });
   } catch (error) {

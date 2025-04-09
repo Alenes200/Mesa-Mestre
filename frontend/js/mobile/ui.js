@@ -123,7 +123,7 @@ export function renderProdutos(produtos) {
     const item = document.createElement('div');
     item.className = 'produto-item';
     item.innerHTML = `
-            <span>${produto.nome || 'Produto sem nome'}</span>
+            <span>${escapeHTML(produto.nome) || 'Produto sem nome'}</span>
             <span>${quantidade}</span>
             <span>R$ ${valorTotal.toFixed(2)}</span>
         `;
