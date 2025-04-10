@@ -11,10 +11,14 @@ $font-size-large: 24px;
 $container-width: 100%;
 $primary-color: #0D0D0D; // Botão preto
 
+.login-body {
+    overflow: hidden;
+}
 
 .s-login {
     width: 100%;
-    background-color: $background-color;
+    background: url('../../images/LoginImgFundo.png') no-repeat center center;
+    background-size: cover;
     margin: 0;
     padding: 0;
     display: flex;
