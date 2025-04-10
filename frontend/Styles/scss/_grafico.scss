@@ -119,7 +119,7 @@ $font-secondary: 'Inter', sans-serif;
   .graficos-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 350px); 
+    grid-template-rows: repeat(2, 350px);
     gap: 20px;
     padding: 20px 0; // Espaço vertical
     min-height: min-content; // Força altura mínima
@@ -131,7 +131,7 @@ $font-secondary: 'Inter', sans-serif;
       padding: 15px;
       display: flex;
       flex-direction: column;
-      min-height: 350px; 
+      min-height: 350px;
       height: 100%;
 
       &.grafico-grande {
@@ -152,7 +152,7 @@ $font-secondary: 'Inter', sans-serif;
           display: block;
           min-height: 300px;
         }
-     }
+      }
     }
   }
 

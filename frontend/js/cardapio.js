@@ -139,6 +139,24 @@ function closeModal() {
   document.getElementById('quantidade').value = 1; // Redefine a quantidade para 1
 }
 
+// Adicione esta função para atualizar o contador do carrinho
+function atualizarContadorCarrinho() {
+  const contadorElement = document.getElementById('quantidade-carrinho');
+  const containerQuantidade = document.querySelector('.quantidade-carrinho');
+
+  if (carrinho.length === 0) {
+    containerQuantidade.style.display = 'none';
+  } else {
+    containerQuantidade.style.display = 'flex';
+    // Soma todas as quantidades dos itens no carrinho
+    const quantidadeTotal = carrinho.reduce(
+      (total, item) => total + item.quantidade,
+      0
+    );
+    contadorElement.textContent = quantidadeTotal;
+  }
+}
+
 // Função para adicionar o item ao carrinho
 function addToCart(produto, quantidade) {
   fetch(`/api/mesas/${mesaId}`)
@@ -164,17 +182,19 @@ function addToCart(produto, quantidade) {
 
       // Adiciona o item ao carrinho
       const itemCarrinho = carrinho.find(
-        (item) => item.pro_id === produto.pro_id
+        (item) => item.pro_id === produto.pro_CodM02id
       );
 
       if (itemCarrinho) {
         itemCarrinho.quantidade += quantidade;
+        atualizarContadorCarrinho();
         showToast(
           `${quantidade}x ${produto.pro_nome} adicionado ao carrinho!`,
           'success'
         );
       } else {
         carrinho.push({ ...produto, quantidade });
+        atualizarContadorCarrinho();
         showToast(
           `${quantidade}x ${produto.pro_nome} adicionado ao carrinho!`,
           'success'
@@ -282,12 +302,14 @@ function alterarQuantidade(index, delta) {
     carrinho.splice(index, 1); // Remove o item se a quantidade for 0
   }
 
+  atualizarContadorCarrinho();
   openCarrinho(); // Recarrega o carrinho
 }
 
 // Função para remover um item do carrinho
 function removerProduto(index) {
   carrinho.splice(index, 1); // Remove o item do carrinho
+  atualizarContadorCarrinho();
   openCarrinho(); // Recarrega o carrinho
 }
 
@@ -375,8 +397,9 @@ async function enviarPedidos() {
 
     showToast('Pedido enviado com sucesso!');
 
-    exibirPedidosNoModal(); // Exibe os pedidos no modal
     carrinho = []; // Limpa o carrinho
+    atualizarContadorCarrinho();
+    exibirPedidosNoModal(); // Exibe os pedidos no modal
     closeCarrinho(); // Fecha o modal do carrinho
   } catch (error) {
     console.error('Erro detalhado ao enviar pedidos:', error);
@@ -575,6 +598,7 @@ async function atualizarPedidoComPrecoTotal(pedidoId) {
 // Adiciona um event listener para carregar os produtos quando a página for carregada
 document.addEventListener('DOMContentLoaded', async () => {
   fetchProdutos();
+  atualizarContadorCarrinho();
   const savedMesaId = localStorage.getItem('mesaId');
 
   if (savedMesaId) {
@@ -602,7 +626,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         ? mesaData.mes_nome.toUpperCase()
         : `MESA ${String(mesaId).padStart(2, '0')}`;
 
-        // Mostra o botão de logout
+      // Mostra o botão de logout
       // document.getElementById('logout-button').style.display = 'block';
 
       showToast(
@@ -730,7 +754,10 @@ async function logarNaMesa() {
     const mesaLogadoData = await mesaLogadoResponse.json();
 
     // Se a mesa já está logada E não é a mesma que está salva localmente
-    if (mesaLogadoData.mes_logado && (!mesaSalva || parseInt(mesaSalva) !== mesa.mes_id)) {
+    if (
+      mesaLogadoData.mes_logado &&
+      (!mesaSalva || parseInt(mesaSalva) !== mesa.mes_id)
+    ) {
       throw new Error('Esta mesa já está em uso.');
     }
 
@@ -820,7 +847,9 @@ document.getElementById('logout-button').addEventListener('click', async () => {
 
 // Adiciona eventos para abrir e fechar o modal de login
 document.getElementById('entrar-mesa').addEventListener('click', logarNaMesa);
-document.querySelector('.modal-login-mesas .fechar-modal').addEventListener('click', closeLoginModal);
+document
+  .querySelector('.modal-login-mesas .fechar-modal')
+  .addEventListener('click', closeLoginModal);
 
 async function openModalPedidos() {
   try {
