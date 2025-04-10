@@ -77,11 +77,39 @@ document.addEventListener('DOMContentLoaded', function() {
     if (contactForm) {
       contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
-        // Aqui você pode adicionar o código para enviar o formulário
-        // Pode ser uma requisição AJAX para seu backend Node.js
-        alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');
         this.reset();
       });
     }
   });
+
+// Navegação para as telas de teste - abrindo em nova janela
+document.querySelectorAll('.inicio-test-button').forEach(button => {
+  button.addEventListener('click', function(e) {
+    e.preventDefault(); // Previne o comportamento padrão
+    
+    const target = this.closest('.inicio-test-card');
+    if (target) {
+      const buttonText = this.textContent.trim();
+      let url;
+      
+      if (buttonText.includes('Cardápio')) {
+        url = '../pages/cardapio.html';
+      } else if (buttonText.includes('Atendente')) {
+        url = '../pages/atendente.html';
+      } 
+      // else if (buttonText.includes('Cozinha')) {
+      //   url = '../pages/cozinha.html';
+      // }
+      
+      if (url) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    }
+  });
+});
+
+document.getElementById('contactForm').addEventListener('submit', function() {
+  setTimeout(function() {
+    window.location.href = './pages/obrigado.html';
+  }, 1000);
+});

@@ -1,0 +1,171 @@
+/* Página de Agradecimento */
+.inicio-thank-you {
+    padding: 100px 0;
+    text-align: center;
+    min-height: calc(100vh - #{$inicio-header-height});
+    display: flex;
+    align-items: center;
+}
+
+.inicio-thank-you-content {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: $inicio-light-color;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.inicio-thank-you-icon {
+    margin-bottom: 30px;
+
+    svg {
+        animation: checkmark 0.6s ease;
+    }
+}
+
+@keyframes checkmark {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.inicio-thank-you-title {
+    font-size: 2.2rem;
+    color: $inicio-primary-color;
+    margin-bottom: 20px;
+}
+
+.inicio-thank-you-text {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: $inicio-text-color;
+}
+
+.inicio-thank-you-details {
+    margin: 30px 0;
+    text-align: left;
+    background-color: rgba($inicio-secondary-color, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+
+    p {
+        font-weight: 500;
+        margin-bottom: 15px;
+        color: $inicio-primary-color;
+    }
+}
+
+.inicio-thank-you-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+        margin-bottom: 10px;
+        position: relative;
+        padding-left: 25px;
+
+        &::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: $inicio-secondary-color;
+        }
+    }
+}
+
+.inicio-thank-you-link {
+    color: $inicio-secondary-color;
+    text-decoration: none;
+    transition: color 0.3s;
+
+    &:hover {
+        color: darken($inicio-secondary-color, 15%);
+        text-decoration: underline;
+    }
+}
+
+.inicio-thank-you-button {
+    display: inline-block;
+    background-color: $inicio-secondary-color;
+    color: $inicio-text-light;
+    padding: 12px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+    margin-top: 20px;
+
+    &:hover {
+        background-color: darken($inicio-secondary-color, 10%);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+}
+
+.inicio-contact-form {
+    position: relative;
+
+    &.inicio-loading {
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            z-index: 10;
+        }
+
+        .inicio-form-submit::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .inicio-thank-you {
+        padding: 80px 0;
+    }
+
+    .inicio-thank-you-content {
+        padding: 30px 20px;
+    }
+
+    .inicio-thank-you-title {
+        font-size: 1.8rem;
+    }
+
+    .inicio-thank-you-text {
+        font-size: 1rem;
+    }
+}
