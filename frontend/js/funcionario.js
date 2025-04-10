@@ -1,9 +1,8 @@
 import { showModal } from './modal.js';
+import { escapeHTML } from '../utils/sanitizacao.js';
 
-// Variável global para armazenar a lista completa de funcionários
 let funcionarios = [];
 
-// Função para converter o tipo de usuário numérico para texto
 export function getTipoUsuarioTexto(tipo) {
   const tipos = {
     1: 'Admin',
@@ -14,7 +13,6 @@ export function getTipoUsuarioTexto(tipo) {
   return tipos[tipo] || 'Desconhecido';
 }
 
-// Função para renderizar a tabela de funcionários
 function renderizarFuncionarios(listaFuncionarios) {
   const tabelaFuncionarios = document.getElementById('funcionarios-table-body');
   tabelaFuncionarios.innerHTML = '';
@@ -27,15 +25,15 @@ function renderizarFuncionarios(listaFuncionarios) {
       funcionario.usr_status === 1 ? 'status-ativo' : 'status-inativo';
 
     linha.innerHTML = `
-      <td class="nome-column">${funcionario.usr_nome}</td>
-      <td class="email-column">${funcionario.usr_email}</td>
-      <td class="telefone-column">${funcionario.usr_telefone || 'N/A'}</td>
-      <td class="data-column">${new Date(funcionario.usr_created_at).toLocaleDateString()}</td>
-      <td class="funcao-column">${getTipoUsuarioTexto(funcionario.usr_tipo)}</td>
-      <td class="status-column ${statusClass}">${funcionario.usr_status === 1 ? 'Ativo' : 'Inativo'}</td>
+      <td class="nome-column">${escapeHTML(funcionario.usr_nome)}</td>
+      <td class="email-column">${escapeHTML(funcionario.usr_email)}</td>
+      <td class="telefone-column">${escapeHTML(funcionario.usr_telefone || 'N/A')}</td>
+      <td class="data-column">${escapeHTML(new Date(funcionario.usr_created_at).toLocaleDateString())}</td>
+      <td class="funcao-column">${getTipoUsuarioTexto(escapeHTML(funcionario.usr_tipo))}</td>
+      <td class="status-column ${statusClass}">${escapeHTML(funcionario.usr_status === 1 ? 'Ativo' : 'Inativo')}</td>
       <td class="opcoes-column">
-          <span class="editar-funcionario" data-id="${funcionario.usr_id}">✏️</span>
-          <span class="deletar-funcionario" data-id="${funcionario.usr_id}">🗑️</span>
+          <span class="editar-funcionario" data-id="${escapeHTML(funcionario.usr_id)}">✏️</span>
+          <span class="deletar-funcionario" data-id="${escapeHTML(funcionario.usr_id)}">🗑️</span>
       </td>
     `;
 
