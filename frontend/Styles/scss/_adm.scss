@@ -112,8 +112,6 @@
 
   .direita {
     width: 100%;
-    // padding: 55px 34px;
-    padding: 0 34px;
     display: flex;
     justify-content: center;
 
@@ -125,8 +123,7 @@
       border-radius: 20px;
       width: 100%;
       max-width: 1519px;
-
-      padding: 55px 34px;
+      padding: 55px 34px 0px 34px;
 
       .locais-mesas {
         display: flex;
@@ -220,7 +217,7 @@
           }
 
           .botoes {
-            margin-top: 20px;
+            margin: 20px;
 
             button {
               padding: 10px 20px;
@@ -238,6 +235,8 @@
         margin-top: 55px;
         display: flex;
         flex-direction: column;
+        max-height: 75vh;
+        overflow: auto;
 
         .card-mesa {
           cursor: pointer;
@@ -347,7 +346,6 @@
 
         .menu-table-wrapper {
           max-height: 350px;
-          /* Altura fixa, ajuste conforme necessário */
           overflow-y: auto;
         }
 
