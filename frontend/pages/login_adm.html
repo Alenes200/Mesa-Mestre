@@ -4,12 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../Styles/main.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <title>Página de login</title>
   </head>
   <body>
     <section class="s-login">
       <main>
+        <div id="custom-modal" class="custom-modal">
+          <div class="custom-modal-content">
+            <span id="custom-modal-icon"></span>
+            <p id="custom-modal-message"></p>
+            <button class="custom-modal-close"></button>
+          </div>
+        </div>
         <!-- Logo e Título acima do login -->
         <div class="logo-container">
           <img src="../images/Logo.png" alt="Logo Mesa Mestre" class="logo" />
@@ -41,11 +51,10 @@
               </div>
               <button id="btn-login" class="login-button">Entrar</button>
             </div>
-
           </div>
         </div>
       </main>
     </section>
-    <script src="../js/login.js"></script>
-  </body>
+    <script type="module" src="../js/login.js"></script>
+  </body>
 </html>

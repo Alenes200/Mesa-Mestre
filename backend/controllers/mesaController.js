@@ -89,7 +89,7 @@ const mesasController = {
   update: async (req, res) => {
     try {
       const { id } = req.params;
-      const { nome, codigo, capacidade, descricao, local, status } = req.body;
+      const { capacidade, descricao, local, status } = req.body;
 
       const mesaExistente = await mesasRepository.getByIdIgnoreStatus(id);
       if (!mesaExistente) {

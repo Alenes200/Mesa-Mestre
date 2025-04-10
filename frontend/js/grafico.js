@@ -59,6 +59,10 @@ function criarGrafico(ctx, type, data, options) {
     canvas.style.height = '300px';
   }
 
+  // Definir dimensões explícitas para o canvas
+  canvas.style.width = '100%';
+  canvas.style.height = '400px'; // Altura fixa ou use 'auto'
+
   const chart = new Chart(ctx, {
     type: type,
     data: data,
@@ -66,12 +70,12 @@ function criarGrafico(ctx, type, data, options) {
       ...options,
       responsive: true,
       maintainAspectRatio: false,
-      onResize: (chart, size) => {
-        if (size.height < 100 || size.width < 100) {
-          chart.canvas.parentNode.style.height = '300px';
-          chart.resize();
-        }
-      },
+      // onResize: (chart, size) => {
+      //   if (size.height < 100 || size.width < 100) {
+      //     chart.canvas.parentNode.style.height = '300px';
+      //     chart.resize();
+      //   }
+      // },
     },
   });
 
@@ -633,29 +637,51 @@ export async function carregarGraficoComandas(token) {
     showModal('Erro ao configurar gráficos', 'error');
   }
 }
-// No final do arquivo grafico.js, adicione:
-// Modifique a função setupResizeObserver:
+
+function debounce(func, wait) {
+  let timeout;
+  return function(...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
+// E modifique o setupResizeObserver:
 function setupResizeObserver() {
   const container = document.querySelector('.conteudo-graficos-container');
   if (!container) return;
 
-  // Desconectar observer anterior se existir
   if (resizeObserver) {
     resizeObserver.disconnect();
   }
 
-  resizeObserver = new ResizeObserver((entries) => {
-    for (let entry of entries) {
-      if (entry.contentRect.width > 0) {
-        // Redimensionar apenas gráficos visíveis
-        Object.values(graficos).forEach((grafico) => {
-          if (grafico && grafico.canvas.offsetParent !== null) {
-            grafico.resize();
-          }
-        });
+  const handleResize = debounce(() => {
+    Object.values(graficos).forEach((grafico) => {
+      if (grafico && grafico.canvas.offsetParent !== null) {
+        grafico.resize();
       }
-    }
-  });
+    });
+  }, 100); // 100ms de delay
 
+  resizeObserver = new ResizeObserver(handleResize);
   resizeObserver.observe(container);
 }
+
+function ajustarTamanhoGraficos() {
+  const wrappers = document.querySelectorAll('.grafico-wrapper');
+  wrappers.forEach(wrapper => {
+    const aspectRatio = 16 / 9; // Proporção desejada
+    const width = wrapper.clientWidth;
+    wrapper.style.height = `${width / aspectRatio}px`;
+    
+    const canvas = wrapper.querySelector('canvas');
+    if (canvas) {
+      canvas.width = width;
+      canvas.height = width / aspectRatio;
+    }
+  });
+}
+
+// Executar no carregamento e no redimensionamento (com debounce)
+window.addEventListener('load', ajustarTamanhoGraficos);
+window.addEventListener('resize', debounce(ajustarTamanhoGraficos, 100));

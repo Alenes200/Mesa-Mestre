@@ -17,11 +17,11 @@
     <header class="inicio-header">
       <nav class="inicio-nav">
         <div class="inicio-logo">
-          <a href="#"><img src="./images/Logo.svg" alt="Logo Mesa Mestre" /></a>
+          <a href="#home"><img src="./images/Logo.svg" alt="Logo Mesa Mestre" /></a>
           <h2>Mesa Mestre</h2>
         </div>
         <ul class="inicio-nav-links">
-          <li><a href="#" class="inicio-nav-link inicio-active">Home</a></li>
+          <li><a href="#home" class="inicio-nav-link inicio-active">Início</a></li>
           <li><a href="#sobre" class="inicio-nav-link">Sobre</a></li>
           <li>
             <a href="#funcionalidades" class="inicio-nav-link"
@@ -51,8 +51,6 @@
     <!-- Seção Hero -->
     <section id="home" class="inicio-hero">
       <div class="inicio-hero-content">
-        <!-- <h1 class="inicio-hero-title">Conheça nosso produto inovador</h1> -->
-        <!-- <p class="inicio-hero-subtitle">Solução perfeita para suas necessidades</p> -->
         <a href="#sobre" class="inicio-hero-cta">Saiba mais</a>
       </div>
     </section>
@@ -68,19 +66,32 @@
               pontos principais que fazem seu produto ser único e valioso para
               os clientes.
             </p>
-            <ul class="inicio-benefits">
-              <li class="inicio-benefit-item">Benefício 1</li>
-              <li class="inicio-benefit-item">Benefício 2</li>
-              <li class="inicio-benefit-item">Benefício 3</li>
-            </ul>
+            <div class="inicio-benefits">
+              <div class="inicio-benefit-item">
+                <img class="inicio-benefits-img" src="./images/Item01.svg" alt="">
+                <div class="inicio-benefits-text">
+                  <h4>Cardápios Dinâmicos</h4>
+                  <span>Crie e personalize seus cardápios com facilidade.</span>
+                </div>
+              </div>
+              <div class="inicio-benefit-item" style="display: flex; gap: 10px;">
+                <img class="inicio-benefits-img" src="./images/Item02.svg" alt="">
+                <div class="inicio-benefits-text">
+                  <h4>Mesas Organizadas</h4>
+                  <span>Visualize e gerencie mesas em tempo real.</span>
+                </div>
+              </div>
+              <div class="inicio-benefit-item" style="display: flex; gap: 10px;">
+                <img class="inicio-benefits-img" src="./images/Item03.svg" alt="">
+                <div class="inicio-benefits-text">
+                  <h4>Cardápios Dinâmicos</h4>
+                  <span>Acompanhe o desempenho do seu negócio.</span>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="inicio-sobre-image">
-            <!-- Você pode substituir por uma imagem real do seu produto -->
-            <img
-              src="assets/product-image.jpg"
-              alt="Imagem do produto"
-              class="inicio-img"
-            />
+            <img src="./images/MesA 2.svg" alt="Imagem do produto" class="inicio-img"/>
           </div>
         </div>
       </div>
@@ -175,6 +186,49 @@
           </div>
         </div>
       </div>
+      <!-- Nova seção de testes -->
+      <div class="inicio-container inicio-test-section">
+        <h3 class="inicio-test-title">Experimente nossas telas</h3>
+        <p class="inicio-test-subtitle">Clique em qualquer tela abaixo para testar a experiência</p>
+        
+        <div class="inicio-test-grid">
+          <!-- Cardápio -->
+          <div class="inicio-test-card">
+            <div class="inicio-test-icon">
+              <img src="./images//IconeCardapio.svg" alt="Ícone Cardápio">
+            </div>
+            <h4 class="inicio-test-card-title">Tela do Cliente</h4>
+            <p class="inicio-test-card-desc">Explore nosso cardápio digital e faça pedidos como um cliente</p>
+            <button class="inicio-test-button">
+              Testar Cardápio
+            </button>
+          </div>
+          
+          <!-- Atendente -->
+          <div class="inicio-test-card">
+            <div class="inicio-test-icon">
+              <img src="./images/IconeAtendente.svg" alt="Ícone Atendente">
+            </div>
+            <h4 class="inicio-test-card-title">Tela do Atendente</h4>
+            <p class="inicio-test-card-desc">Gerencie mesas, comandas e pedidos como um atendente</p>
+            <button class="inicio-test-button">
+              Testar Atendente
+            </button>
+          </div>
+          
+          <!-- Cozinha -->
+          <!-- <div class="inicio-test-card">
+            <div class="inicio-test-icon">
+              <img src="./images/cozinha-icon.svg" alt="Ícone Cozinha">
+            </div>
+            <h4 class="inicio-test-card-title">Tela da Cozinha</h4>
+            <p class="inicio-test-card-desc">Acompanhe e prepare pedidos como nossa equipe de cozinha</p>
+            <button class="inicio-test-button">
+              Testar Cozinha
+            </button>
+          </div> -->
+        </div>
+      </div>
     </section>
 
     <!-- Seção Contato -->
@@ -182,27 +236,23 @@
       <div class="inicio-container">
         <h2 class="inicio-section-title">Entre em contato</h2>
         <div class="inicio-contato-content">
-          <form class="inicio-contact-form">
+          <form id="contactForm" class="inicio-contact-form" action="https://formsubmit.co/seu-email@dominio.com" method="POST">
+            <!-- Adicione estes inputs hidden para configuração -->
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_next" value="http://localhost:3000/pages/obrigado.html">
+            <input type="hidden" name="_template" value="table">
+            
             <div class="inicio-form-group">
               <label for="name" class="inicio-form-label">Nome</label>
-              <input type="text" id="name" class="inicio-form-input" required />
+              <input type="text" id="name" name="name" class="inicio-form-input" required />
             </div>
             <div class="inicio-form-group">
               <label for="email" class="inicio-form-label">Email</label>
-              <input
-                type="email"
-                id="email"
-                class="inicio-form-input"
-                required
-              />
+              <input type="email" id="email" name="email" class="inicio-form-input" required />
             </div>
             <div class="inicio-form-group">
               <label for="message" class="inicio-form-label">Mensagem</label>
-              <textarea
-                id="message"
-                class="inicio-form-textarea"
-                required
-              ></textarea>
+              <textarea id="message" name="message" class="inicio-form-textarea" required></textarea>
             </div>
             <button type="submit" class="inicio-form-submit">Enviar</button>
           </form>
@@ -246,7 +296,7 @@
           <div class="inicio-footer-links">
             <h4 class="inicio-footer-title">Links</h4>
             <ul>
-              <li><a href="#home" class="inicio-footer-link">Home</a></li>
+              <li><a href="#home" class="inicio-footer-link">Início</a></li>
               <li><a href="#sobre" class="inicio-footer-link">Sobre</a></li>
               <li>
                 <a href="#funcionalidades" class="inicio-footer-link"
@@ -277,6 +327,6 @@
       </div>
     </footer>
 
-    <script src="scripts/main.js"></script>
+    <script src="./index.js"></script>
   </body>
 </html>

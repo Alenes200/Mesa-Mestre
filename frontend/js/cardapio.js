@@ -4,6 +4,9 @@ let mesaId; // Defina o ID da mesa dinamicamente
 let comandaAtivaId = null;
 let contaPedida = false;
 
+import { escapeHTML } from '../utils/sanitizacao.js';
+import { showModal } from './modal.js';
+
 // Função para buscar os produtos do backend
 async function fetchProdutos() {
   try {
@@ -15,7 +18,7 @@ async function fetchProdutos() {
     displayProdutos(allProdutos);
   } catch (error) {
     console.error('Erro ao obter produtos:', error);
-    alert('Erro ao obter produtos. Verifique o console para mais detalhes.');
+    showModal('Erro ao obter produtos.', 'error');
   }
 }
 
@@ -35,12 +38,12 @@ function displayProdutos(produtos) {
 
     produtoElement.innerHTML = `
     <div class="descricao">
-      <h2>${produto.pro_nome} <span>${preco}</span></h2>
-      <p>${produto.pro_descricao}</p>
+      <h2>${escapeHTML(produto.pro_nome)} <span>${preco}</span></h2>
+      <p>${escapeHTML(produto.pro_descricao)}</p>
       <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
     </div>
     <div class="imagem-produto">
-      <img src="${imagemSrc}" alt="Imagem de ${produto.pro_nome}" />
+      <img src="${escapeHTML(imagemSrc)}" alt="Imagem de ${escapeHTML(produto.pro_nome)}" />
     </div>
   `;
 
@@ -70,8 +73,8 @@ function displayProdutosPorTipo(tipo) {
 
     produtoElement.innerHTML = `
       <div class="descricao">
-        <h2>${produto.pro_nome} <span>${preco}</span></h2>
-        <p>${produto.pro_descricao}</p>
+        <h2>${escapeHTML(produto.pro_nome)}<span>${preco}</span></h2>
+        <p>${escapeHTML(produto.pro_descricao)}</p>
         <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
       </div>
       <div class="imagem-produto">
@@ -139,6 +142,24 @@ function closeModal() {
   document.getElementById('quantidade').value = 1; // Redefine a quantidade para 1
 }
 
+// Adicione esta função para atualizar o contador do carrinho
+function atualizarContadorCarrinho() {
+  const contadorElement = document.getElementById('quantidade-carrinho');
+  const containerQuantidade = document.querySelector('.quantidade-carrinho');
+
+  if (carrinho.length === 0) {
+    containerQuantidade.style.display = 'none';
+  } else {
+    containerQuantidade.style.display = 'flex';
+    // Soma todas as quantidades dos itens no carrinho
+    const quantidadeTotal = carrinho.reduce(
+      (total, item) => total + item.quantidade,
+      0
+    );
+    contadorElement.textContent = quantidadeTotal;
+  }
+}
+
 // Função para adicionar o item ao carrinho
 function addToCart(produto, quantidade) {
   fetch(`/api/mesas/${mesaId}`)
@@ -164,17 +185,19 @@ function addToCart(produto, quantidade) {
 
       // Adiciona o item ao carrinho
       const itemCarrinho = carrinho.find(
-        (item) => item.pro_id === produto.pro_id
+        (item) => item.pro_id === produto.pro_CodM02id
       );
 
       if (itemCarrinho) {
         itemCarrinho.quantidade += quantidade;
+        atualizarContadorCarrinho();
         showToast(
           `${quantidade}x ${produto.pro_nome} adicionado ao carrinho!`,
           'success'
         );
       } else {
         carrinho.push({ ...produto, quantidade });
+        atualizarContadorCarrinho();
         showToast(
           `${quantidade}x ${produto.pro_nome} adicionado ao carrinho!`,
           'success'
@@ -213,27 +236,27 @@ function openCarrinho() {
       <div class="produto">
         <div class="E-descricao">
           <img
-            src="/uploads/${item.pro_imagem}"
-            alt="${item.pro_nome}"
+            src="/uploads/${escapeHTML(item.pro_imagem)}"
+            alt="${escapeHTML(item.pro_nome)}"
             class="imagem-produto"
           />
           <div class="text-produto">
-            <h2>${item.pro_nome}</h2>
-            <p>${item.pro_descricao}</p>
+            <h2>${escapeHTML(item.pro_nome)}</h2>
+            <p>${escapeHTML(item.pro_descricao)}</p>
           </div>
         </div>
         <div class="D-descricao">
           <div class="quantidade">
-            <button class="btn-quantidade menos" data-index="${index}">
+            <button class="btn-quantidade menos" data-index="${escapeHTML(index)}">
               <img src="../images/icon-menos.svg" alt="Diminuir quantidade" />
             </button>
-            <span>${item.quantidade}</span>
-            <button class="btn-quantidade mais" data-index="${index}">
+            <span>${escapeHTML(item.quantidade)}</span>
+            <button class="btn-quantidade mais" data-index="${escapeHTML(index)}">
               <img src="../images/icon-mais.svg" alt="Aumentar quantidade" />
             </button>
           </div>
           <div class="total-produto">
-            <span>R$ ${subtotal.toFixed(2)}</span>
+            <span>R$ ${escapeHTML(subtotal.toFixed(2))}</span>
           </div>
         </div>
       </div>
@@ -244,7 +267,7 @@ function openCarrinho() {
 
   // Atualiza o subtotal no rodapé do carrinho
   const totalElement = document.querySelector('.total-pedido span');
-  totalElement.innerText = `R$ ${total.toFixed(2)}`;
+  totalElement.innerText = `R$ ${escapeHTML(total.toFixed(2))}`;
 
   // Exibe o modal do carrinho
   carrinhoOffcanvas.classList.add('aberto');
@@ -282,12 +305,14 @@ function alterarQuantidade(index, delta) {
     carrinho.splice(index, 1); // Remove o item se a quantidade for 0
   }
 
+  atualizarContadorCarrinho();
   openCarrinho(); // Recarrega o carrinho
 }
 
 // Função para remover um item do carrinho
 function removerProduto(index) {
   carrinho.splice(index, 1); // Remove o item do carrinho
+  atualizarContadorCarrinho();
   openCarrinho(); // Recarrega o carrinho
 }
 
@@ -375,8 +400,9 @@ async function enviarPedidos() {
 
     showToast('Pedido enviado com sucesso!');
 
-    exibirPedidosNoModal(); // Exibe os pedidos no modal
     carrinho = []; // Limpa o carrinho
+    atualizarContadorCarrinho();
+    exibirPedidosNoModal(); // Exibe os pedidos no modal
     closeCarrinho(); // Fecha o modal do carrinho
   } catch (error) {
     console.error('Erro detalhado ao enviar pedidos:', error);
@@ -575,6 +601,7 @@ async function atualizarPedidoComPrecoTotal(pedidoId) {
 // Adiciona um event listener para carregar os produtos quando a página for carregada
 document.addEventListener('DOMContentLoaded', async () => {
   fetchProdutos();
+  atualizarContadorCarrinho();
   const savedMesaId = localStorage.getItem('mesaId');
 
   if (savedMesaId) {
@@ -586,7 +613,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const logadoResponse = await fetch(`/api/mesas/${savedMesaId}/logado`);
       const logadoData = await logadoResponse.json();
 
-      if (mesaData.mes_status === 0 || !logadoData.mes_logado) {
+      if (!logadoData.mes_logado) {
         localStorage.removeItem('mesaId');
         await deslogarDaMesa();
         openLoginModal();
@@ -602,7 +629,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         ? mesaData.mes_nome.toUpperCase()
         : `MESA ${String(mesaId).padStart(2, '0')}`;
 
-        // Mostra o botão de logout
+      // Mostra o botão de logout
       // document.getElementById('logout-button').style.display = 'block';
 
       showToast(
@@ -730,7 +757,10 @@ async function logarNaMesa() {
     const mesaLogadoData = await mesaLogadoResponse.json();
 
     // Se a mesa já está logada E não é a mesma que está salva localmente
-    if (mesaLogadoData.mes_logado && (!mesaSalva || parseInt(mesaSalva) !== mesa.mes_id)) {
+    if (
+      mesaLogadoData.mes_logado &&
+      (!mesaSalva || parseInt(mesaSalva) !== mesa.mes_id)
+    ) {
       throw new Error('Esta mesa já está em uso.');
     }
 
@@ -820,7 +850,9 @@ document.getElementById('logout-button').addEventListener('click', async () => {
 
 // Adiciona eventos para abrir e fechar o modal de login
 document.getElementById('entrar-mesa').addEventListener('click', logarNaMesa);
-document.querySelector('.modal-login-mesas .fechar-modal').addEventListener('click', closeLoginModal);
+document
+  .querySelector('.modal-login-mesas .fechar-modal')
+  .addEventListener('click', closeLoginModal);
 
 async function openModalPedidos() {
   try {
@@ -928,18 +960,18 @@ async function exibirPedidosNoModal() {
               <p>${horaPedido}</p>
             </div>
             <div class="qtde">
-              <p>${item.quantidade}x</p>
+              <p>${escapeHTML(item.quantidade)}x</p>
             </div>
             <div class="item">
-              <p>${item.nome}</p>
+              <p>${escapeHTML(item.nome)}</p>
             </div>
           </div>
           <div class="direita">
             <div class="unidade">
-              <p>R$ ${item.preco_unitario.toFixed(2)}</p>
+              <p>R$ ${escapeHTML(item.preco_unitario.toFixed(2))}</p>
             </div>
             <div class="valor">
-              <p>R$ ${subtotalItem.toFixed(2)}</p>
+              <p>R$ ${escapeHTML(subtotalItem.toFixed(2))}</p>
             </div>
           </div>
         `;
@@ -1083,6 +1115,10 @@ async function pedirConta() {
     showToast('Erro ao solicitar a conta.', 'error');
   }
 }
+
+window.openModalPedidos = openModalPedidos;
+window.openLoginModal = openLoginModal;
+window.closeCarrinho = closeCarrinho;
 
 // Adiciona o evento ao botão "Pedir a Conta"
 document.getElementById('pedir-conta').addEventListener('click', pedirConta);

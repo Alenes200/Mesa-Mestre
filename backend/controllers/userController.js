@@ -98,7 +98,7 @@ const updateUser = async (req, res) => {
       if (senha && typeof senha === 'string') dadosAtualizados.usr_senha = senha;
       if (telefone && typeof telefone === 'string') dadosAtualizados.usr_telefone = telefone;
       if (funcao && typeof funcao === 'string') dadosAtualizados.usr_funcao = funcao;
-      if (tipo !== undefined && [1, 2, 3].includes(tipo)) dadosAtualizados.usr_tipo = tipo;
+      if (tipo !== undefined && [1, 2, 3, 4].includes(tipo)) dadosAtualizados.usr_tipo = tipo;
       if (status !== undefined && typeof status === 'number' && status >= 0) dadosAtualizados.usr_status = status;
   
       if (Object.keys(dadosAtualizados).length === 0) {
