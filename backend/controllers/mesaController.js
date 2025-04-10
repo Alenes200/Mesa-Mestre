@@ -89,7 +89,7 @@ const mesasController = {
   update: async (req, res) => {
     try {
       const { id } = req.params;
-      const { capacidade, descricao, local, status } = req.body;
+      const { codigo, capacidade, descricao, local, status } = req.body;
 
       const mesaExistente = await mesasRepository.getByIdIgnoreStatus(id);
       if (!mesaExistente) {
@@ -103,6 +103,7 @@ const mesasController = {
         await mesasRepository.setMesaLogado(id, false);
       }
       const mesaAtualizada = await mesasRepository.update(id, {
+        codigo: codigo || mesaExistente.mes_codigo,
         capacidade: capacidade || mesaExistente.mes_capacidade,
         descricao: descricao || mesaExistente.mes_descricao,
         local: local || mesaExistente.mes_local,
