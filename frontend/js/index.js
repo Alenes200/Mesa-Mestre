@@ -1,18 +1,8 @@
 import { showModal, openConfirmModal } from './modal.js';
-import {
-  carregarLocais,
-  carregarMesasModal,
-  carregarMesas,
-  carregarTodasMesasAtivas,
-  salvar,
-  // buscar,
-  adicionar,
-  desativar,
-  abrirModal,
-  fecharModal,
-} from './mesas.js';
+import { carregarLocais, carregarMesasModal, carregarTodasMesasAtivas, salvar, adicionar, desativar, abrirModal, fecharModal, adicionarLocal, } from './mesas.js';
 import { listarFuncionarios, buscarFuncionarios } from './funcionario.js';
-import { carregarGraficoComandas, destruirGrafico } from './grafico.js';
+import { carregarGraficoComandas } from './grafico.js';
+
 import { escapeHTML } from '../utils/sanitizacao.js';
 
 const token = localStorage.getItem('token');
@@ -21,7 +11,6 @@ let userData;
 let userId;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Remover a classe ativa das mesas e adicionar aos gráficos
   document.getElementById('op_mesa').classList.remove('op_ativa');
   document.getElementById('op_grafico').classList.add('op_ativa');
   document.querySelector('.conteudo-mesas').style.display = 'none';
@@ -32,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   conteudoGraficos.style.display = 'block';
 
   carregarLocais();
-  carregarMesasModal(carregarMesas, 'Externa');
+  carregarMesasModal(carregarTodasMesasAtivas, 'Externa');
 
   if (!token) {
     window.location.href = '../pages/login_adm.html';
@@ -50,7 +39,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     userData = await userResponse.json();
 
-    // Esta verificação impede que usuários não administradores acessem a página
     if (userData.userType !== 1) {
       window.location.href = '../pages/login_adm.html';
       return;
@@ -58,7 +46,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     userId = userData.id;
 
-    // Carregar gráficos automaticamente
     try {
       await carregarGraficoComandas(token);
     } catch (error) {
@@ -69,7 +56,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       );
     }
 
-    // Configuração do evento de pesquisa
     document
       .getElementById('search-button-func')
       .addEventListener('click', () => {
@@ -77,8 +63,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
   } catch (error) {
     console.error('Erro ao carregar dados do usuário:', error);
-    localStorage.removeItem('token'); // Remove o token inválido
-    window.location.href = '../pages/login_adm.html'; // Redireciona para login
+    localStorage.removeItem('token');
+    window.location.href = '../pages/login_adm.html'; 
     return;
   }
 
@@ -87,7 +73,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     abrirModal('Locais');
   });
 
-  // Eventos de fechamento
   document
     .getElementById('fecharModalGenerico')
     .addEventListener('click', fecharModal);
@@ -95,8 +80,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     .getElementById('overlayGenerico')
     .addEventListener('click', fecharModal);
   document
-    .getElementById('botaoFecharModal')
-    .addEventListener('click', fecharModal);
+    .getElementById('botaoAdicionarLocal')
+    .addEventListener('click', adicionarLocal);
 
   const botaoSalvar = document.getElementById('salvar-alteracoes');
   botaoSalvar.addEventListener('click', salvar);
@@ -114,7 +99,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const botaoLogout = document.querySelector('.sair');
 
-  // Adiciona um evento de clique ao botão de logout
   botaoLogout.addEventListener('click', async () => {
     try {
       const response = await fetch('/api/auth/logout', {
@@ -214,24 +198,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     removeActiveClass();
     menuGraficos.classList.add('op_ativa');
 
-    // Esconder outros conteúdos
     document.querySelectorAll('.direita > div').forEach((div) => {
       if (div !== conteudoGraficos) {
         div.style.display = 'none';
       }
     });
 
-    // Mostrar container antes de carregar
     conteudoGraficos.style.display = 'block';
-    conteudoGraficos.style.opacity = '0'; // Usar opacity em vez de visibility
+    conteudoGraficos.style.opacity = '0'; 
 
-    // Pequeno delay para o browser processar
     await new Promise((resolve) => setTimeout(resolve, 50));
 
     try {
       const token = localStorage.getItem('token');
       await carregarGraficoComandas(token);
-      conteudoGraficos.style.opacity = '1'; // Mostrar gradualmente
+      conteudoGraficos.style.opacity = '1';
     } catch (error) {
       console.error('Erro ao carregar gráficos:', error);
       conteudoGraficos.innerHTML = `
@@ -244,7 +225,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Abrir/Fechar o formulário de adicionar funcionário
   const btnAdicionarFuncionario = document.getElementById(
     'btn-adicionar-funcionario'
   );
@@ -278,21 +258,17 @@ btnSalvarFuncionario.addEventListener('click', async () => {
     'funcionario-form-container'
   );
 
-  // Validações
   const erros = [];
 
-  // Validação do nome (3-100 caracteres)
   if (!nome || nome.length < 3 || nome.length > 255) {
     erros.push('Nome deve ter entre 3 e 255 caracteres, ');
   }
 
-  // Validação de e-mail
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     erros.push('Formato de e-mail inválido,');
   }
 
-  // Validação de senha (mínimo 8 caracteres, 1 letra maiúscula, 1 número)
   const senhaRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
   if (!senhaRegex.test(senha)) {
     erros.push(
@@ -300,7 +276,6 @@ btnSalvarFuncionario.addEventListener('click', async () => {
     );
   }
 
-  // Exibir erros se houver
   if (erros.length > 0) {
     showModal(erros.join('\n\n'), 'warning');
     return;
@@ -345,7 +320,6 @@ btnSalvarFuncionario.addEventListener('click', async () => {
   }
 });
 
-// Função de máscara para telefone
 function aplicarMascaraTelefone(inputId = 'editar-telefone-funcionario') {
   const telefoneInput = document.getElementById(inputId);
 
@@ -363,10 +337,8 @@ function aplicarMascaraTelefone(inputId = 'editar-telefone-funcionario') {
       formato = valor.replace(/(\d{0,2})/, '($1');
     }
 
-    // Remove parênteses vazios
     formato = formato.replace(/\(\)/g, '').replace(/\(-\)/g, '');
 
-    // Mantém o cursor na posição correta
     const posicaoOriginal = e.target.selectionStart;
     const posicaoAtual = Math.max(
       posicaoOriginal + (formato.length - e.target.value.length),
@@ -377,7 +349,6 @@ function aplicarMascaraTelefone(inputId = 'editar-telefone-funcionario') {
     e.target.setSelectionRange(posicaoAtual, posicaoAtual);
   });
 
-  // Validação melhorada
   telefoneInput.addEventListener('blur', function (e) {
     const valor = e.target.value.replace(/\D/g, '');
     if (valor.length === 0) {
@@ -398,7 +369,6 @@ function aplicarMascaraTelefone(inputId = 'editar-telefone-funcionario') {
   });
 }
 
-// Abrir modal de edição
 document.addEventListener('click', (event) => {
   if (event.target.classList.contains('editar-funcionario')) {
     const funcionarioId = event.target.getAttribute('data-id');
@@ -418,7 +388,6 @@ async function abrirModalEdicao(funcionarioId) {
     if (response.ok) {
       const funcionario = await response.json();
 
-      // Preenche o modal com os dados do funcionário
       document.getElementById('editar-nome-funcionario').value =
         funcionario.usr_nome;
       document.getElementById('editar-email-funcionario').value =
@@ -430,14 +399,11 @@ async function abrirModalEdicao(funcionarioId) {
       document.getElementById('editar-status-funcionario').value =
         funcionario.usr_status;
 
-      // Exibe o modal
       const modalEdicao = document.getElementById('editar-funcionario-modal');
       modalEdicao.style.display = 'flex';
 
-      // Aplicar máscara ao campo de telefone
       aplicarMascaraTelefone();
 
-      // Remove eventos anteriores
       document
         .getElementById('btn-cancelar-edicao')
         .removeEventListener('click', closeModalEdicao);
@@ -445,8 +411,6 @@ async function abrirModalEdicao(funcionarioId) {
       document
         .getElementById('btn-salvar-edicao')
         .removeEventListener('click', salvarEdicao);
-
-      // Fechar modal ao clicar no botão de cancelar ou fora do modal
       document
         .getElementById('btn-cancelar-edicao')
         .addEventListener('click', closeModalEdicao);
@@ -454,8 +418,6 @@ async function abrirModalEdicao(funcionarioId) {
         .getElementById('close-modal-editar')
         .addEventListener('click', closeModalEdicao);
       modalEdicao.addEventListener('click', closeModalEdicaoOutside);
-
-      // Salvar edição
       document
         .getElementById('btn-salvar-edicao')
         .addEventListener('click', salvarEdicao);
@@ -477,15 +439,12 @@ async function abrirModalEdicao(funcionarioId) {
           document.getElementById('editar-status-funcionario').value
         );
 
-        // Validações
         const erros = [];
 
-        // Validação do nome
         if (!nome || nome.length < 3 || nome.length > 100) {
           erros.push('Nome deve ter entre 3 e 100 caracteres');
         }
 
-        // Validação do email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
           erros.push('E-mail inválido');
@@ -564,7 +523,6 @@ async function abrirModalEdicao(funcionarioId) {
   }
 }
 
-// Deletar funcionário
 document.addEventListener('click', (event) => {
   if (event.target.classList.contains('deletar-funcionario')) {
     const funcionarioId = event.target.getAttribute('data-id');
@@ -603,27 +561,22 @@ document.addEventListener('click', (event) => {
 });
 
 function limparFormulario() {
-  // Limpa os campos de texto
   document.getElementById('nome').value = '';
   document.getElementById('descricao-produto').value = '';
   document.getElementById('local').value = '';
   document.getElementById('preco').value = '';
   document.querySelector('.allergen-select').value = '';
 
-  // Limpa o campo de upload de imagem
   const imagemInput = document.getElementById('imagem');
-  imagemInput.value = ''; // Limpa o input de arquivo
+  imagemInput.value = '';
 
-  // Limpa a pré-visualização da imagem
   const placeholder = document.querySelector('.image-placeholder');
   placeholder.innerHTML = `<span class="placeholder-text">Foto do Produto</span>`;
 }
 
-// Adicione um evento de clique ao botão "Adicionar Produto" enviando uma requisição POST para o backend
 document
   .getElementById('btn-adicionar-produto')
   .addEventListener('click', async () => {
-    // Captura os valores dos campos do formulário
     const nome = document.getElementById('nome').value.trim();
     const descricao = document.getElementById('descricao-produto').value.trim();
     const local = document.getElementById('local').value.trim();
