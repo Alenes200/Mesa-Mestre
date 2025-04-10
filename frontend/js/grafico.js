@@ -666,3 +666,22 @@ function setupResizeObserver() {
   resizeObserver = new ResizeObserver(handleResize);
   resizeObserver.observe(container);
 }
+
+function ajustarTamanhoGraficos() {
+  const wrappers = document.querySelectorAll('.grafico-wrapper');
+  wrappers.forEach(wrapper => {
+    const aspectRatio = 16 / 9; // Proporção desejada
+    const width = wrapper.clientWidth;
+    wrapper.style.height = `${width / aspectRatio}px`;
+    
+    const canvas = wrapper.querySelector('canvas');
+    if (canvas) {
+      canvas.width = width;
+      canvas.height = width / aspectRatio;
+    }
+  });
+}
+
+// Executar no carregamento e no redimensionamento (com debounce)
+window.addEventListener('load', ajustarTamanhoGraficos);
+window.addEventListener('resize', debounce(ajustarTamanhoGraficos, 100));

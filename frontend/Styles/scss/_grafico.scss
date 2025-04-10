@@ -18,7 +18,8 @@ $font-secondary: 'Inter', sans-serif;
   overflow: hidden;
 
   &.active {
-    display: flex;
+    display: grid; // Mude para grid
+    grid-template-rows: auto 1fr; // Header e conteúdo
   }
 
   .graficos-header {
@@ -89,7 +90,8 @@ $font-secondary: 'Inter', sans-serif;
     flex: 1;
     padding: 0 20px;
     overflow-y: auto;
-    height: calc(100% - 110px);
+    // height: calc(100% - 110px);
+    height: 80%;
 
     scrollbar-width: thin;
     scrollbar-color: #ff6347 #f1f1f1;
@@ -117,7 +119,7 @@ $font-secondary: 'Inter', sans-serif;
   .graficos-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: minmax(300px, auto);
+    grid-template-rows: repeat(2, 350px);
     gap: 20px;
     padding: 20px 0; // Espaço vertical
     min-height: min-content; // Força altura mínima
@@ -129,24 +131,26 @@ $font-secondary: 'Inter', sans-serif;
       padding: 15px;
       display: flex;
       flex-direction: column;
-      min-height: 300px;
+      min-height: 350px;
       height: 100%;
 
       &.grafico-grande {
         grid-column: span 2;
+        grid-row: span 1;
       }
 
       .grafico-wrapper {
         position: relative;
         width: 100%;
-        height: 100%;
-        min-height: 300px;
+        min-height: 300px; // Altura mínima fixa
+        height: 300px; // Altura fixa inicial
         flex-grow: 1;
 
         canvas {
-          width: 100% !important;
-          height: 100% !important;
+          width: 100%;
+          height: 100%;
           display: block;
+          min-height: 300px;
         }
       }
     }
@@ -154,10 +158,12 @@ $font-secondary: 'Inter', sans-serif;
 
   @media (max-width: 1200px) {
     .graficos-grid {
-      grid-template-columns: repeat(2, 1fr);
+      // grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(6, 350px);
 
       .grafico-card.grafico-grande {
-        grid-column: span 2;
+        grid-column: span 1;
       }
     }
   }
