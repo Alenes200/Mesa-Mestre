@@ -129,9 +129,11 @@ $primary-color: #0D0D0D; // Botão preto
             font-size: 16px;
             cursor: pointer;
             font-weight: bold;
+            transition: all .3s;
 
             &:hover {
-                background-color: darken($button-color, 10%);
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             }
         }
     }
