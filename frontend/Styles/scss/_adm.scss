@@ -188,15 +188,31 @@
 
         .conteudo-modal {
           background: white;
-          padding: 20px;
+          // padding: 20px;
           width: 400px;
           border-radius: 10px;
           text-align: center;
+
+          .corpo-modal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 10px;
+
+            .tabelaLocais {
+              th {
+                text-align: start;
+              }
+            }
+          }
 
           .topo {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background-color: tomato;
+            padding: 0px 15px;
+            border-radius: 10px 10px 0px 0px;
 
             img {
               cursor: pointer;
