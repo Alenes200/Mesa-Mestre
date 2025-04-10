@@ -610,7 +610,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const logadoResponse = await fetch(`/api/mesas/${savedMesaId}/logado`);
       const logadoData = await logadoResponse.json();
 
-      if (mesaData.mes_status === 0 || !logadoData.mes_logado) {
+      if (!logadoData.mes_logado) {
         localStorage.removeItem('mesaId');
         await deslogarDaMesa();
         openLoginModal();
