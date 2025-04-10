@@ -66,7 +66,15 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Servir arquivos estáticos da pasta "frontend"
-app.use(express.static(path.join(__dirname, '../frontend')));
+// Servir frontend apenas em desenvolvimento
+if (process.env.ENV !== 'prod') {
+  app.use(express.static(path.join(__dirname, '../frontend')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
+  });
+}
+
 
 // Rotas
 app.use('/api/auth', loginRoutes);
