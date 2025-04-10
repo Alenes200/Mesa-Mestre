@@ -357,35 +357,60 @@ async function abrirModalEdicao(funcionarioId) {
       const funcionario = await response.json();
 
       // Preenche o modal com os dados do funcionário
-      document.getElementById('editar-nome-funcionario').value = funcionario.usr_nome;
-      document.getElementById('editar-email-funcionario').value = funcionario.usr_email;
-      document.getElementById('editar-telefone-funcionario').value = funcionario.usr_telefone || '';
-      document.getElementById('editar-tipo-funcionario').value = funcionario.usr_tipo || '';
-      document.getElementById('editar-status-funcionario').value = funcionario.usr_status;
+      document.getElementById('editar-nome-funcionario').value =
+        funcionario.usr_nome;
+      document.getElementById('editar-email-funcionario').value =
+        funcionario.usr_email;
+      document.getElementById('editar-telefone-funcionario').value =
+        funcionario.usr_telefone || '';
+      document.getElementById('editar-tipo-funcionario').value =
+        funcionario.usr_tipo || '';
+      document.getElementById('editar-status-funcionario').value =
+        funcionario.usr_status;
 
       // Exibe o modal
       const modalEdicao = document.getElementById('editar-funcionario-modal');
       modalEdicao.style.display = 'flex';
 
       // Remove eventos anteriores
-      document.getElementById('btn-cancelar-edicao').removeEventListener('click', closeModalEdicao);
+      document
+        .getElementById('btn-cancelar-edicao')
+        .removeEventListener('click', closeModalEdicao);
       modalEdicao.removeEventListener('click', closeModalEdicaoOutside);
-      document.getElementById('btn-salvar-edicao').removeEventListener('click', salvarEdicao);
+      document
+        .getElementById('btn-salvar-edicao')
+        .removeEventListener('click', salvarEdicao);
 
       // Fechar modal ao clicar no botão de cancelar ou fora do modal
-      document.getElementById('btn-cancelar-edicao').addEventListener('click', closeModalEdicao);
-      document.getElementById('close-modal-editar').addEventListener('click', closeModalEdicao);
+      document
+        .getElementById('btn-cancelar-edicao')
+        .addEventListener('click', closeModalEdicao);
+      document
+        .getElementById('close-modal-editar')
+        .addEventListener('click', closeModalEdicao);
       modalEdicao.addEventListener('click', closeModalEdicaoOutside);
 
       // Salvar edição
-      document.getElementById('btn-salvar-edicao').addEventListener('click', salvarEdicao);
+      document
+        .getElementById('btn-salvar-edicao')
+        .addEventListener('click', salvarEdicao);
 
       async function salvarEdicao() {
-        const nome = document.getElementById('editar-nome-funcionario').value.trim();
-        const email = document.getElementById('editar-email-funcionario').value.trim();
-        const telefone = document.getElementById('editar-telefone-funcionario').value.trim();
-        const tipo = parseInt(document.getElementById('editar-tipo-funcionario').value);
-        const status = parseInt(document.getElementById('editar-status-funcionario').value);
+        const nome = document
+          .getElementById('editar-nome-funcionario')
+          .value.trim();
+        const email = document
+          .getElementById('editar-email-funcionario')
+          .value.trim();
+        const telefone = document
+          .getElementById('editar-telefone-funcionario')
+          .value.trim();
+        const tipo = parseInt(
+          document.getElementById('editar-tipo-funcionario').value
+        );
+        const status = parseInt(
+          document.getElementById('editar-status-funcionario').value
+        );
 
         if (!nome || !email) {
           showModal(
@@ -499,7 +524,7 @@ document.addEventListener('click', (event) => {
 function limparFormulario() {
   // Limpa os campos de texto
   document.getElementById('nome').value = '';
-  document.getElementById('descricao').value = '';
+  document.getElementById('descricao-produto').value = '';
   document.getElementById('local').value = '';
   document.getElementById('preco').value = '';
   document.querySelector('.allergen-select').value = '';
@@ -519,7 +544,7 @@ document
   .addEventListener('click', async () => {
     // Captura os valores dos campos do formulário
     const nome = document.getElementById('nome').value.trim();
-    const descricao = document.getElementById('descricao').value.trim();
+    const descricao = document.getElementById('descricao-produto').value.trim();
     const local = document.getElementById('local').value.trim();
     const precoInput = document.getElementById('preco').value.trim();
     const preco = parseFloat(precoInput.replace(',', '.')); // Substitui vírgula por ponto e converte para float
@@ -528,23 +553,23 @@ document
     console.log(tipo);
 
     // Verifica se uma imagem foi selecionada
-    if (
-      !nome ||
-      !descricao ||
-      !local ||
-      !preco ||
-      !imagemInput.files.length ||
-      !tipo
-    ) {
-      // alert(
-      //   'Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.'
-      // );
-      showModal(
-        'Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.',
-        'warning'
-      );
-      return;
-    }
+    // if (
+    //   !nome ||
+    //   !descricao ||
+    //   !local ||
+    //   !preco ||
+    //   !imagemInput.files.length ||
+    //   !tipo
+    // ) {
+    //   // alert(
+    //   //   'Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.'
+    //   // );
+    //   showModal(
+    //     'Por favor, preencha todos os campos obrigatórios antes de adicionar o produto.',
+    //     'warning'
+    //   );
+    //   return;
+    // }
 
     // Cria um objeto FormData para enviar os dados, incluindo o arquivo de imagem
     const formData = new FormData();
@@ -633,7 +658,7 @@ document.getElementById('imagem').addEventListener('change', (event) => {
 // Função para preencher o formulário com os dados do produto selecionado
 function preencherFormulario(produto) {
   document.getElementById('nome').value = produto.pro_nome;
-  document.getElementById('descricao').value = produto.pro_descricao;
+  document.getElementById('descricao-produto').value = produto.pro_descricao;
   document.getElementById('local').value = produto.pro_local;
   document.getElementById('preco').value = produto.pro_preco
     .toString()
@@ -736,7 +761,7 @@ document.querySelector('.btn-save').addEventListener('click', async () => {
 
   // Captura os valores dos campos do formulário
   const nome = document.getElementById('nome').value.trim();
-  const descricao = document.getElementById('descricao').value.trim();
+  const descricao = document.getElementById('descricao-produto').value.trim();
   const local = document.getElementById('local').value.trim();
   const precoInput = document.getElementById('preco').value.trim();
   const preco = parseFloat(precoInput.replace(',', '.')); // Converte para float
