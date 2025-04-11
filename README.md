@@ -86,7 +86,7 @@ O **Mesa Mestre** foi desenvolvido com o objetivo de oferecer uma solução comp
 ## Estrutura do Projeto 🗃️
 
 A organização do repositório segue a estrutura abaixo:
-| ![Captura de Tela](https://github.com/user-attachments/assets/52c2f242-9d0a-479f-813e-ef8c8857d8cf) | .vscode/ - configurações específicas do Visual Studio Code<br><br>  |
+| ![Captura de Tela](https://github.com/user-attachments/assets/52c2f242-9d0a-479f-813e-ef8c8857d8cf) |   |
 |------------------------|----------------------------------------------------------------------------------------|
 
 
@@ -190,18 +190,34 @@ Essa interface fornece todos os endpoints, parâmetros e exemplos de requisiçõ
 
 ---
 
- ## Imagens e Vídeo Explicativo 🎥
+ ## Imagens Explicativa 🎥
  
  ### Funcionamento do nosso projeto em partes 
  #### Página Principal
- 
+   Página principal sobre o nosso sistema e parte de login, onde cada tipo de usuário vai conseguir entrar na sua tela.
+  ![pagina principalprojeto](https://github.com/user-attachments/assets/73a882e8-de4a-4fcc-854e-3859f580fd83)
+
  #### Página do cardápio personalizado para seu restaurante
- 
+  Página do cardápio personalizada para seu restaurante, aqui deixamos de acordo com a preferência do cliente.
+  ![cardapioprojeto](https://github.com/user-attachments/assets/a953bada-d327-4226-94da-2ae2335c8ecb)
+
  #### Página do funcionário mobile
- 
+  Página para o seu funcionário no mobile, onde ele pode finalizar pagamento e liberar a mesa para um novo usuário.<br>
+  ![teladofuncionario](https://github.com/user-attachments/assets/75e6eb5b-5f35-49b8-92d1-9d616260d5a5)
+
  #### Página da cozinha
- 
+  Página da cozinha, onde o auxiliar de cozinha recebe o pedido e pode finalizar como pronto e como entregue.
+  ![WhatsApp Image 2025-04-10 at 22 24 57 (1)](https://github.com/user-attachments/assets/7bc6a4c5-c27a-4e0b-be19-d2ac73ecb84b)
+
  #### Página do administrador
+  Página do administrador, aqui ele tem controle de tudo sobre adicionar funcionários, visualizar gráficos de vendas, editar mesas e editar cardápio.
+![pagina funcionario adm](https://github.com/user-attachments/assets/b72ceca8-d8b3-4810-926e-b873820560c6)
+
+![pagina adm mesas](https://github.com/user-attachments/assets/fdf5c0f5-73c9-43bf-9e11-65ac79c47705)
+
+![pagina inical do adm](https://github.com/user-attachments/assets/c7fc79c7-0ff2-4014-be30-7af84d027b34)
+
+![pagina adm graficos](https://github.com/user-attachments/assets/ede5d462-5ee7-4801-a48a-9121e77425ae)
 
 ---
 
