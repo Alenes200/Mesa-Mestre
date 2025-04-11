@@ -18,14 +18,14 @@ VALUES
     ('Mesa 10', 'CodM10', 8, 'Mesa 10', 2, 0),
     ('Mesa 11', 'CodM11', 4, 'Mesa 11', 1, 0),
     ('Mesa 12', 'CodM12', 6, 'Mesa 12', 3, 0),
-    ('Mesa 13', 'CodM05', 5, 'Mesa 5', 1, 0),
-    ('Mesa 14', 'CodM06', 5, 'Mesa 6', 2, 0),
-    ('Mesa 15', 'CodM07', 4, 'Mesa 7', 1, 0),
-    ('Mesa 16', 'CodM08', 6, 'Mesa 8', 2, 0),
-    ('Mesa 17', 'CodM09', 2, 'Mesa 9', 3, 0),
-    ('Mesa 18', 'CodM10', 8, 'Mesa 10', 2, 0),
-    ('Mesa 19', 'CodM11', 4, 'Mesa 11', 1, 0),
-    ('Mesa 20', 'CodM12', 6, 'Mesa 12', 3, 0);
+    ('Mesa 13', 'CodM13', 5, 'Mesa 5', 1, 0),
+    ('Mesa 14', 'CodM14', 5, 'Mesa 6', 2, 0),
+    ('Mesa 15', 'CodM15', 4, 'Mesa 7', 1, 0),
+    ('Mesa 16', 'CodM16', 6, 'Mesa 8', 2, 0),
+    ('Mesa 17', 'CodM17', 2, 'Mesa 9', 3, 0),
+    ('Mesa 18', 'CodM18', 8, 'Mesa 10', 2, 0),
+    ('Mesa 19', 'CodM19', 4, 'Mesa 11', 1, 0),
+    ('Mesa 20', 'CodM20', 6, 'Mesa 12', 3, 0);
 
 INSERT INTO TBL_COMANDA (MES_ID, COM_STATUS)
 VALUES
