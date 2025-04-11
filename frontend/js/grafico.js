@@ -96,6 +96,7 @@ export async function carregarGraficoComandas(token) {
 
     // Configurar datas padrão (últimos 7 dias)
     const dataFim = new Date();
+
     const dataInicio = new Date();
     dataInicio.setDate(dataFim.getDate() - 7);
 
@@ -501,7 +502,7 @@ export async function carregarGraficoComandas(token) {
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
-                yAxisID: 'y', // Eixo principal
+                yAxisID: 'y',
               },
               {
                 label: 'Quantidade Vendida',
@@ -510,7 +511,7 @@ export async function carregarGraficoComandas(token) {
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1,
                 type: 'bar',
-                yAxisID: 'y1', // Eixo secundário
+                yAxisID: 'y1', 
               },
             ],
           },
@@ -526,7 +527,6 @@ export async function carregarGraficoComandas(token) {
                       label += ': ';
                     }
 
-                    // Tratamento seguro para valores numéricos
                     const rawValue = context.raw;
                     if (typeof rawValue === 'number') {
                       if (context.dataset.yAxisID === 'y') {
@@ -535,7 +535,6 @@ export async function carregarGraficoComandas(token) {
                         label += rawValue + ' un';
                       }
                     } else {
-                      // Caso o valor não seja numérico
                       label += rawValue ? rawValue.toString() : '0';
                     }
 
@@ -576,7 +575,7 @@ export async function carregarGraficoComandas(token) {
                   text: 'Quantidade Vendida',
                 },
                 grid: {
-                  drawOnChartArea: false, // não desenhar grid do eixo secundário
+                  drawOnChartArea: false,
                 },
                 beginAtZero: true,
               },
@@ -591,28 +590,6 @@ export async function carregarGraficoComandas(token) {
           if (canvas) canvas.style.display = 'block';
         });
 
-        // Depois de criar todos os gráficos, verifique se foram criados
-        // console.log('Gráficos criados:', {
-        //   comandas: !!graficos.comandas,
-        //   topProdutos: !!graficos.topProdutos,
-        //   faturamento: !!graficos.faturamento,
-        //   pagamentos: !!graficos.pagamentos,
-        //   mediaComanda: !!graficos.mediaComanda,
-        //   ocupacao: !!graficos.ocupacao,
-        //   categorias: !!graficos.categorias,
-        // });
-
-        // Verifique as dimensões dos canvas
-        // document.querySelectorAll('canvas').forEach((canvas) => {
-        //   console.log(`Canvas ${canvas.id}:`, {
-        //     width: canvas.width,
-        //     height: canvas.height,
-        //     clientWidth: canvas.clientWidth,
-        //     clientHeight: canvas.clientHeight,
-        //     offsetWidth: canvas.offsetWidth,
-        //     offsetHeight: canvas.offsetHeight,
-        //   });
-        // });
       } catch (error) {
         console.error('Erro ao carregar gráficos:', error);
         showModal('Erro ao carregar gráficos: ' + error.message, 'error');

@@ -1,9 +1,16 @@
 const client = require('../db/postgresql');
 
+function addOneDay(date) {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + 1);
+  return newDate;
+}
+
 const chartRepository = {
   // Gráfico 1: Comandas por dia da semana
   getComandasPorDiaSemana: async (dataInicio, dataFim) => {
     try {
+    const adjustedDataFim = dataFim ? addOneDay(dataFim) : null;
       const query = `
         WITH dias_semana AS (
           SELECT 0 AS dia_numero, 'Domingo' AS dia_semana
@@ -19,7 +26,7 @@ const chartRepository = {
             EXTRACT(DOW FROM com_data_inicio) AS dia_numero,
             COUNT(*) AS quantidade
           FROM tbl_comanda
-          ${dataInicio && dataFim ? `WHERE com_data_inicio BETWEEN $1 AND $2` : ''}
+          ${dataInicio && adjustedDataFim ? `WHERE com_data_inicio BETWEEN $1 AND $2` : ''}
           GROUP BY EXTRACT(DOW FROM com_data_inicio)
         )
         SELECT 
@@ -32,8 +39,8 @@ const chartRepository = {
       `;
       
       const params = [];
-      if (dataInicio && dataFim) {
-        params.push(dataInicio, dataFim);
+      if (dataInicio && adjustedDataFim) {
+        params.push(dataInicio, adjustedDataFim);
       }
 
       const result = await client.query(query, params);
@@ -48,6 +55,7 @@ const chartRepository = {
   // Gráfico 2: Top 10 produtos mais vendidos
   getTopProdutos: async (dataInicio, dataFim) => {
     try {
+      const adjustedDataFim = dataFim ? addOneDay(dataFim) : null;
       const query = `
         SELECT 
           p.pro_nome AS produto,
@@ -57,15 +65,15 @@ const chartRepository = {
         FROM tbl_pedido_produto pp
         JOIN tbl_produto p ON pp.pro_id = p.pro_id
         JOIN tbl_pedido ped ON pp.ped_id = ped.ped_id
-        ${dataInicio && dataFim ? `WHERE ped.ped_created_at BETWEEN $1 AND $2` : ''}
+        ${dataInicio && adjustedDataFim ? `WHERE ped.ped_created_at BETWEEN $1 AND $2` : ''}
         GROUP BY p.pro_nome, p.pro_tipo
         ORDER BY quantidade_vendida DESC
         LIMIT 10
       `;
       
       const params = [];
-      if (dataInicio && dataFim) {
-        params.push(dataInicio, dataFim);
+      if (dataInicio && adjustedDataFim) {
+        params.push(dataInicio, adjustedDataFim);
       }
 
       const result = await client.query(query, params);
@@ -80,20 +88,21 @@ const chartRepository = {
   // Gráfico 3: Faturamento diário
   getFaturamentoDiario: async (dataInicio, dataFim) => {
     try {
+      const adjustedDataFim = dataFim ? addOneDay(dataFim) : null;
       const query = `
         SELECT 
           DATE_TRUNC('day', ped.ped_created_at) AS data,
           SUM(ped.ped_preco_total) AS faturamento,
           COUNT(DISTINCT ped.com_id) AS comandas_atendidas
         FROM tbl_pedido ped
-        ${dataInicio && dataFim ? `WHERE ped.ped_created_at BETWEEN $1 AND $2` : ''}
+        ${dataInicio && adjustedDataFim ? `WHERE ped.ped_created_at BETWEEN $1 AND $2` : ''}
         GROUP BY DATE_TRUNC('day', ped.ped_created_at)
         ORDER BY data
       `;
       
       const params = [];
-      if (dataInicio && dataFim) {
-        params.push(dataInicio, dataFim);
+      if (dataInicio && adjustedDataFim) {
+        params.push(dataInicio, adjustedDataFim);
       }
 
       const result = await client.query(query, params);
@@ -108,6 +117,7 @@ const chartRepository = {
   // Gráfico 4: Distribuição por formas de pagamento
   getFormasPagamento: async (dataInicio, dataFim) => {
     try {
+      const adjustedDataFim = dataFim ? addOneDay(dataFim) : null;
       const query = `
         SELECT 
           fp.fpa_descricao AS forma_pagamento,
@@ -115,17 +125,17 @@ const chartRepository = {
           ROUND(100.0 * COUNT(ped.ped_id) / 
             NULLIF((SELECT COUNT(ped2.ped_id) 
              FROM tbl_pedido ped2
-             ${dataInicio && dataFim ? `WHERE ped2.ped_created_at BETWEEN $1 AND $2` : ''}), 0), 2) AS percentual_uso
+             ${dataInicio && adjustedDataFim ? `WHERE ped2.ped_created_at BETWEEN $1 AND $2` : ''}), 0), 2) AS percentual_uso
         FROM tbl_pedido ped
         JOIN tbl_forma_pagamento fp ON ped.fpa_id = fp.fpa_id
-        ${dataInicio && dataFim ? `WHERE ped.ped_created_at BETWEEN $1 AND $2` : ''}
+        ${dataInicio && adjustedDataFim ? `WHERE ped.ped_created_at BETWEEN $1 AND $2` : ''}
         GROUP BY fp.fpa_descricao
         ORDER BY quantidade_pedidos DESC
       `;
       
       const params = [];
-      if (dataInicio && dataFim) {
-        params.push(dataInicio, dataFim);
+      if (dataInicio && adjustedDataFim) {
+        params.push(dataInicio, adjustedDataFim);
       }
   
       const result = await client.query(query, params);
@@ -140,6 +150,7 @@ const chartRepository = {
   // Gráfico 5: Média de valor por comanda
   getMediaComanda: async (dataInicio, dataFim) => {
     try {
+      const adjustedDataFim = dataFim ? addOneDay(dataFim) : null;
       const query = `
         SELECT
           DATE_TRUNC('day', c.com_data_inicio) AS data,
@@ -148,14 +159,14 @@ const chartRepository = {
           ROUND(SUM(p.ped_preco_total) / COUNT(DISTINCT c.com_id), 2) AS media_por_comanda
         FROM tbl_comanda c
         LEFT JOIN tbl_pedido p ON c.com_id = p.com_id
-        ${dataInicio && dataFim ? `WHERE c.com_data_inicio BETWEEN $1 AND $2` : ''}
+        ${dataInicio && adjustedDataFim ? `WHERE c.com_data_inicio BETWEEN $1 AND $2` : ''}
         GROUP BY DATE_TRUNC('day', c.com_data_inicio)
         ORDER BY data
       `;
       
       const params = [];
-      if (dataInicio && dataFim) {
-        params.push(dataInicio, dataFim);
+      if (dataInicio && adjustedDataFim) {
+        params.push(dataInicio, adjustedDataFim);
       }
 
       const result = await client.query(query, params);
@@ -170,24 +181,25 @@ const chartRepository = {
   // Gráfico 6: Ocupação de mesas
   getOcupacaoMesas: async (dataInicio, dataFim) => {
     try {
+      const adjustedDataFim = dataFim ? addOneDay(dataFim) : null;
       const query = `
         SELECT
           l.loc_descricao AS local_mesa,  -- Pegando a descrição ao invés do ID
           COUNT(c.com_id) AS total_comandas,
           ROUND(100.0 * COUNT(c.com_id) / 
             (SELECT COUNT(*) FROM tbl_comanda c2
-            ${dataInicio && dataFim ? `WHERE c2.com_data_inicio BETWEEN $3 AND $4` : ''}), 2) AS percentual
+            ${dataInicio && adjustedDataFim ? `WHERE c2.com_data_inicio BETWEEN $3 AND $4` : ''}), 2) AS percentual
         FROM tbl_comanda c
         JOIN tbl_mesa m ON c.mes_id = m.mes_id
         JOIN tbl_local l ON m.loc_id = l.loc_id  -- Adicionando JOIN com a tabela de locais
-        ${dataInicio && dataFim ? `WHERE c.com_data_inicio BETWEEN $1 AND $2` : ''}
+        ${dataInicio && adjustedDataFim ? `WHERE c.com_data_inicio BETWEEN $1 AND $2` : ''}
         GROUP BY l.loc_descricao  -- Agrupando pela descrição
         ORDER BY total_comandas DESC
       `;
       
       const params = [];
-      if (dataInicio && dataFim) {
-        params.push(dataInicio, dataFim, dataInicio, dataFim);
+      if (dataInicio && adjustedDataFim) {
+        params.push(dataInicio, adjustedDataFim, dataInicio, adjustedDataFim);
       }
 
       const result = await client.query(query, params);
@@ -202,6 +214,7 @@ const chartRepository = {
   // Gráfico 7: Vendas por categoria de produto
   getVendasPorCategoria: async (dataInicio, dataFim) => {
     try {
+      const adjustedDataFim = dataFim ? addOneDay(dataFim) : null;
       const query = `
         SELECT
           p.pro_tipo AS categoria,
@@ -210,14 +223,14 @@ const chartRepository = {
         FROM tbl_pedido_produto pp
         JOIN tbl_produto p ON pp.pro_id = p.pro_id
         JOIN tbl_pedido ped ON pp.ped_id = ped.ped_id
-        ${dataInicio && dataFim ? `WHERE ped.ped_created_at BETWEEN $1 AND $2` : ''}
+        ${dataInicio && adjustedDataFim ? `WHERE ped.ped_created_at BETWEEN $1 AND $2` : ''}
         GROUP BY p.pro_tipo
         ORDER BY faturamento DESC
       `;
       
       const params = [];
-      if (dataInicio && dataFim) {
-        params.push(dataInicio, dataFim);
+      if (dataInicio && adjustedDataFim) {
+        params.push(dataInicio, adjustedDataFim);
       }
 
       const result = await client.query(query, params);

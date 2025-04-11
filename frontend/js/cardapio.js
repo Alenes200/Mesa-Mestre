@@ -170,8 +170,6 @@ function addToCart(produto, quantidade) {
       return response.json();
     })
     .then((mesa) => {
-      console.log('Status atual da mesa:', mesa.mes_status);
-
       // Se o status da mesa for 2, impede adicionar itens ao carrinho
       if (mesa.mes_status === 2) {
         showToast(
@@ -204,7 +202,6 @@ function addToCart(produto, quantidade) {
         );
       }
 
-      console.log('Carrinho:', carrinho);
     })
     .catch((error) => {
       console.error('Erro ao verificar o status da mesa:', error);
@@ -362,7 +359,6 @@ async function enviarPedidos() {
     }
 
     const mesa = await response.json();
-    console.log('Status atual da mesa:', mesa.mes_status);
 
     // Se o status da mesa for 2, impede novos pedidos e abre o modal de pedidos
     if (mesa.mes_status === 2) {
@@ -382,14 +378,11 @@ async function enviarPedidos() {
 
     // Continua com o envio dos pedidos
     mesaId = obterMesaId();
-    console.log('Mesa ID obtido:', mesaId);
 
     // Usa a comanda ativa existente ou cria uma nova
     comandaAtivaId = comandaAtivaId || (await verificarOuCriarComanda());
-    console.log('Usando comanda ID:', comandaAtivaId);
 
     const pedidoId = await criarPedido(comandaAtivaId);
-    console.log('Pedido ID criado:', pedidoId);
 
     // Adiciona os produtos ao pedido usando o carrinho atualizado
     await adicionarProdutosAoPedido(pedidoId);
@@ -425,7 +418,6 @@ async function atualizarStatusMesa(status) {
     }
 
     const data = await response.json();
-    console.log(`Status da mesa atualizado para ${status}:`, data);
   } catch (error) {
     console.error('Erro ao atualizar o status da mesa:', error);
     showToast('Erro ao atualizar o status da mesa.', 'error');
@@ -434,7 +426,6 @@ async function atualizarStatusMesa(status) {
 
 async function verificarOuCriarComanda() {
   try {
-    console.log('Verificando comandas ativas para a mesa:', mesaId);
 
     const responseComandas = await fetch('/api/comandas/active');
     if (!responseComandas.ok) {
@@ -442,7 +433,6 @@ async function verificarOuCriarComanda() {
     }
 
     const comandas = await responseComandas.json();
-    console.log('Comandas ativas encontradas:', comandas);
 
     // Filtra comandas da mesa atual e ordena por data de início (mais recente primeiro)
     const comandasAtivas = comandas
@@ -458,12 +448,9 @@ async function verificarOuCriarComanda() {
 
     if (comandasAtivas.length > 0) {
       const comandaMaisRecente = comandasAtivas[0];
-      console.log('Comanda mais recente encontrada:', comandaMaisRecente);
       return parseInt(comandaMaisRecente.com_id);
     }
 
-    // Se não encontrar comanda ativa, cria uma nova
-    console.log('Nenhuma comanda ativa encontrada. Criando nova comanda...');
     const responseNovaComanda = await fetch('/api/comandas', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -482,7 +469,6 @@ async function verificarOuCriarComanda() {
     }
 
     const novaComanda = await responseNovaComanda.json();
-    console.log('Nova comanda criada com sucesso:', novaComanda);
     return parseInt(novaComanda.com_id);
   } catch (error) {
     console.error('Erro ao verificar/criar comanda:', error);
@@ -491,18 +477,16 @@ async function verificarOuCriarComanda() {
 }
 
 async function criarPedido(comandaId) {
-  console.log('Criando pedido para comandaId:', comandaId);
   const pedidoData = {
     com_id: comandaId,
-    ped_descricao: 'Pedido do carrinho', // Alterado de 'descricao' para 'ped_descricao'
-    ped_status: 1, // Alterado de 'status' para 'ped_status'
+    ped_descricao: 'Pedido do carrinho',
+    ped_status: 1,
     ped_preco_total: carrinho.reduce(
       (total, item) => total + item.pro_preco * item.quantidade,
       0
     ),
     ped_data: new Date().toISOString(),
   };
-  console.log('Dados do pedido:', pedidoData);
 
   try {
     const responsePedido = await fetch('/api/pedidos', {
@@ -520,7 +504,6 @@ async function criarPedido(comandaId) {
     }
 
     const pedido = await responsePedido.json();
-    console.log('Pedido criado:', pedido);
 
     if (!pedido.ped_id) {
       throw new Error('ID do pedido não retornado pelo servidor');
@@ -535,24 +518,12 @@ async function criarPedido(comandaId) {
 
 async function adicionarProdutosAoPedido(pedidoId) {
   try {
-    console.log('Iniciando adição de produtos ao pedido:', pedidoId);
-    console.log('Carrinho atual:', JSON.stringify(carrinho, null, 2));
-
     for (const item of carrinho) {
-      console.log('----------------------');
-      console.log('Processando item:', item.pro_nome);
-
-      // A tabela TBL_PEDIDO_PRODUTO espera apenas esses campos
       const produtoData = {
         ped_id: parseInt(pedidoId),
         pro_id: parseInt(item.pro_id),
-        ppr_quantidade: parseInt(item.quantidade), // Usa a quantidade atualizada
+        ppr_quantidade: parseInt(item.quantidade),
       };
-
-      console.log(
-        'Dados do produto a ser enviado:',
-        JSON.stringify(produtoData, null, 2)
-      );
 
       const responseProduto = await fetch('/api/pedidos-produtos', {
         method: 'POST',
@@ -571,7 +542,6 @@ async function adicionarProdutosAoPedido(pedidoId) {
       }
 
       const resultado = await responseProduto.json();
-      console.log('Produto adicionado com sucesso:', resultado);
     }
 
     return true;
@@ -670,7 +640,6 @@ async function deslogarDaMesa() {
     const mesaLogadaElement = document.getElementById('mesa-logada');
     mesaLogadaElement.innerHTML = 'MESA NÃO LOGADA';
 
-    console.log('Deslogado da mesa com sucesso');
     return true;
   } catch (error) {
     console.error('Erro ao deslogar da mesa:', error);
@@ -748,8 +717,6 @@ async function logarNaMesa() {
     }
 
     const mesa = await response.json();
-    console.log('Mesa encontrada:', mesa);
-
     const mesaSalva = localStorage.getItem('mesaId');
 
     // Verifica se a mesa já está logada (independentemente de ser a mesma ou não)
@@ -781,7 +748,6 @@ async function logarNaMesa() {
       return;
     }
 
-    // Se estiver logado em outra mesa, primeiro desloga da mesa anterior
     if (mesaSalva && parseInt(mesaSalva) !== mesa.mes_id) {
       try {
         await fetch(`/api/mesas/${mesaSalva}/logado`, {
@@ -789,35 +755,23 @@ async function logarNaMesa() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: false }),
         });
-        console.log(`Mesa ${mesaSalva} deslogada com sucesso`);
       } catch (error) {
         console.error(`Erro ao deslogar da mesa ${mesaSalva}:`, error);
-        // Continua mesmo com erro, pois pode ser que a mesa já tenha sido deslogada
       }
     }
-
-    // Verifica se a mesa já está logada
-    // const mesaLogadoResponse = await fetch(`/api/mesas/${mesa.mes_id}/logado`);
-    // const mesaLogadoData = await mesaLogadoResponse.json();
-
     if (mesaLogadoData.mes_logado && !mesaSalva) {
       throw new Error('Esta mesa já está em uso.');
     }
-
-    // Mesa não está logada ou é a mesma do localStorage, pode prosseguir
     mesaId = mesa.mes_id;
 
-    // Marca a mesa como logada
     await fetch(`/api/mesas/${mesaId}/logado`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: true }),
     });
 
-    // Salva o ID da mesa no Local Storage
     localStorage.setItem('mesaId', mesaId);
 
-    // Atualiza o texto do elemento com o ID "mesa-logada"
     const mesaLogadaElement = document.getElementById('mesa-logada');
     mesaLogadaElement.innerHTML = mesa.mes_nome
       ? mesa.mes_nome.toUpperCase()
@@ -930,28 +884,22 @@ async function exibirPedidosNoModal() {
       throw new Error('Erro ao buscar pedidos.');
     }
 
-    console.log('Pedidos ativos obtidos:', data);
-
-    // Atualiza o modal com os pedidos obtidos
     const pedidosContainer = document.getElementById('itens-pedidos');
     const resultadoPessoaElement = document.getElementById('resultado-pessoa');
-    pedidosContainer.innerHTML = ''; // Limpa o container antes de adicionar os pedidos
+    pedidosContainer.innerHTML = ''; 
 
     let total = 0;
 
-    // Itera sobre os pedidos no array `data`
     data.forEach((pedido) => {
       const horaPedido = new Date(pedido.data).toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit',
       });
 
-      // Itera sobre os itens do pedido
       pedido.itens.forEach((item) => {
         const subtotalItem = item.quantidade * item.preco_unitario;
         total += subtotalItem;
 
-        // Cria um elemento para o item do pedido
         const itemElement = document.createElement('div');
         itemElement.className = 'card-iten';
         itemElement.innerHTML = `
@@ -1057,14 +1005,12 @@ async function pedirConta() {
     }
 
     const mesa = await responseMesa.json();
-    console.log('Status da mesa:', mesa.mes_status);
 
     if (mesa.mes_status === 2) {
       showToast('A conta já foi solicitada. Aguarde o garçom.', 'info');
-      // Atualiza o título do modal
       const tituloConta = document.querySelector('.modal-pedidos .titulo h1');
       tituloConta.textContent = 'MINHA CONTA - AGUARDE O GARÇOM';
-      openModalPedidos(); // Abre o modal de pedidos
+      openModalPedidos();
       return;
     }
 
@@ -1100,14 +1046,12 @@ async function pedirConta() {
     }
 
     const mesaAtualizada = await response.json();
-    console.log('Status da mesa atualizado com sucesso:', mesaAtualizada);
 
     comandaAtivaId = null;
 
-    // Trava o modal e adiciona a mensagem
     const tituloConta = document.querySelector('.modal-pedidos .titulo h1');
     tituloConta.textContent = 'MINHA CONTA - AGUARDE O GARÇOM';
-    openModalPedidos(); // Abre o modal de pedidos
+    openModalPedidos();
 
     showToast('Conta solicitada com sucesso! Aguarde o garçom.', 'success');
   } catch (error) {
@@ -1120,5 +1064,4 @@ window.openModalPedidos = openModalPedidos;
 window.openLoginModal = openLoginModal;
 window.closeCarrinho = closeCarrinho;
 
-// Adiciona o evento ao botão "Pedir a Conta"
 document.getElementById('pedir-conta').addEventListener('click', pedirConta);
