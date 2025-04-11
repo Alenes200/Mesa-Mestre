@@ -774,7 +774,7 @@ async function logarNaMesa() {
         : `MESA ${String(mesaId).padStart(2, '0')}`;
 
       showToast(
-        `Bem-vindo de volta à mesa ${mesa.mes_descricao || mesa.mes_id}!`,
+        `Bem-vindo de volta à ${mesa.mes_descricao || mesa.mes_id}!`,
         'success'
       );
       closeLoginModal();

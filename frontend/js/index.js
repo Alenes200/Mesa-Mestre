@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   conteudoGraficos.style.display = 'block';
 
   carregarLocais();
-  carregarMesasModal(carregarTodasMesasAtivas, 'Externa');
+  carregarMesasModal(carregarTodasMesasAtivas);
 
   if (!token) {
     window.location.href = '../pages/login_adm.html';
@@ -172,6 +172,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     conteudoMesas.style.display = 'block';
+    carregarMesasModal(carregarTodasMesasAtivas);
   });
 
   const menuFuncionarios = document.getElementById('op_funcionario');

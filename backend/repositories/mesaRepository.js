@@ -154,6 +154,7 @@ const mesasRepository = {
                     LOC_ID = COALESCE($5, LOC_ID),
                     MES_STATUS = COALESCE($6, MES_STATUS)
                 WHERE MES_ID = $7
+                AND MES_STATUS != -1
                 RETURNING *;
             `;
 
@@ -174,6 +175,8 @@ const mesasRepository = {
                 SET MES_STATUS = -1
                 FROM TBL_LOCAL
                 WHERE TBL_MESA.MES_ID = $1
+                AND MES_STATUS = 0
+                AND MES_LOGADO = FALSE
                 AND TBL_MESA.LOC_ID = TBL_LOCAL.LOC_ID
                 RETURNING TBL_MESA.*, TBL_LOCAL.LOC_DESCRICAO;
             `;
