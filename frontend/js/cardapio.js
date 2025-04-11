@@ -38,7 +38,7 @@ function displayProdutos(produtos) {
 
     produtoElement.innerHTML = `
     <div class="descricao">
-      <h2>${escapeHTML(produto.pro_nome)} <span>${preco}</span></h2>
+      <h2>${escapeHTML(produto.pro_nome)}<br><span>${preco}</span></h2>
       <p>${escapeHTML(produto.pro_descricao)}</p>
       <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
     </div>
