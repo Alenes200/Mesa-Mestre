@@ -1,4 +1,5 @@
 const client = require('../db/postgresql.js');
+const hashPassword = require('../utils/hashPassword');
 
 const getAllUsers = async () => {
   try {
@@ -37,7 +38,7 @@ const getUserById = async (id) => {
   } catch (error) {
     throw new Error('Erro ao buscar usuário');
   }
-}
+};
 
 const getUserByIdIgnoreStatus = async (id) => {
   if (!Number.isInteger(id)) {
@@ -62,9 +63,14 @@ const addUser = async (name, email, password, telefone, funcao) => {
   }
 
   try {
+    const hashedPassword = await hashPassword(password);
+    if (!hashedPassword) {
+      throw new Error('Erro ao criar hash da senha');
+    }
+
     const result = await client.query(
       'INSERT INTO TBL_USERS (USR_NOME, USR_EMAIL, USR_SENHA, USR_TELEFONE, USR_FUNCAO) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [name, email, password, telefone || null, funcao || null]
+      [name, email, hashedPassword, telefone || null, funcao || null]
     );
     return result.rows[0];
   } catch (error) {
@@ -111,7 +117,7 @@ const updateUser = async (id, dadosAtualizados) => {
     console.error('Erro ao atualizar usuário:', error);
     throw new Error('Erro ao atualizar usuário');
   }
-}
+};
 
 const deleteUser = async (id) => {
   if (!Number.isInteger(id)) {
@@ -146,4 +152,13 @@ const searchUsers = async (searchTerm) => {
   }
 };
 
-module.exports = { getAllUsers, getUserById, addUser, updateUser, deleteUser, getUserByIdIgnoreStatus, getAllUsersIgnoreStatus, searchUsers };
+module.exports = {
+  getAllUsers,
+  getUserById,
+  addUser,
+  updateUser,
+  deleteUser,
+  getUserByIdIgnoreStatus,
+  getAllUsersIgnoreStatus,
+  searchUsers,
+};
