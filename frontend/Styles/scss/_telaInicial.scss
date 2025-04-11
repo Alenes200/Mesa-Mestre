@@ -12,7 +12,7 @@ $inicio-container-width: 1200px;
 $inicio-header-height: 80px;
 $inicio-section-padding: 80px 0;
 
-html {
+body {
   scroll-behavior: smooth;
 }
 
@@ -810,10 +810,11 @@ html {
 @media (max-width: 992px) {
   .inicio-nav-links {
     position: fixed;
-    top: $inicio-header-height;
+    top: 0;
+    z-index: -1;
     left: -100%;
     width: 100%;
-    height: calc(100vh - #{$inicio-header-height});
+    height: 100%;
     background-color: $inicio-primary-color;
     flex-direction: column;
     align-items: center;

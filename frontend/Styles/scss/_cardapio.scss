@@ -144,6 +144,7 @@
     padding-left: 34px;
     padding-right: 34px;
     width: 100%;
+    margin-bottom: 34px;
 
     display: flex;
     flex-wrap: wrap;
@@ -188,6 +189,10 @@
 
       width: 403px;
       height: 184px;
+
+      p {
+        overflow: hidden;
+      }
 
       .imagem-produto {
         width: 100%;
@@ -245,6 +250,7 @@
       }
 
       .adicionar-carrinho {
+        margin-top: 8px;
         margin-top: auto;
         background-color: $cor-primaira-cardapio;
         padding: 5px;
