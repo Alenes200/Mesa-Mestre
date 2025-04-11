@@ -2,7 +2,6 @@ import { showModal } from './modal.js';
 
 let resizeObserver = null;
 
-// Objeto para armazenar todas as instâncias de gráficos
 const graficos = {
   comandas: null,
   topProdutos: null,
@@ -13,28 +12,23 @@ const graficos = {
   categorias: null,
 };
 
-// Função para destruir todos os gráficos
 export function destruirGrafico() {
-  // Destruir todos os gráficos
   Object.values(graficos).forEach((grafico) => {
     if (grafico) {
       grafico.destroy();
     }
   });
 
-  // Limpar o objeto de gráficos
   Object.keys(graficos).forEach((key) => {
     graficos[key] = null;
   });
 
-  // Desconectar o ResizeObserver se existir
   if (resizeObserver) {
     resizeObserver.disconnect();
     resizeObserver = null;
   }
 }
 
-// Função para criar um container de loading
 function criarLoading(container) {
   const loading = document.createElement('div');
   loading.className = 'loading';
@@ -43,25 +37,21 @@ function criarLoading(container) {
   return loading;
 }
 
-// Função para remover loading
 function removerLoading(loading) {
   if (loading && loading.parentNode) {
     loading.parentNode.removeChild(loading);
   }
 }
 
-// Função para criar um gráfico
 function criarGrafico(ctx, type, data, options) {
-  // Forçar dimensões mínimas
   const canvas = ctx.canvas;
   if (canvas.clientWidth < 100 || canvas.clientHeight < 100) {
     canvas.style.width = '100%';
     canvas.style.height = '300px';
   }
 
-  // Definir dimensões explícitas para o canvas
   canvas.style.width = '100%';
-  canvas.style.height = '400px'; // Altura fixa ou use 'auto'
+  canvas.style.height = '400px';
 
   const chart = new Chart(ctx, {
     type: type,
@@ -70,16 +60,9 @@ function criarGrafico(ctx, type, data, options) {
       ...options,
       responsive: true,
       maintainAspectRatio: false,
-      // onResize: (chart, size) => {
-      //   if (size.height < 100 || size.width < 100) {
-      //     chart.canvas.parentNode.style.height = '300px';
-      //     chart.resize();
-      //   }
-      // },
     },
   });
 
-  // Redimensionar após um pequeno delay para garantir que o DOM está pronto
   setTimeout(() => {
     chart.resize();
   }, 50);
@@ -87,14 +70,11 @@ function criarGrafico(ctx, type, data, options) {
   return chart;
 }
 
-// Função principal para carregar todos os gráficos
 export async function carregarGraficoComandas(token) {
   try {
-    // 1. Criar container principal
     const container = document.querySelector('.conteudo-graficos-container');
     container.style.display = 'block';
 
-    // Configurar datas padrão (últimos 7 dias)
     const dataFim = new Date();
 
     const dataInicio = new Date();
@@ -106,13 +86,11 @@ export async function carregarGraficoComandas(token) {
     dataInicioInput.valueAsDate = dataInicio;
     dataFimInput.valueAsDate = dataFim;
 
-    // 4. Função para carregar todos os gráficos
     const carregarTodosGraficos = async () => {
       try {
         const inicio = dataInicioInput.value;
         const fim = dataFimInput.value;
 
-        // Mostrar loading em todos os gráficos
         const wrappers = container.querySelectorAll('.grafico-wrapper');
         wrappers.forEach((wrapper) => {
           const loading = criarLoading(wrapper);
@@ -120,7 +98,6 @@ export async function carregarGraficoComandas(token) {
           if (canvas) canvas.style.display = 'none';
         });
 
-        // Função para buscar dados com tratamento de erros
         const fetchComTratamento = async (url) => {
           const response = await fetch(url, {
             headers: { Authorization: `Bearer ${token}` },
@@ -133,7 +110,6 @@ export async function carregarGraficoComandas(token) {
           }
 
           const dados = await response.json();
-          //   console.log('Dados recebidos:', url, dados);
 
           if (!Array.isArray(dados)) {
             console.error('Dados inesperados (não é array):', url, dados);
@@ -143,7 +119,6 @@ export async function carregarGraficoComandas(token) {
           return dados;
         };
 
-        // Carregar dados de todos os gráficos em paralelo
         const dados = await Promise.all([
           fetchComTratamento(
             `/api/graficos/comandas-por-dia?dataInicio=${inicio}&dataFim=${fim}`
