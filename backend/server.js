@@ -65,18 +65,7 @@ app.use(express.json());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Servir arquivos estáticos da pasta "frontend"
-// Servir frontend apenas em desenvolvimento
-if (process.env.ENV !== 'prod') {
-  app.use(express.static(path.join(__dirname, '../frontend')));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
-  });
-}
-
-
-// Rotas
+// Rotas da API devem vir ANTES do servir frontend
 app.use('/api/auth', loginRoutes);
 app.use('/api/produtos', produtosRoutes);
 app.use('/api/mesas', mesasRoutes);
@@ -87,6 +76,20 @@ app.use('/api/graficos', chartRoutes);
 app.use('/api/pedidos', pedidoRoutes);
 app.use('/api/pedidos-produtos', pedidoProdutoRoutes);
 app.use('/api/formas-pagamento', formaPagamentoRoutes);
+
+// Servir frontend apenas em desenvolvimento - MOVER PARA DEPOIS DAS ROTAS DA API
+if (process.env.ENV !== 'prod') {
+  app.use(express.static(path.join(__dirname, '../frontend')));
+
+  // Wildcard route deve ser a última
+  app.get('*', (req, res) => {
+    // Não redirecionar rotas da API para o frontend
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).json({ error: 'API route not found' });
+    }
+    res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
+  });
+}
 
 // Middleware para capturar erros não tratados
 app.use((err, req, res, next) => {

@@ -38,7 +38,7 @@ function displayProdutos(produtos) {
 
     produtoElement.innerHTML = `
     <div class="descricao">
-      <h2>${escapeHTML(produto.pro_nome)} <span>${preco}</span></h2>
+      <h2>${escapeHTML(produto.pro_nome)}<br><span>${preco}</span></h2>
       <p>${escapeHTML(produto.pro_descricao)}</p>
       <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
     </div>
@@ -73,7 +73,7 @@ function displayProdutosPorTipo(tipo) {
 
     produtoElement.innerHTML = `
       <div class="descricao">
-        <h2>${escapeHTML(produto.pro_nome)}<span>${preco}</span></h2>
+        <h2>${escapeHTML(produto.pro_nome)}<br><span>${preco}</span></h2>
         <p>${escapeHTML(produto.pro_descricao)}</p>
         <button class="adicionar-carrinho">ADICIONAR AO CARRINHO</button>
       </div>
@@ -633,7 +633,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // document.getElementById('logout-button').style.display = 'block';
 
       showToast(
-        `Bem-vindo de volta à mesa ${mesaData.mes_descricao || mesaId}!`,
+        `Bem-vindo de volta à ${mesaData.mes_descricao || mesaId}!`,
         'success'
       );
     } catch (error) {
