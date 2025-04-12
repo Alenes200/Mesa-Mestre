@@ -183,7 +183,7 @@ A organização do repositório segue a estrutura abaixo:
  ## Documentação da API 🧾
  A API está documentada utilizando o Swagger. Após iniciar o servidor, você pode acessar a documentação navegando até:
      
-    http://localhost:3000/api-docs
+   https://equipe02.alphaedtech.org.br/api-docs/
 
    
 Essa interface fornece todos os endpoints, parâmetros e exemplos de requisições/respostas.
