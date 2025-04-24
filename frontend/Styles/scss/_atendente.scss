@@ -77,6 +77,9 @@ $colors: (
     display: flex;
     flex-direction: column;
     height: 100vh;
+    width: 100%;
+    max-width: 599px;
+    margin: 0 auto;
 }
 
 // Componentes
@@ -310,13 +313,12 @@ $colors: (
 }
 
 // Responsividade
-@media (max-width: 600px) {
-    .tables-grid {
-        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-        gap: 10px;
-    }
 
-    .section {
-        margin: 10px;
-    }
+.tables-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 10px;
+}
+
+.section {
+    margin: 10px;
 }
